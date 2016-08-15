@@ -1,13 +1,21 @@
+@import 'variables.scss';
 
 body {
   background-color: #2DA9AE;
 }
 
 .testClass {
-  background-color: black;
+  @media #{$phone-portrait} {
+    background-color: red;
+  }
+  @media #{$desktop-landscape} {
+    background-color: black;
+  }
+  @media #{$tablet-landscape} {
+    background-color: black;
+  }
   color: black;
   width: 100px;
   height: 100px;
   display: block;
 }
-
