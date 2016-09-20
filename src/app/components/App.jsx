@@ -6,6 +6,28 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LoginDialog from './LoginDialog.jsx';
 import SignupDialog from './SignupDialog.jsx';
 import LeftMenu from './LeftMenu.jsx';
+import Dashboard from './Dashboard.jsx';
+import NewSale from './NewSale.jsx';
+import AllSales from './AllSales.jsx';
+import ScheduleInstallation from './ScheduleInstallation.jsx';
+import AllInstallations from './AllInstallations.jsx';
+import NewEmployee from './NewEmployee.jsx';
+import AllEmployees from './AllEmployees.jsx';
+import AllCustomers from './AllCustomers.jsx';
+import PresentationMaterial from './PresentationMaterial.jsx';
+
+const defaultProps = {
+  dashboard: <Dashboard />,
+  newSale: <NewSale />,
+  allSales: <AllSales />,
+  presentationMaterial: <PresentationMaterial />,
+  scheduleInstallation: <ScheduleInstallation />,
+  allInstallations: <AllInstallations />,
+  newEmployee: <NewEmployee />,
+  allEmployees: <AllEmployees />,
+  allCustomers: <AllCustomers />
+};
+
 
 export default class App extends React.Component {
 
@@ -15,12 +37,14 @@ export default class App extends React.Component {
       loginDialog: false,
       signupDialog: false,
       leftMenuOpen: true,
+      currentContent: <Dashboard />,
     }
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
     this.closeHandler = this.closeHandler.bind(this);
     this.menuClickHandler = this.menuClickHandler.bind(this);
+    this.appBarClickHandler = this.appBarClickHandler.bind(this);
   }
 
   getChildContext() {
@@ -80,7 +104,13 @@ export default class App extends React.Component {
     );
   }
 
-  menuClickHandler() {
+  menuClickHandler(contentName) {
+    this.setState({
+      currentContent: this.props[contentName]
+    });
+  }
+
+  appBarClickHandler() {
     if(this.state.leftMenuOpen) {
       this.setState({leftMenuOpen: false});
     } else {
@@ -97,14 +127,16 @@ export default class App extends React.Component {
           title='esit'
           titleStyle={{'fontFamily': 'Damion', 'fontSize': '60px'}}
           iconElementRight={this.getRightButtons()}
-          onLeftIconButtonTouchTap={this.menuClickHandler}
+          onLeftIconButtonTouchTap={this.appBarClickHandler}
           style={appBarStyles}
         />
         <div className="contentContainer">
           <div className="leftPanel" style={leftMenuStyles}>
-            <LeftMenu/>
+            <LeftMenu clickHandler={this.menuClickHandler}/>
           </div>
-          <div className="mainContent"> </div>
+          <div className="mainContent">
+            {this.state.currentContent}
+          </div>
         </div>
         { this.state.loginDialog ?
           <LoginDialog
@@ -128,3 +160,5 @@ export default class App extends React.Component {
 App.childContextTypes = {
   muiTheme: React.PropTypes.object.isRequired,
 };
+
+App.defaultProps = defaultProps;

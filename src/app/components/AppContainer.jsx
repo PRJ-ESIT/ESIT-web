@@ -21,4 +21,3 @@ ReactDOM.render(
   <AppContainer />,
   document.getElementById('app')
 );
-

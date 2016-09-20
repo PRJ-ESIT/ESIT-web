@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, ListItem, Divider, Subheader, IconButton } from 'material-ui';
 import ExpandMore from 'material-ui/svg-icons/navigation/expand-more';
+import ExpandLess from 'material-ui/svg-icons/navigation/expand-less';
 import Dashboard from 'material-ui/svg-icons/action/dashboard';
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money';
 import ShowChart from 'material-ui/svg-icons/editor/show-chart';
@@ -14,7 +15,7 @@ import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import PictureInPicture from 'material-ui/svg-icons/action/picture-in-picture';
 import Create from 'material-ui/svg-icons/content/create';
 
-export default class StockList extends React.Component {
+export default class LeftMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,6 +52,7 @@ export default class StockList extends React.Component {
         }}
       >
         <ListItem
+          onClick={this.props.clickHandler.bind(null, "dashboard")}
           primaryText="Dashboard"
           leftIcon={<Dashboard color="white"/>}
           style={fontStyle}
@@ -60,10 +62,19 @@ export default class StockList extends React.Component {
           primaryText="Sales"
           leftIcon={<AttachMoney color="white"/>}
           initiallyOpen={false}
-          rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "salesOpen")}><ExpandMore color="white"/></IconButton>}
+          rightIconButton={
+            <IconButton onClick={this.toggleCategory.bind(this, "salesOpen")}>
+              { this.state.currentOpen == "salesOpen" ?
+                <ExpandLess color="white"/>
+                :
+                <ExpandMore color="white"/>
+              }
+            </IconButton>
+          }
           style={fontStyle}
           nestedItems={[
             <ListItem
+              onClick={this.props.clickHandler.bind(null, "newSale")}
               key={1}
               primaryText="Create New Sale"
               leftIcon={<Create color="white"/>}
@@ -71,11 +82,13 @@ export default class StockList extends React.Component {
             />,
             <ListItem
               key={2}
+              onClick={this.props.clickHandler.bind(null, "allSales")}
               primaryText="View All Sales"
               leftIcon={<ShowChart color="white"/>}
               style={fontStyle}
             />,
             <ListItem
+              onClick={this.props.clickHandler.bind(null, "presentationMaterial")}
               key={3}
               primaryText="Presentation Material"
               leftIcon={<PictureInPicture color="white" />}
@@ -88,17 +101,27 @@ export default class StockList extends React.Component {
           primaryText="Installations"
           leftIcon={<Build color="white" />}
           initiallyOpen={false}
-          rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "installationOpen")}><ExpandMore color="white"/></IconButton>}
+          rightIconButton={
+            <IconButton onClick={this.toggleCategory.bind(this, "installationOpen")}>
+              { this.state.currentOpen == "installationOpen" ?
+                <ExpandLess color="white"/>
+                :
+                <ExpandMore color="white"/>
+              }
+            </IconButton>
+          }
           style={fontStyle}
           nestedItems={[
             <ListItem
               key={1}
+              onClick={this.props.clickHandler.bind(null, "scheduleInstallation")}
               primaryText="Schedule Installation"
               leftIcon={<Schedule color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={2}
+              onClick={this.props.clickHandler.bind(null, "allInstallations")}
               primaryText="View All Installations"
               leftIcon={<ActionAssignment color="white"/>}
               style={fontStyle}
@@ -110,23 +133,34 @@ export default class StockList extends React.Component {
           primaryText="Management"
           leftIcon={<AccountCircle color="white" />}
           initiallyOpen={false}
-          rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "managementOpen")}><ExpandMore color="white"/></IconButton>}
+          rightIconButton={
+            <IconButton onClick={this.toggleCategory.bind(this, "managementOpen")}>
+              { this.state.currentOpen == "managementOpen" ?
+                <ExpandLess color="white"/>
+                :
+                <ExpandMore color="white"/>
+              }
+            </IconButton>
+          }
           style={fontStyle}
           nestedItems={[
             <ListItem
               key={1}
+              onClick={this.props.clickHandler.bind(null, "newEmployee")}
               primaryText="Create New Employee"
               leftIcon={<GroupAdd color="white" />}
               style={fontStyle}
             />,
             <ListItem
               key={2}
+              onClick={this.props.clickHandler.bind(null, "allEmployees")}
               primaryText="View All Employees"
               leftIcon={<SupervisorAccount color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={3}
+              onClick={this.props.clickHandler.bind(null, "allCustomers")}
               primaryText="View All Customers"
               leftIcon={<ContactPhone color="white" />}
               style={fontStyle}
