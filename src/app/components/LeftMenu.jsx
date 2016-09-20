@@ -1,9 +1,10 @@
 import React from 'react';
-import { List, ListItem, Divider, Subheader } from 'material-ui';
+import { List, ListItem, Divider, Subheader, IconButton } from 'material-ui';
 import ActionGrade from 'material-ui/svg-icons/action/grade';
 import ContentInbox from 'material-ui/svg-icons/content/inbox';
 import ContentDrafts from 'material-ui/svg-icons/content/drafts';
 import ContentSend from 'material-ui/svg-icons/content/send';
+import ExpandMore from 'material-ui/svg-icons/navigation/expand-more';
 
 export default class StockList extends React.Component {
   constructor(props) {
@@ -48,11 +49,10 @@ export default class StockList extends React.Component {
         />
         <ListItem
           open={this.state.currentOpen == "salesOpen" ? true : false}
-          onNestedListToggle={this.toggleCategory.bind(this, "salesOpen")}
           primaryText="Sales"
           leftIcon={<ContentDrafts />}
           initiallyOpen={false}
-          primaryTogglesNestedList={true}
+          rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "salesOpen")}><ExpandMore color="white"/></IconButton>}
           style={fontStyle}
           nestedItems={[
             <ListItem
@@ -77,11 +77,10 @@ export default class StockList extends React.Component {
         />
         <ListItem
           open={this.state.currentOpen == "installationOpen" ? true : false}
-          onNestedListToggle={this.toggleCategory.bind(this, "installationOpen")}
           primaryText="Installations"
           leftIcon={<ContentInbox />}
           initiallyOpen={false}
-          primaryTogglesNestedList={true}
+          rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "installationOpen")}><ExpandMore color="white"/></IconButton>}
           style={fontStyle}
           nestedItems={[
             <ListItem
@@ -100,11 +99,10 @@ export default class StockList extends React.Component {
         />
         <ListItem 
           open={this.state.currentOpen == "managementOpen" ? true : false}
-          onNestedListToggle={this.toggleCategory.bind(this, "managementOpen")}
           primaryText="Management"
           leftIcon={<ContentDrafts />}
           initiallyOpen={false}
-          primaryTogglesNestedList={true}
+          rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "managementOpen")}><ExpandMore color="white"/></IconButton>}
           style={fontStyle}
           nestedItems={[
             <ListItem
