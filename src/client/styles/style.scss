@@ -1,5 +1,4 @@
 @import 'variables.scss';
-
 /*
 
 AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
@@ -25,22 +24,21 @@ body {
   position: absolute;
   display: flex;
   flex-direction: row;
-  background-color: orange;
   height: calc(100% - 80px);
-  width: calc(100% - 16px)
+  width: calc(100% - 16px);
 }
 
 .leftPanel {
   flex: 1;
   flex-basis: 20%;
-  background-color: #9fdf9f;
-  overflow-y:scroll;
+  background-color: #28305a;
+  overflow: auto;
 }
 
 .mainContent {
   flex: 2;
   flex-basis: 80%;
-  background-color: #b3e0ff;
+  background-color: #b3b3ff;
 }
 
 .appBarButtonsContainer {

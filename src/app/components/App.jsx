@@ -90,13 +90,15 @@ export default class App extends React.Component {
 
   render() {
     var leftMenuStyles = this.state.leftMenuOpen ? {'' : ''} : { 'display': 'none' };
-
+    var appBarStyles = {'backgroundColor': '#2F3C7D'};
     return (
       <div style={{width: '100%', height: '100%'}}>
         <AppBar
-          title='Title'
+          title='esit'
+          titleStyle={{'fontFamily': 'Damion', 'fontSize': '60px'}}
           iconElementRight={this.getRightButtons()}
           onLeftIconButtonTouchTap={this.menuClickHandler}
+          style={appBarStyles}
         />
         <div className="contentContainer">
           <div className="leftPanel" style={leftMenuStyles}>
