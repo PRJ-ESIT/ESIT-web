@@ -1,10 +1,18 @@
 import React from 'react';
 import { List, ListItem, Divider, Subheader, IconButton } from 'material-ui';
-import ActionGrade from 'material-ui/svg-icons/action/grade';
-import ContentInbox from 'material-ui/svg-icons/content/inbox';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
-import ContentSend from 'material-ui/svg-icons/content/send';
 import ExpandMore from 'material-ui/svg-icons/navigation/expand-more';
+import Dashboard from 'material-ui/svg-icons/action/dashboard';
+import AttachMoney from 'material-ui/svg-icons/editor/attach-money';
+import ShowChart from 'material-ui/svg-icons/editor/show-chart';
+import AccountCircle from 'material-ui/svg-icons/action/account-circle';
+import SupervisorAccount from 'material-ui/svg-icons/action/supervisor-account';
+import Build from 'material-ui/svg-icons/action/build';
+import GroupAdd from 'material-ui/svg-icons/social/group-add';
+import ContactPhone from 'material-ui/svg-icons/communication/contact-phone';
+import Schedule from 'material-ui/svg-icons/action/schedule';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
+import PictureInPicture from 'material-ui/svg-icons/action/picture-in-picture';
+import Create from 'material-ui/svg-icons/content/create';
 
 export default class StockList extends React.Component {
   constructor(props) {
@@ -44,13 +52,13 @@ export default class StockList extends React.Component {
       >
         <ListItem
           primaryText="Dashboard"
-          leftIcon={<ContentSend />}
+          leftIcon={<Dashboard color="white"/>}
           style={fontStyle}
         />
         <ListItem
           open={this.state.currentOpen == "salesOpen" ? true : false}
           primaryText="Sales"
-          leftIcon={<ContentDrafts />}
+          leftIcon={<AttachMoney color="white"/>}
           initiallyOpen={false}
           rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "salesOpen")}><ExpandMore color="white"/></IconButton>}
           style={fontStyle}
@@ -58,19 +66,19 @@ export default class StockList extends React.Component {
             <ListItem
               key={1}
               primaryText="Create New Sale"
-              leftIcon={<ActionGrade />}
+              leftIcon={<Create color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={2}
               primaryText="View All Sales"
-              leftIcon={<ActionGrade />}
+              leftIcon={<ShowChart color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={3}
               primaryText="Presentation Material"
-              leftIcon={<ActionGrade />}
+              leftIcon={<PictureInPicture color="white" />}
               style={fontStyle}
             />
           ]}
@@ -78,7 +86,7 @@ export default class StockList extends React.Component {
         <ListItem
           open={this.state.currentOpen == "installationOpen" ? true : false}
           primaryText="Installations"
-          leftIcon={<ContentInbox />}
+          leftIcon={<Build color="white" />}
           initiallyOpen={false}
           rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "installationOpen")}><ExpandMore color="white"/></IconButton>}
           style={fontStyle}
@@ -86,13 +94,13 @@ export default class StockList extends React.Component {
             <ListItem
               key={1}
               primaryText="Schedule Installation"
-              leftIcon={<ActionGrade />}
+              leftIcon={<Schedule color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={2}
               primaryText="View All Installations"
-              leftIcon={<ContentSend />}
+              leftIcon={<ActionAssignment color="white"/>}
               style={fontStyle}
             />
           ]}
@@ -100,7 +108,7 @@ export default class StockList extends React.Component {
         <ListItem 
           open={this.state.currentOpen == "managementOpen" ? true : false}
           primaryText="Management"
-          leftIcon={<ContentDrafts />}
+          leftIcon={<AccountCircle color="white" />}
           initiallyOpen={false}
           rightIconButton={<IconButton onClick={this.toggleCategory.bind(this, "managementOpen")}><ExpandMore color="white"/></IconButton>}
           style={fontStyle}
@@ -108,19 +116,19 @@ export default class StockList extends React.Component {
             <ListItem
               key={1}
               primaryText="Create New Employee"
-              leftIcon={<ActionGrade />}
+              leftIcon={<GroupAdd color="white" />}
               style={fontStyle}
             />,
             <ListItem
               key={2}
               primaryText="View All Employees"
-              leftIcon={<ActionGrade />}
+              leftIcon={<SupervisorAccount color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={3}
               primaryText="View All Customers"
-              leftIcon={<ActionGrade />}
+              leftIcon={<ContactPhone color="white" />}
               style={fontStyle}
             />
           ]}
