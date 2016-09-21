@@ -31,6 +31,7 @@ body {
 .leftPanel {
   flex: 1;
   flex-basis: 20%;
+  min-width: 279px;
   background-color: #28305a;
   overflow: auto;
 }
@@ -63,3 +64,65 @@ body {
     font-weight: bold;
   }
 }
+
+//************************//
+//Dashboard Content styles//
+//************************//
+.dashboard {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .dashboardWelcome {
+    flex: 1;
+    width: 100%;
+    flex-basis: 150px;
+    height: 150px;
+    font-size: 50px;
+    text-align: center;
+    span {
+      font-family: Damion;
+      font-size: 70px;
+    }
+  }
+
+  .dashboardTables {
+    flex: 2;
+    width: 100%;
+    flex-basis: calc(100% - 150px);
+    height: calc(100% - 150px);
+    display: flex;
+    flex-direction: row;
+
+    .recentSales {
+      flex: 1;
+    }
+
+    .recentInstallations {
+      flex: 2;
+    }
+
+    .salesAndInstallation {
+      flex-basis: 50%;
+      //half of the content window minus margin
+      width:calc(50% - 40px);
+      //100% of the parent's height minus margin
+      height: calc(100% - 40px);
+      margin: 20px;
+      border: 1px solid black;
+      border-radius: 5px;
+      background-color: white;
+    }
+
+    .salesInstallationToolBar {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      height: 70px;
+    }
+  }
+}
+
+//*******************************//
+//End of Dashboard Content styles//
+//*******************************//

@@ -3,24 +3,24 @@ import '../../client/styles/style.scss';
 import { AppBar, FlatButton  } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import LoginDialog from './LoginDialog.jsx';
-import SignupDialog from './SignupDialog.jsx';
+import LoginDialog from './modals/LoginDialog.jsx';
+import SignupDialog from './modals/SignupDialog.jsx';
 import LeftMenu from './LeftMenu.jsx';
-import Dashboard from './Dashboard.jsx';
-import NewSale from './NewSale.jsx';
-import AllSales from './AllSales.jsx';
-import ScheduleInstallation from './ScheduleInstallation.jsx';
-import AllInstallations from './AllInstallations.jsx';
-import NewEmployee from './NewEmployee.jsx';
-import AllEmployees from './AllEmployees.jsx';
-import AllCustomers from './AllCustomers.jsx';
-import PresentationMaterial from './PresentationMaterial.jsx';
+import Dashboard from './dashboard/Dashboard.jsx';
+import NewSale from './sales/NewSale.jsx';
+import AllSales from './sales/AllSales.jsx';
+import ScheduleInstallation from './installations/ScheduleInstallation.jsx';
+import AllInstallations from './installations/AllInstallations.jsx';
+import NewEmployee from './management/NewEmployee.jsx';
+import AllEmployees from './management/AllEmployees.jsx';
+import AllCustomers from './management/AllCustomers.jsx';
+import Documents from './management/Documents.jsx';
 
 const defaultProps = {
   dashboard: <Dashboard />,
   newSale: <NewSale />,
   allSales: <AllSales />,
-  presentationMaterial: <PresentationMaterial />,
+  documents: <Documents />,
   scheduleInstallation: <ScheduleInstallation />,
   allInstallations: <AllInstallations />,
   newEmployee: <NewEmployee />,

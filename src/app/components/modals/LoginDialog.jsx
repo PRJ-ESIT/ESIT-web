@@ -1,8 +1,8 @@
 import React from 'react';
-import IP from '../../../config/config.js';
+import IP from '../../../../config/config.js';
 import { Dialog, FlatButton, RaisedButton, TextField, IconButton } from 'material-ui';
-import '../../client/styles/style.scss';
-import { validateLogin, validatePassword } from './common.js';
+import '../../../client/styles/style.scss';
+import { validateLogin, validatePassword } from '../helpers/common.js';
 
 const customContentStyle = {
   width: '20%',

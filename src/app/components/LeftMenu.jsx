@@ -22,9 +22,6 @@ export default class LeftMenu extends React.Component {
       loginTxtField: '',
       passwordTxtField: '',
       emailTxtField: '',
-      salesOpen: '',
-      installationOpen: '',
-      managementOpen: '',
       currentOpen: ''
     }
 
@@ -60,6 +57,8 @@ export default class LeftMenu extends React.Component {
         <ListItem
           open={this.state.currentOpen == "salesOpen" ? true : false}
           primaryText="Sales"
+          primaryTogglesNestedList={true}
+          onNestedListToggle={this.toggleCategory.bind(this, "salesOpen")}
           leftIcon={<AttachMoney color="white"/>}
           initiallyOpen={false}
           rightIconButton={
@@ -86,19 +85,14 @@ export default class LeftMenu extends React.Component {
               primaryText="View All Sales"
               leftIcon={<ShowChart color="white"/>}
               style={fontStyle}
-            />,
-            <ListItem
-              onClick={this.props.clickHandler.bind(null, "presentationMaterial")}
-              key={3}
-              primaryText="Presentation Material"
-              leftIcon={<PictureInPicture color="white" />}
-              style={fontStyle}
             />
           ]}
         />
         <ListItem
           open={this.state.currentOpen == "installationOpen" ? true : false}
           primaryText="Installations"
+          primaryTogglesNestedList={true}
+          onNestedListToggle={this.toggleCategory.bind(this, "installationOpen")}
           leftIcon={<Build color="white" />}
           initiallyOpen={false}
           rightIconButton={
@@ -131,6 +125,8 @@ export default class LeftMenu extends React.Component {
         <ListItem 
           open={this.state.currentOpen == "managementOpen" ? true : false}
           primaryText="Management"
+          primaryTogglesNestedList={true}
+          onNestedListToggle={this.toggleCategory.bind(this, "managementOpen")}
           leftIcon={<AccountCircle color="white" />}
           initiallyOpen={false}
           rightIconButton={
@@ -163,6 +159,13 @@ export default class LeftMenu extends React.Component {
               onClick={this.props.clickHandler.bind(null, "allCustomers")}
               primaryText="View All Customers"
               leftIcon={<ContactPhone color="white" />}
+              style={fontStyle}
+            />,
+            <ListItem
+              onClick={this.props.clickHandler.bind(null, "documents")}
+              key={4}
+              primaryText="Documents"
+              leftIcon={<PictureInPicture color="white" />}
               style={fontStyle}
             />
           ]}
