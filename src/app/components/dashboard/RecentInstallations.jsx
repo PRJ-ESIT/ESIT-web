@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TextField}
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui';
 
 const temporaryTableData = [

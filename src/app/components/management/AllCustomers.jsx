@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Toolbar, ToolbarTitle} from 'material-ui';
 export default class AllCustomers extends React.Component {
 
   constructor(props) {
@@ -8,7 +8,12 @@ export default class AllCustomers extends React.Component {
 
   render() {
     return (
-      <div>This is All Customers page</div>
+
+      <div className="allCustomers">
+        <Toolbar className="allCustomersToolbar">
+          <ToolbarTitle text="View All Customers" />
+        </Toolbar>
+      </div>
     );
   }
 }

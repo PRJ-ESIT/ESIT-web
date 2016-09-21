@@ -126,3 +126,24 @@ body {
 //*******************************//
 //End of Dashboard Content styles//
 //*******************************//
+
+//*************************//
+//All Customers page styles//
+//*************************//
+
+.allCustomers {
+  //half of the content window minus margin
+  width:calc(100% - 40px);
+  //100% of the parent's height minus margin
+  height: calc(100% - 40px);
+  margin: 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  .allCustomersToolbar {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    height: 70px;
+  }
+}
+
