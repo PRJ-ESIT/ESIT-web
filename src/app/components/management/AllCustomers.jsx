@@ -163,7 +163,10 @@ export default class AllCustomers extends React.Component {
               }}
             />
             <TextField
-              style={{height: '100%'}}
+              style={{
+                height: '100%',
+                width: '180px'
+              }}
               hintText="search"
             />
             <ToolbarSeparator />
