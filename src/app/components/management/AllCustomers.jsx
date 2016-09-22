@@ -4,7 +4,7 @@ import {
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
   TextField, MenuItem, DropDownMenu, RaisedButton
 } from 'material-ui';
-
+import Search from 'material-ui/svg-icons/action/search';
 
 const temporaryTableData = [
   {
@@ -156,6 +156,12 @@ export default class AllCustomers extends React.Component {
         <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Customers" />
+            <Search
+              style={{
+                height: '100%',
+                paddingTop: '5px'
+              }}
+            />
             <TextField
               style={{height: '100%'}}
               hintText="search"

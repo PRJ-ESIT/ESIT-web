@@ -4,6 +4,7 @@ import {
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
   TextField, MenuItem, DropDownMenu, RaisedButton
 } from 'material-ui';
+import Search from 'material-ui/svg-icons/action/search';
 
 
 const temporaryTableData = [
@@ -167,6 +168,12 @@ export default class AllEmployees extends React.Component {
         <Toolbar className="allEmployeesToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Employees" />
+            <Search
+              style={{
+                height: '100%',
+                paddingTop: '5px'
+              }}
+            />
             <TextField
               style={{height: '100%'}}
               hintText="search"
