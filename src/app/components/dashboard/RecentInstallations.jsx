@@ -132,7 +132,7 @@ export default class RecentInstallations extends React.Component {
           >
             {temporaryTableData.map( (row, index) => (
               <TableRow key={index}>
-                <TableRowColumn>{row.saleNum}</TableRowColumn>
+                <TableRowColumn>{row.installNum}</TableRowColumn>
                 <TableRowColumn>{row.name}</TableRowColumn>
                 <TableRowColumn>{row.product}</TableRowColumn>
                 <TableRowColumn>{row.date}</TableRowColumn>
