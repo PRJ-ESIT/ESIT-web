@@ -55,7 +55,6 @@ export default class ScheduleInstallation extends React.Component {
       pool: '',
     };
       this.handleChange = this.handleChange.bind(this);
-      // this.handleTextChange = this.handleTextChange.bind(this);
   }
 
 
@@ -67,25 +66,9 @@ export default class ScheduleInstallation extends React.Component {
 
   handleTextChange(fieldname, event) {
     event.stopPropagation();
-    console.log(fieldname);
-    this.setState({
-      fname: event.target.value,
-      lname: event.target.value,
-      address: event.target.value,
-      unit: event.target.value,
-      city: event.target.value,
-      prov: event.target.value,
-      postalCode: event.target.value,
-      enbridge: event.target.value,
-      email: event.target.value,
-      homePhone: event.target.value,
-      cellPhone: event.target.value,
-      sqft: event.target.value,
-      bathrooms: event.target.value,
-      residents: event.target.value,
-      pool: event.target.value,
-
-    });
+    var obj = {};
+    obj[fieldname] = event.target.value;
+    this.setState(obj);
   };
 
   render() {
