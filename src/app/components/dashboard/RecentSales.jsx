@@ -90,19 +90,23 @@ export default class RecentSales extends React.Component {
     this.state = {
       fixedHeader: true,
       fixedFooter: true,
-      stripedRows: false,
+      stripedRows: true,
       showRowHover: false,
       selectable: true,
       multiSelectable: false,
       enableSelectAll: false,
       deselectOnClickaway: true,
-      showCheckboxes: true,
+      showCheckboxes: false,
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
     };
   }
 
   render() {
+    var tableRowColumnStyles = {
+      paddingRight: '2px',
+      paddingLeft: '5px'
+    };
     return (
         <Table
           wrapperStyle={{height: this.state.height}}
@@ -117,11 +121,11 @@ export default class RecentSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn tooltip="Sale #">Sale #</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Product's Name">Product</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Date">Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Address">Address</TableHeaderColumn>
+              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Sale #">Sale #</TableHeaderColumn>
+              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Product's Name">Product</TableHeaderColumn>
+              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Date">Date</TableHeaderColumn>
+              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Address">Address</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -132,11 +136,11 @@ export default class RecentSales extends React.Component {
           >
             {temporaryTableData.map( (row, index) => (
               <TableRow key={index}>
-                <TableRowColumn>{row.saleNum}</TableRowColumn>
-                <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.product}</TableRowColumn>
-                <TableRowColumn>{row.date}</TableRowColumn>
-                <TableRowColumn>{row.address}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.saleNum}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.name}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.product}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.date}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.address}</TableRowColumn>
               </TableRow>
               ))}
           </TableBody>
