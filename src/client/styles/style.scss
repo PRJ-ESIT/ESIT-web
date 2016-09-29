@@ -106,10 +106,10 @@ body {
 
     .salesAndInstallation {
       flex-basis: 50%;
-      //half of the content window minus margin
-      width:calc(50% - 40px);
-      //100% of the parent's height minus margin
-      height: calc(100% - 40px);
+      //half of the content window minus margin minus border
+      width:calc(50% - 40px - 2px);
+      //100% of the parent's height minus margin minus border
+      height: calc(100% - 40px - 2px);
       margin: 20px;
       border: 1px solid black;
       border-radius: 5px;
