@@ -1,7 +1,70 @@
+//helper used by other functions below
 function matchRegexp(value, regexp) {
   return regexp.test(value);
 }
 
+function isExisty(value) {
+  return value !== null && value !== undefined;
+}
+
+function isEmpty(value) {
+  return value === '';
+}
+
+function isEmptyString(value) {
+  return value === '';
+}
+
+function isUrl(url) {
+  if(matchRegexp(url, /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isNumeric(value) {
+  if (typeof value === 'number') {
+    return true;
+  }
+  return matchRegexp(value, /^[-+]?(?:\d*[.])?\d+$/);
+}
+
+function isAlpha(value) {
+  return matchRegexp(value, /^[A-Z]+$/i);
+}
+
+function isAlphanumeric(value) {
+  return matchRegexp(value, /^[0-9A-Z]+$/i);
+}
+
+function isInt(value) {
+  return matchRegexp(value, /^(?:[-+]?(?:0|[1-9]\d*))$/);
+}
+
+function isFloat(value) {
+  return matchRegexp(values, value, /^(?:[-+]?(?:\d+))?(?:\.\d*)?(?:[eE][\+\-]?(?:\d+))?$/);
+}
+
+function isWords(value) {
+  return matchRegexp(value, /^[A-Z\s]+$/i);
+}
+
+function isSpecialWords(value) {
+  return matchRegexp(values, value, /^[A-Z\s\u00C0-\u017F]+$/i);
+}
+
+function maxLength(value, length) {
+  return !isExisty(value) || value.length <= length;
+}
+
+function minLength(value, length) {
+  return !isExisty(value) || isEmpty(value) || value.length >= length;
+}
+
+
+
+//TODO REMOVE 3 following functions
 function validateLogin(login) {
   if(login !== null && login !== undefined && login !== ''
                     && matchRegexp(login, /^[0-9A-Z]+$/i)
@@ -33,6 +96,22 @@ function validateEmail(email) {
 
 
 module.exports = {
+
+  isExisty,
+  isEmpty,
+  isEmptyString,
+  isUrl,
+  isNumeric,
+  isAlpha,
+  isAlphanumeric,
+  isInt,
+  isFloat,
+  isWords,
+  isSpecialWords,
+  maxLength,
+  minLength,
+
+  //TODO remove next 3 functions
   validateLogin,
   validatePassword,
   validateEmail
