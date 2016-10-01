@@ -107,7 +107,6 @@ export default class AllCustomers extends React.Component {
       dropdownValue: 1,
       //table state variables
       fixedHeader: true,
-      fixedFooter: false,
       stripedRows: false,
       showRowHover: false,
       selectable: true,
@@ -194,7 +193,6 @@ export default class AllCustomers extends React.Component {
           onRowSelection={this.handleSelection}
           wrapperStyle={{height: this.state.height}}
           fixedHeader={this.state.fixedHeader}
-          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >

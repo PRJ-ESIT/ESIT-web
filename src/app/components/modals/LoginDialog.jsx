@@ -2,7 +2,7 @@ import React from 'react';
 import IP from '../../../../config/config.js';
 import { Dialog, FlatButton, RaisedButton, TextField, IconButton } from 'material-ui';
 import '../../../client/styles/style.scss';
-import { validateLogin, validatePassword } from '../helpers/common.js';
+import { validateLogin, validations } from '../helpers/common.js';
 
 const customContentStyle = {
   width: '20%',
@@ -33,7 +33,7 @@ export default class LoginDialog extends React.Component {
   login() {
     if(!validateLogin(this.state.loginTxtField)) {
       console.log('login validated, its incorrect');
-      if(!validatePassword(this.state.passwordTxtField)) {
+      if(!validations.isPassword(this.state.passwordTxtField)) {
         this.setState({
           loginErrorText: 'Only haracters and numbers are allowed. Must be > 6 characters long',
           passwordErrorText: 'Must include at least 1 character, 1 number, one of the special characters !@#$%^&* and have at least 8 characters',
@@ -44,7 +44,7 @@ export default class LoginDialog extends React.Component {
           passwordErrorText: '',
         });
       }
-    } else if(!validatePassword(this.state.passwordTxtField)) {
+    } else if(!validations.isPassword(this.state.passwordTxtField)) {
       console.log('password validated, its incorrect');
       this.setState({
         loginErrorText: '',
