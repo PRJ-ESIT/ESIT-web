@@ -204,3 +204,21 @@ body {
 //********************************//
 //End of New Employee page styles//
 //*******************************//
+
+//**********************************//
+//Schedule Installations page styles//
+//**********************************//
+.radioActionText {
+  display: flex;
+  flex-direction: row;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: row;
+  padding-left: 40px;
+}
+
+.radioGroup div.radio {
+  width: 10% !important;
+}
