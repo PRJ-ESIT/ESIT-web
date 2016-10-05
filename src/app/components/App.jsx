@@ -1,28 +1,157 @@
 import React from 'react';
 import '../../client/styles/style.scss';
-import { AppBar } from 'material-ui';
+import { AppBar, FlatButton  } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import LoginDialog from './modals/LoginDialog.jsx';
+import SignupDialog from './modals/SignupDialog.jsx';
+import LeftMenu from './LeftMenu.jsx';
+import Dashboard from './dashboard/Dashboard.jsx';
+import NewSale from './sales/NewSale.jsx';
+import AllSales from './sales/AllSales.jsx';
+import ScheduleInstallation from './installations/ScheduleInstallation.jsx';
+import AllInstallations from './installations/AllInstallations.jsx';
+import NewEmployee from './management/NewEmployee.jsx';
+import AllEmployees from './management/AllEmployees.jsx';
+import AllCustomers from './management/AllCustomers.jsx';
+import Documents from './management/Documents.jsx';
+
+const defaultProps = {
+  dashboard: <Dashboard />,
+  newSale: <NewSale />,
+  allSales: <AllSales />,
+  documents: <Documents />,
+  scheduleInstallation: <ScheduleInstallation />,
+  allInstallations: <AllInstallations />,
+  newEmployee: <NewEmployee />,
+  allEmployees: <AllEmployees />,
+  allCustomers: <AllCustomers />
+};
+
 
 export default class App extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      loginDialog: false,
+      signupDialog: false,
+      leftMenuOpen: true,
+      currentContent: <Dashboard />,
+    }
+
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
+    this.closeHandler = this.closeHandler.bind(this);
+    this.menuClickHandler = this.menuClickHandler.bind(this);
+    this.appBarClickHandler = this.appBarClickHandler.bind(this);
   }
-  
+
   getChildContext() {
     return { muiTheme: getMuiTheme(baseTheme) };
   }
 
+  closeHandler() {
+    this.setState({
+      loginDialog: false,
+      signupDialog: false,
+    });
+  }
+
+  handleLogin() {
+    console.log('handle login');
+    this.setState({
+      loginDialog: true,
+      signupDialog: false,
+    });
+  };
+
+  handleSignup() {
+    console.log('handle signup');
+    this.setState({
+      loginDialog: false,
+      signupDialog: true,
+    });
+  };
+
+  getRightButtons() {
+    var rightButtonsStyle = {
+      'height': '40px',
+      'marginRight': '5px',
+      'marginLeft': '5px',
+      'marginTop': '4px',
+      'marginBottom': '4px',
+    };
+    return (
+      <div className="navBarButtonsContainer">
+        <FlatButton
+          labelStyle={{'color': 'white'}}
+          backgroundColor="#1a75ff"
+          hoverColor="#005ce6"
+          style={rightButtonsStyle}
+          onTouchTap={this.handleLogin}
+          label="Login"
+        />
+        <FlatButton
+          labelStyle={{'color': 'white'}}
+          backgroundColor="#1a75ff"
+          hoverColor="#005ce6"
+          style={rightButtonsStyle}
+          onTouchTap={this.handleSignup}
+          label="Sign up"
+        />
+      </div>
+    );
+  }
+
+  menuClickHandler(contentName) {
+    this.setState({
+      currentContent: this.props[contentName]
+    });
+  }
+
+  appBarClickHandler() {
+    if(this.state.leftMenuOpen) {
+      this.setState({leftMenuOpen: false});
+    } else {
+      this.setState({leftMenuOpen: true});
+    }
+  }
+
   render() {
+    var leftMenuStyles = this.state.leftMenuOpen ? {'' : ''} : { 'display': 'none' };
+    var appBarStyles = {'backgroundColor': '#2F3C7D'};
     return (
       <div style={{width: '100%', height: '100%'}}>
         <AppBar
-          title='Title'
-          iconClassNameRight='muidocs-icon-navigation-expand-more'
+          title='esit'
+          titleStyle={{'fontFamily': 'Damion', 'fontSize': '60px'}}
+          iconElementRight={this.getRightButtons()}
+          onLeftIconButtonTouchTap={this.appBarClickHandler}
+          style={appBarStyles}
         />
-        <h2>Hello World!</h2>
-        <div className='testClass'> </div>
+        <div className="contentContainer">
+          <div className="leftPanel" style={leftMenuStyles}>
+            <LeftMenu clickHandler={this.menuClickHandler}/>
+          </div>
+          <div className="mainContent">
+            {this.state.currentContent}
+          </div>
+        </div>
+        { this.state.loginDialog ?
+          <LoginDialog
+            registerClickHandler={this.handleSignup}
+            closeHandler={this.closeHandler}
+            open={this.state.loginDialog}
+          />
+        : null }
+        { this.state.signupDialog ?
+          <SignupDialog
+            loginClickHandler={this.handleLogin}
+            closeHandler={this.closeHandler}
+            open={this.state.signupDialog}
+          />
+        : null }
       </div>
     );
   }
@@ -32,3 +161,4 @@ App.childContextTypes = {
   muiTheme: React.PropTypes.object.isRequired,
 };
 
+App.defaultProps = defaultProps;

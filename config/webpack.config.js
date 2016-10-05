@@ -3,11 +3,12 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: [
-    '../src/app/components/AppContainer.jsx'
+    'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
+    './src/app/components/AppContainer.jsx'
   ],
   output: {
     path: path.resolve(__dirname, '../dist'),
-    filename: 'bundle.js',
+    filename: 'bundle.js'
   },
   module: {
     loaders: [
@@ -27,6 +28,11 @@ module.exports = {
         loaders: ['style', 'css', 'sass']
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin()
+  ]
 };
 

@@ -1,13 +1,224 @@
+@import 'variables.scss';
+/*
+
+AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
+
+  @media #{$phone-portrait} {
+    background-color: red;
+  }
+  @media #{$desktop-landscape} {
+    background-color: black;
+  }
+  @media #{$tablet-landscape} {
+    background-color: black;
+  }
+
+*/
 
 body {
   background-color: #2DA9AE;
 }
 
-.testClass {
-  background-color: black;
-  color: black;
-  width: 100px;
-  height: 100px;
-  display: block;
+
+.contentContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  height: calc(100% - 80px);
+  width: calc(100% - 16px);
 }
 
+.leftPanel {
+  flex: 1;
+  flex-basis: 20%;
+  min-width: 279px;
+  background-color: #28305a;
+  overflow: auto;
+}
+
+.mainContent {
+  flex: 2;
+  flex-basis: 80%;
+  background-color: #b3b3ff;
+  overflow: auto;
+}
+
+.appBarButtonsContainer {
+  height: 48px;
+}
+
+.loginSignupTextFields {
+  width: 100% !important;
+}
+
+.dialogTitle {
+  text-align:center;
+}
+
+//styling for close X button in the Log In / Sign Up dialogs
+.closeXButton {
+  position: absolute !important;
+  left: calc(100% - 55px) !important;
+  bottom: calc(100% - 55px) !important;
+  div {
+    font-size: 24px;
+    font-weight: bold;
+  }
+}
+
+//************************//
+//Dashboard Content styles//
+//************************//
+.dashboard {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .dashboardWelcome {
+    flex: 1;
+    width: 100%;
+    flex-basis: 150px;
+    height: 150px;
+    font-size: 50px;
+    text-align: center;
+    span {
+      font-family: Damion;
+      font-size: 70px;
+    }
+  }
+
+  .dashboardTables {
+    flex: 2;
+    width: 100%;
+    flex-basis: calc(100% - 150px);
+    height: calc(100% - 150px);
+    display: flex;
+    flex-direction: row;
+
+    .recentSales {
+      flex: 1;
+    }
+
+    .recentInstallations {
+      flex: 2;
+    }
+
+    .salesAndInstallation {
+      flex-basis: 50%;
+      //half of the content window minus margin minus border
+      width:calc(50% - 40px - 2px);
+      //100% of the parent's height minus margin minus border
+      height: calc(100% - 40px - 2px);
+      margin: 20px;
+      border: 1px solid black;
+      border-radius: 5px;
+      background-color: white;
+    }
+
+    .salesInstallationToolBar {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      height: 70px;
+    }
+  }
+}
+
+//*******************************//
+//End of Dashboard Content styles//
+//*******************************//
+
+
+//*************************//
+//All Customers page styles//
+//*************************//
+
+.allCustomers {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  .allCustomersToolbar {
+    height: 70px;
+  }
+}
+
+.searchField {
+  height: 100%;
+}
+
+.allEmployees {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  .allEmployeesToolbar {
+    height: 70px;
+  }
+}
+
+//********************************//
+//End of All Customers page styles//
+//********************************//
+
+//*************************//
+//New Employee page styles//
+//*************************//
+
+
+.newEmployee {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.newEmployeeToolBar {
+  order: 1;
+}
+
+.newEmployeeFormContainer {
+  order: 2;
+  flex-basis: calc(100% - 56px);
+  height: calc(100% - 56px);
+
+  padding-left: 5%;
+  padding-right: 5%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.newEmployeeForm {
+  height: 100%;
+  background-color: white;
+  padding-left: 120px;
+  padding-right: 120px;
+}
+
+.newEmployeeFormBox {
+  padding-top: 110px;
+}
+
+
+//********************************//
+//End of New Employee page styles//
+//*******************************//
+
+//**********************************//
+//Schedule Installations page styles//
+//**********************************//
+.radioActionText {
+  display: flex;
+  flex-direction: row;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: row;
+  padding-left: 40px;
+}
+
+.radioGroup div.radio {
+  width: 10% !important;
+}
