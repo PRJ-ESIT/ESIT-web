@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Tabs, Tab, TextField, SelectField, MenuItem, RadioButton, RadioButtonGroup,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  Checkbox, Divider
+  Checkbox, Divider, DatePicker, RaisedButton
 } from 'material-ui';
 
 
@@ -411,6 +411,14 @@ export default class ScheduleInstallation extends React.Component {
                   />
                 </RadioButtonGroup>
               </div>
+              <TextField
+                hintText="Additional installation notes"
+                floatingLabelText="Notes"
+                multiLine={true}
+                rows={1}
+                rowsMax={10}
+              />
+
             <h2>Customer Acknowledgement</h2><Divider />
               <div>I hereby confirm the following statements:
                 <Checkbox
@@ -425,6 +433,28 @@ export default class ScheduleInstallation extends React.Component {
                 <Checkbox
                   label="My savings are not guaranteed."
                 />
+              </div>
+              <TextField
+                floatingLabelText="Homeowner's Signature"
+                hintText="Tap to add signature"
+              />
+              <div>
+                <Divider />
+                <TextField
+                  floatingLabelText="Contractor ID"
+                />
+                <TextField
+                  floatingLabelText="Technician's Signature"
+                />
+                <DatePicker hintText="Date" container="inline" />
+                <TextField
+                  floatingLabelText="Greenlife Water Rep. Name"
+                />
+              </div>
+              <div>
+                <RaisedButton label="Cancel" />
+                <RaisedButton label="Save" />
+                <RaisedButton label="Submit" />
               </div>
           </div>
         : null }
