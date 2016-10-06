@@ -2,7 +2,8 @@ import React from 'react';
 import {Tabs, Tab, TextField, Divider, RadioButton,
   RadioButtonGroup, RaisedButton, Card, CardActions,
   CardHeader, CardMedia, CardTitle, CardText, FlatButton,
-  DatePicker, TimePicker, Toggle, Checkbox} from 'material-ui';
+  DatePicker, TimePicker, Toggle, Checkbox, SelectField,
+  MenuItem} from 'material-ui';
 
 const styles = {
 headline: {
@@ -12,6 +13,23 @@ headline: {
   fontWeight: 400,
 },
 };
+
+// Provinces for SelectField
+const provinces = [
+  <MenuItem key={1} value={1} primaryText="Alberta" />,
+  <MenuItem key={2} value={2} primaryText="British Columbia" />,
+  <MenuItem key={3} value={3} primaryText="Manitoba" />,
+  <MenuItem key={4} value={4} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={5} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={6} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={7} primaryText="Ontario" />,
+  <MenuItem key={8} value={8} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={9} primaryText="Quebec" />,
+  <MenuItem key={10} value={10} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={11} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={12} primaryText="Yukon" />,
+  <MenuItem key={13} value={13} primaryText="Nunavut" />,
+];
 
 export default class NewSale extends React.Component {
 
@@ -25,7 +43,7 @@ export default class NewSale extends React.Component {
       address: '',
       unit: '',
       city: '',
-      prov: '',
+      province: '',
       postalCode: '',
       enbridgeNum: '',
       email: '',
@@ -41,6 +59,7 @@ export default class NewSale extends React.Component {
       salesRepSignature:'',
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   handleChange(value){
@@ -54,6 +73,10 @@ export default class NewSale extends React.Component {
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
+  };
+
+  handleSelectChange(event, index, value) {
+    this.setState({selectValue: value});
   };
 
   render() {
@@ -122,13 +145,15 @@ export default class NewSale extends React.Component {
             &nbsp;
             &nbsp;
             &nbsp;
-            <TextField
-              hintText="Ontario"
-              errorText="This field is required"
+            <SelectField
+              value={this.state.selectValue}
+              onChange={this.handleSelectChange}
               floatingLabelText="Province"
-              value={this.state.provinces}
-              onChange={this.handleTextChange.bind(this, "provinces")}
-            />
+              floatingLabelFixed={true}
+              hintText="Select a Province"
+            >
+              {provinces}
+            </SelectField>
             <br />
             <TextField
               hintText="M4B 5V9"
