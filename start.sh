@@ -1,6 +1,1 @@
-
-cd ./config
-webpack
-cd ../
-node app.js
-
+./node_modules/.bin/nodemon app.js
