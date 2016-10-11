@@ -5,6 +5,8 @@ import {Tabs, Tab, TextField, Divider, RadioButton,
   DatePicker, TimePicker, Toggle, Checkbox, SelectField,
   MenuItem} from 'material-ui';
 
+import { validations } from '../helpers/common.js';
+
 const styles = {
 headline: {
   fontSize: 24,
@@ -41,11 +43,11 @@ export default class NewSale extends React.Component {
       fname: '',
       lname: '',
       address: '',
-      unit: '',
+      unitNum: '',
       city: '',
       province: '',
       postalCode: '',
-      enbridgeNum: '',
+      enbridge: '',
       email: '',
       homePhone: '',
       cellPhone: '',
@@ -57,6 +59,22 @@ export default class NewSale extends React.Component {
       homeownerSignature:'',
       programType:'',
       salesRepSignature:'',
+
+      // Error for fields
+      fnameErr: '',
+      lnameErr: '',
+      addressErr: '',
+      unitNumErr: '',
+      cityErr: '',
+      provinceErr: '',
+      postalCodeErr: '',
+      enbridgeErr: '',
+      emailErr: '',
+      homePhoneErr: '',
+      cellPhoneErr: '',
+      salesRepIdErr: '',
+      applicationNumberErr: '',
+      validated: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -75,6 +93,218 @@ export default class NewSale extends React.Component {
     this.setState(obj);
   };
 
+  // Validation
+
+  validateFName() {
+    let fname = this.state.fname.trim();
+    if(validations.isAlphaSpacesHyphens(fname) &&
+      validations.minLength(fname, 2) &&
+      validations.maxLength(fname, 25)) {
+
+      this.setState({
+        fnameErr: '',
+        fname: fname,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        fnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
+      });
+    }
+  }
+
+  validateLName() {
+    let lname = this.state.lname.trim();
+    if(validations.isAlphaSpacesHyphens(lname) &&
+      validations.minLength(lname, 2) &&
+      validations.maxLength(lname, 25)) {
+
+      this.setState({
+        lnameErr: '',
+        lname: lname,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        lnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
+      });
+    }
+  }
+
+  validateAddress() {
+    let address = this.state.address.trim();
+    if(validations.isAlphanumericSpacesHyphens(address) && validations.maxLength(address, 50)) {
+      this.setState({
+        addressErr: '',
+        address: address,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        addressErr: 'Can contain characters, numbers, spaces and hyphens only',
+        validated: false,
+      });
+    }
+  }
+
+  validateUnit() {
+    let unitNum = this.state.unitNum.trim();
+    if(validations.isAlphanumeric(unitNum) && validations.maxLength(unitNum, 10)) {
+      this.setState({
+        unitNumErr: '',
+        unitNum: unitNum,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        unitNumErr: 'Has to be 1 word containing numbers/characters only',
+        validated: false,
+      });
+    }
+  }
+
+  validateCity() {
+    let city = this.state.city.trim();
+    if(validations.isAlphaSpacesHyphens(city) && validations.maxLength(city, 60)) {
+      this.setState({
+        cityErr: '',
+        city: city,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        cityErr: 'Up to 60 characters, spaces and hyphens only',
+        validated: false,
+      });
+    }
+  }
+
+  validateProvince() {
+    let province = this.state.province.trim();
+    if(validations.isWords(province) && validations.maxLength(province, 30)) {
+      this.setState({
+        provinceErr: '',
+        province: province,
+        validated: true,
+      });
+      return true;
+    } else {
+      this.setState({
+        provinceErr: 'Not a valid province name',
+        validated: false,
+      });
+      return false;
+    }
+  }
+
+  validatePostalCode() {
+    let postalCode = this.state.postalCode.trim();
+    if(validations.isPostalCode(postalCode)) {
+      this.setState({
+        postalCodeErr: '',
+        postalCode: postalCode.toUpperCase(),
+        validated: true,
+      });
+    } else {
+      this.setState({
+        postalCodeErr: 'Not a valid postal code',
+        validated: false,
+      });
+    }
+  }
+
+  validateEnbridge() {
+    let enbridge = this.state.enbridge.trim();
+    if(validations.isNumeric(enbridge)) {
+      this.setState({
+        enbridgeErr: '',
+        enbridge: enbridge,
+      });
+    } else {
+      this.setState({
+        enbridgeErr: 'Must only consist of numbers'
+      });
+    }
+  }
+
+  validateSalesRepId() {
+    let salesRepId = this.state.salesRepId.trim();
+    if(validations.isNumeric(salesRepId)) {
+      this.setState({
+        salesRepIdErr: '',
+        salesRepId: salesRepId,
+      });
+    } else {
+      this.setState({
+        salesRepIdErr: 'Must only consist of numbers'
+      });
+    }
+  }
+
+  validateApplicationNumber() {
+    let applicationNumber = this.state.applicationNumber.trim();
+    if(validations.isNumeric(applicationNumber)) {
+      this.setState({
+        applicationNumberErr: '',
+        applicationNumber: applicationNumber,
+      });
+    } else {
+      this.setState({
+        applicationNumberErr: 'Must only consist of numbers'
+      });
+    }
+  }
+
+  validateEmail() {
+    let email = this.state.email.trim();
+    if(validations.isEmail(email) && validations.maxLength(email, 50)) {
+      this.setState({
+        emailErr: '',
+        email: email,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        emailErr: 'Not a valid email',
+        validated: false,
+      });
+    }
+  }
+
+  validateHomePhone() {
+    let homePhone = this.state.homePhone.trim();
+    if(validations.isPhoneNumber(homePhone) && validations.maxLength(homePhone, 12)) {
+      this.setState({
+        homePhoneErr: '',
+        homePhone: homePhone,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        homePhoneErr: 'Not a valid phone number',
+        validated: false,
+      });
+    }
+  }
+
+  validateCellPhone() {
+    let cellPhone = this.state.cellPhone.trim();
+    if(validations.isPhoneNumber(cellPhone) && validations.maxLength(cellPhone, 12)) {
+      this.setState({
+        cellPhoneErr: '',
+        cellPhone: cellPhone,
+        validated: true,
+      });
+    } else {
+      this.setState({
+        cellPhoneErr: 'Not a valid phone number',
+        validated: false,
+      });
+    }
+  }
+
   handleSelectChange(event, index, value) {
     this.setState({selectValue: value});
   };
@@ -87,417 +317,472 @@ export default class NewSale extends React.Component {
         onChange={this.handleChange}
         >
         <Tab label="Rental Agreement Form" value="a" >
-          <div>
-            <TextField
-              hintText="123-4567"
-              errorText="This field is required"
-              floatingLabelText="Sale Number"
-              value={this.state.saleNumber}
-              onChange={this.handleTextChange.bind(this, "saleNumber")}
-            />
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <TextField
-              hintText="John"
-              errorText="This field is required"
-              floatingLabelText="First Name"
-              value={this.state.fname}
-              onChange={this.handleTextChange.bind(this, "fname")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="Doe"
-              errorText="This field is required"
-              floatingLabelText="Last Name"
-              value={this.state.lname}
-              onChange={this.handleTextChange.bind(this, "lname")}
-            />
-            <br />
-            <TextField
-              hintText="123 Fake Street"
-              errorText="This field is required"
-              floatingLabelText="Address"
-              value={this.state.address}
-              onChange={this.handleTextChange.bind(this, "address")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="77"
-              errorText="This field is required"
-              floatingLabelText="Unit #"
-              value={this.state.unit}
-              onChange={this.handleTextChange.bind(this, "unit")}
-            />
-            <br />
-            <TextField
-              hintText="Toronto"
-              errorText="This field is required"
-              floatingLabelText="City"
-              value={this.state.city}
-              onChange={this.handleTextChange.bind(this, "city")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <SelectField
-              value={this.state.selectValue}
-              onChange={this.handleSelectChange}
-              floatingLabelText="Province"
-              floatingLabelFixed={true}
-              hintText="Select a Province"
-            >
-              {provinces}
-            </SelectField>
-            <br />
-            <TextField
-              hintText="M4B 5V9"
-              errorText="This field is required"
-              floatingLabelText="Postal Code"
-              value={this.state.postalCode}
-              onChange={this.handleTextChange.bind(this, "postalCode")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="1234567890"
-              errorText="This field is required"
-              floatingLabelText="Enbridge Gas Number"
-              value={this.state.enbridgeNum}
-              onChange={this.handleTextChange.bind(this, "enbridgeNum")}
-            />
-            <br />
-            <TextField
-              hintText="(416) 123-4567"
-              errorText="This field is required"
-              floatingLabelText="Home Phone"
-              value={this.state.homePhone}
-              onChange={this.handleTextChange.bind(this, "homePhone")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="(416) 123-4567"
-              errorText="This field is required"
-              floatingLabelText="Cell Phone"
-              value={this.state.cellPhone}
-              onChange={this.handleTextChange.bind(this, "cellPhone")}
-            />
-            <br />
-            <TextField
-              hintText="name@domain.com"
-              errorText="This field is required"
-              floatingLabelText="Email"
-              value={this.state.email}
-              onChange={this.handleTextChange.bind(this, "email")}
-            />
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <RadioButtonGroup name="programType"
-              valueSelected={this.state.programType}
-              onChange={this.handleTextChange.bind(this, "programType")}>
-              <RadioButton
-                value="1"
-                label="Whole Home Filter"
-                style={styles.radioButton}
+        <div className="newEmployeeFormContainer">
+          <div className="newEmployeeForm">
+            <div className="newEmployeeFormBox">
+              <TextField
+                // hintText="123-4567"
+                //errorText="This field is required"
+                floatingLabelText="Sale Number"
+                defaultValue="123-4567"
+                //value={this.state.saleNumber}
+                disabled={true}
+                //onChange={this.handleTextChange.bind(this, "saleNumber")}
               />
-              <RadioButton
-                value="2"
-                label="Whole Home Descaler"
-                style={styles.radioButton}
+              <br />
+              <br />
+              <h2>Homeowner Information</h2>
+              <Divider />
+              <br />
+              <TextField
+                hintText="John"
+                errorText="This field is required"
+                floatingLabelText="First Name"
+                value={this.state.fname}
+                onChange={this.handleTextChange.bind(this, "fname")}
+                onBlur={this.validateFName.bind(this)}
+                errorText={this.state.fnameErr}
               />
-              <RadioButton
-                value="3"
-                label="Whole Home Combo"
-                style={styles.radioButton}
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="Doe"
+                errorText="This field is required"
+                floatingLabelText="Last Name"
+                value={this.state.lname}
+                onChange={this.handleTextChange.bind(this, "lname")}
+                onBlur={this.validateLName.bind(this)}
+                errorText={this.state.lnameErr}
               />
-            </RadioButtonGroup>
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <DatePicker
-              hintText="2010-08-20" container="inline"
-              errorText="This field is required"
-              floatingLabelText="Installation Date"
-              // value={this.state.installationDate}
-              // onChange={this.handleTextChange.bind(this, "installationDate")}
-            />
-            <TimePicker
-              hintText="Installation Time"
-              errorText="This field is required"
-              floatingLabelText="Installation Time"
-              // value={this.state.installationTime}
-            />
-            <br />
-            <TextField
-              hintText="Notes"
-              multiLine={true}
-              rows={5}
-              // errorText="This field is required"
-              floatingLabelText="Notes"
-              value={this.state.notes}
-              onChange={this.handleTextChange.bind(this, "notes")}
-            />
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <br />
-            <Checkbox
-              label="Homeowner Signature"
-              style={styles.checkbox}
-              labelPosition="left"
-              checked={true}
-              disabled={true}
-              value={this.state.homeownerSignature}
-              onCheck = {this.handleTextChange.bind(this, "homeownerSignature")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <DatePicker
-              hintText="2010-08-20"
-              container="inline"
-              errorText="This field is required"
-              floatingLabelText="Signature Date"
-              // value={this.state.installationDate}
-              // onChange={this.handleTextChange.bind(this, "installationDate")}
-            />
-            <br />
-            <Checkbox
-              label="Sales Rep Signature"
-              style={styles.checkbox}
-              labelPosition="left"
-              checked={true}
-              disabled={true}
-              value={this.state.salesRepSignature}
-              onCheck = {this.handleTextChange.bind(this, "salesRepSignature")}
-            />
-            <TextField
-              hintText="123-4567"
-              errorText="This field is required"
-              floatingLabelText="Sales Rep ID"
-              value={this.state.salesRepId}
-              onChange={this.handleTextChange.bind(this, "salesRepId")}
-            />
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <RaisedButton label="Cancel" secondary={true} />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <RaisedButton label="Save" />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <RaisedButton label="Submit" primary={true} />
-            <br />
+              <br />
+              <TextField
+                hintText="123 Fake Street"
+                errorText="This field is required"
+                floatingLabelText="Address"
+                value={this.state.address}
+                onChange={this.handleTextChange.bind(this, "address")}
+                onBlur={this.validateAddress.bind(this)}
+                errorText={this.state.addressErr}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="77"
+                errorText="This field is required"
+                floatingLabelText="Unit #"
+                value={this.state.unitNum}
+                onChange={this.handleTextChange.bind(this, "unitNum")}
+                onBlur={this.validateUnit.bind(this)}
+                errorText={this.state.unitNumErr}
+              />
+              <br />
+              <TextField
+                hintText="Toronto"
+                errorText="This field is required"
+                floatingLabelText="City"
+                value={this.state.city}
+                onChange={this.handleTextChange.bind(this, "city")}
+                onBlur={this.validateCity.bind(this)}
+                errorText={this.state.cityErr}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <SelectField
+                value={this.state.selectValue}
+                onChange={this.handleSelectChange}
+                floatingLabelText="Province"
+                floatingLabelFixed={true}
+                hintText="Select a Province"
+                errorText={this.state.provinceErr}
+              >
+                {provinces}
+              </SelectField>
+              <br />
+              <TextField
+                hintText="M4B 5V9"
+                errorText="This field is required"
+                floatingLabelText="Postal Code"
+                value={this.state.postalCode}
+                onChange={this.handleTextChange.bind(this, "postalCode")}
+                onBlur={this.validatePostalCode.bind(this)}
+                errorText={this.state.postalCodeErr}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="1234567890"
+                errorText="This field is required"
+                floatingLabelText="Enbridge Gas Number"
+                value={this.state.enbridge}
+                onChange={this.handleTextChange.bind(this, "enbridge")}
+                onBlur={this.validateEnbridge.bind(this)}
+                errorText={this.state.enbridgeErr}
+              />
+              <br />
+              <TextField
+                hintText="(416) 123-4567"
+                errorText="This field is required"
+                floatingLabelText="Home Phone"
+                value={this.state.homePhone}
+                onChange={this.handleTextChange.bind(this, "homePhone")}
+                onBlur={this.validateHomePhone.bind(this)}
+                errorText={this.state.homePhoneErr}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="(416) 123-4567"
+                errorText="This field is required"
+                floatingLabelText="Cell Phone"
+                value={this.state.cellPhone}
+                onChange={this.handleTextChange.bind(this, "cellPhone")}
+                onBlur={this.validateCellPhone.bind(this)}
+                errorText={this.state.cellPhoneErr}
+              />
+              <br />
+              <TextField
+                hintText="name@domain.com"
+                errorText="This field is required"
+                floatingLabelText="Email"
+                value={this.state.email}
+                onChange={this.handleTextChange.bind(this, "email")}
+                onBlur={this.validateEmail.bind(this)}
+                errorText={this.state.emailErr}
+              />
+              <br />
+              <br />
+              <h2>Program Type</h2>
+              <Divider />
+              <br />
+              <RadioButtonGroup name="programType"
+                valueSelected={this.state.programType}
+                onChange={this.handleTextChange.bind(this, "programType")}>
+                <RadioButton
+                  value="1"
+                  label="Whole Home Filter"
+                  style={styles.radioButton}
+                />
+                <RadioButton
+                  value="2"
+                  label="Whole Home Descaler"
+                  style={styles.radioButton}
+                />
+                <RadioButton
+                  value="3"
+                  label="Whole Home Combo"
+                  style={styles.radioButton}
+                />
+              </RadioButtonGroup>
+              <br />
+              <br />
+              <h2>Installation & Delivery</h2>
+              <Divider />
+              <br />
+              <DatePicker
+                hintText="2010-08-20" container="inline"
+                //errorText="This field is required"
+                floatingLabelText="Installation Date"
+                // value={this.state.installationDate}
+                // onChange={this.handleTextChange.bind(this, "installationDate")}
+              />
+              <TimePicker
+                hintText="Installation Time"
+                //errorText="This field is required"
+                floatingLabelText="Installation Time"
+                // value={this.state.installationTime}
+              />
+              <br />
+              <TextField
+                hintText="Notes"
+                multiLine={true}
+                rows={5}
+                // errorText="This field is required"
+                floatingLabelText="Notes"
+                value={this.state.notes}
+                onChange={this.handleTextChange.bind(this, "notes")}
+              />
+              <br />
+              <br />
+              <h2>Authorization</h2>
+              <Divider />
+              <br />
+              <br />
+              <Checkbox
+                label="Homeowner Signature"
+                style={styles.checkbox}
+                labelPosition="left"
+                checked={true}
+                disabled={true}
+                value={this.state.homeownerSignature}
+                onCheck = {this.handleTextChange.bind(this, "homeownerSignature")}
+              />
+              <TextField
+                floatingLabelText="Date Signed"
+                defaultValue="10/13/2016"
+                disabled={true}
+              />
+              <br />
+              <br />
+              <Checkbox
+                label="Sales Rep Signature"
+                style={styles.checkbox}
+                labelPosition="left"
+                checked={true}
+                disabled={true}
+                value={this.state.salesRepSignature}
+                onCheck = {this.handleTextChange.bind(this, "salesRepSignature")}
+              />
+              <TextField
+                hintText="1234567"
+                //errorText="This field is required"
+                floatingLabelText="Sales Rep ID"
+                value={this.state.salesRepId}
+                onChange={this.handleTextChange.bind(this, "salesRepId")}
+                onBlur={this.validateSalesRepId.bind(this)}
+                errorText={this.state.salesRepIdErr}
+              />
+              <br />
+              <br />
+              <Divider />
+              <br />
+              <RaisedButton label="Cancel" secondary={true} />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <RaisedButton label="Save" />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <RaisedButton label="Submit" primary={true} />
+              <br />
+            </div>
           </div>
+        </div>
         </Tab>
         <Tab label="Pre-Authorized Debit Form" value="b">
-          <div>
-            <br />
-            <TextField
-              hintText="123-4567"
-              errorText="This field is required"
-              floatingLabelText="Sale Number"
-              value={this.state.saleNumber}
-              onChange={this.handleTextChange.bind(this, "saleNumber")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="123-4567"
-              errorText="This field is required"
-              floatingLabelText="Application Number"
-              value={this.state.applicationNumber}
-              onChange={this.handleTextChange.bind(this, "applicationNumber")}
-            />
-            <br />
-            <DatePicker
-              hintText="2010-08-20" container="inline"
-              errorText="This field is required"
-              floatingLabelText="Date"
-              // value={this.state.installationDate}
-              // onChange={this.handleTextChange.bind(this, "installationDate")}
-            />
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <TextField
-              hintText="John"
-              errorText="This field is required"
-              floatingLabelText="First Name"
-              value={this.state.fname}
-              onChange={this.handleTextChange.bind(this, "fname")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="Doe"
-              errorText="This field is required"
-              floatingLabelText="Last Name"
-              value={this.state.lname}
-              onChange={this.handleTextChange.bind(this, "lname")}
-            />
-            <br />
-            <TextField
-              hintText="123 Fake Street"
-              errorText="This field is required"
-              floatingLabelText="Address"
-              value={this.state.address}
-              onChange={this.handleTextChange.bind(this, "address")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="77"
-              errorText="This field is required"
-              floatingLabelText="Unit #"
-              value={this.state.unit}
-              onChange={this.handleTextChange.bind(this, "unit")}
-            />
-            <br />
-            <TextField
-              hintText="Toronto"
-              errorText="This field is required"
-              floatingLabelText="City"
-              value={this.state.city}
-              onChange={this.handleTextChange.bind(this, "city")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="Ontario"
-              errorText="This field is required"
-              floatingLabelText="Province"
-              value={this.state.provinces}
-              onChange={this.handleTextChange.bind(this, "provinces")}
-            />
-            <br />
-            <TextField
-              hintText="M4B 5V9"
-              errorText="This field is required"
-              floatingLabelText="Postal Code"
-              value={this.state.postalCode}
-              onChange={this.handleTextChange.bind(this, "postalCode")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="1234567890"
-              errorText="This field is required"
-              floatingLabelText="Enbridge Gas Number"
-              value={this.state.enbridgeNum}
-              onChange={this.handleTextChange.bind(this, "enbridgeNum")}
-            />
-            <br />
-            <TextField
-              hintText="(416) 123-4567"
-              errorText="This field is required"
-              floatingLabelText="Home Phone"
-              value={this.state.homePhone}
-              onChange={this.handleTextChange.bind(this, "homePhone")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <TextField
-              hintText="(416) 123-4567"
-              errorText="This field is required"
-              floatingLabelText="Cell Phone"
-              value={this.state.cellPhone}
-              onChange={this.handleTextChange.bind(this, "cellPhone")}
-            />
-            <br />
-            <TextField
-              hintText="name@domain.com"
-              errorText="This field is required"
-              floatingLabelText="Email"
-              value={this.state.email}
-              onChange={this.handleTextChange.bind(this, "email")}
-            />
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <Card>
-              <CardHeader
-                title="URL Avatar"
-                subtitle="Subtitle"
-                avatar="http://www.mymusclesinmotion.com/wp-content/uploads/headshot-placeholder.gif"
-              />
-              <CardMedia
-                overlay={<CardTitle title="Overlay title" subtitle="Overlay subtitle" />}
-              >
-                <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
-              </CardMedia>
-              <CardTitle title="Card title" subtitle="Card subtitle" />
-              <CardText>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-                Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-                Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-              </CardText>
-              <CardActions>
-                <FlatButton label="Download" />
-                //<FlatButton label="Action2" />
-              </CardActions>
-            </Card>
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <Checkbox
-              label="Homeowner Signature"
-              style={styles.checkbox}
-              labelPosition="left"
-              checked={true}
-              disabled={true}
-              value={this.state.homeownerSignature}
-              onCheck = {this.handleTextChange.bind(this, "homeownerSignature")}
-            />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <DatePicker
-              hintText="2010-08-20" container="inline"
-              errorText="This field is required"
-              floatingLabelText="Installation Date"
-              // value={this.state.installationDate}
-              // onChange={this.handleTextChange.bind(this, "installationDate")}
-            />
-            <br />
-            <br />
-            <Divider />
-            <br />
-            <RaisedButton label="Cancel" secondary={true} />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <RaisedButton label="Save" />
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <RaisedButton label="Submit" primary={true} />
+          <div className="newEmployeeFormContainer">
+            <div className="newEmployeeForm">
+              <div className="newEmployeeFormBox">
+                <br />
+                <TextField
+                  disabled={true}
+                  defaultValue="123-4567"
+                  //errorText="This field is required"
+                  floatingLabelText="Sale Number"
+                  //value={this.state.saleNumber}
+                  //onChange={this.handleTextChange.bind(this, "saleNumber")}
+                />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <TextField
+                  hintText="1234567"
+                  errorText="This field is required"
+                  floatingLabelText="Application Number"
+                  value={this.state.applicationNumber}
+                  onChange={this.handleTextChange.bind(this, "applicationNumber")}
+                  onBlur={this.validateApplicationNumber.bind(this)}
+                  errorText={this.state.applicationNumberErr}
+                />
+                <br />
+                <DatePicker
+                  hintText="2010-08-20" container="inline"
+                  //errorText="This field is required"
+                  floatingLabelText="Date"
+                  // value={this.state.installationDate}
+                  // onChange={this.handleTextChange.bind(this, "installationDate")}
+                />
+                <br />
+                <br />
+                <h2>Homeowner Information</h2>
+                <Divider />
+                <br />
+                <TextField
+                  hintText="John"
+                  errorText="This field is required"
+                  floatingLabelText="First Name"
+                  value={this.state.fname}
+                  onChange={this.handleTextChange.bind(this, "fname")}
+                  onBlur={this.validateFName.bind(this)}
+                  errorText={this.state.fnameErr}
+                />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <TextField
+                  hintText="Doe"
+                  errorText="This field is required"
+                  floatingLabelText="Last Name"
+                  value={this.state.lname}
+                  onChange={this.handleTextChange.bind(this, "lname")}
+                  onBlur={this.validateLName.bind(this)}
+                  errorText={this.state.lnameErr}
+                />
+                <br />
+                <TextField
+                  hintText="123 Fake Street"
+                  errorText="This field is required"
+                  floatingLabelText="Address"
+                  value={this.state.address}
+                  onChange={this.handleTextChange.bind(this, "address")}
+                  onBlur={this.validateAddress.bind(this)}
+                  errorText={this.state.addressErr}
+                />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <TextField
+                  hintText="77"
+                  errorText="This field is required"
+                  floatingLabelText="Unit #"
+                  value={this.state.unit}
+                  onChange={this.handleTextChange.bind(this, "unit")}
+                  onBlur={this.validateUnit.bind(this)}
+                  errorText={this.state.unitNumErr}
+                />
+                <br />
+                <TextField
+                  hintText="Toronto"
+                  errorText="This field is required"
+                  floatingLabelText="City"
+                  value={this.state.city}
+                  onChange={this.handleTextChange.bind(this, "city")}
+                  onBlur={this.validateCity.bind(this)}
+                  errorText={this.state.cityErr}
+                />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <SelectField
+                  value={this.state.selectValue}
+                  onChange={this.handleSelectChange}
+                  floatingLabelText="Province"
+                  floatingLabelFixed={true}
+                  hintText="Select a Province"
+                  errorText={this.state.provinceErr}
+                >
+                  {provinces}
+                </SelectField>
+                <br />
+                <TextField
+                  hintText="M4B 5V9"
+                  errorText="This field is required"
+                  floatingLabelText="Postal Code"
+                  value={this.state.postalCode}
+                  onChange={this.handleTextChange.bind(this, "postalCode")}
+                  onBlur={this.validatePostalCode.bind(this)}
+                  errorText={this.state.postalCodeErr}
+                />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <TextField
+                  hintText="1234567890"
+                  errorText="This field is required"
+                  floatingLabelText="Enbridge Gas Number"
+                  value={this.state.enbridge}
+                  onChange={this.handleTextChange.bind(this, "enbridge")}
+                  onBlur={this.validateEnbridge.bind(this)}
+                  errorText={this.state.enbridgeErr}
+                />
+                <br />
+                <TextField
+                  hintText="(416) 123-4567"
+                  errorText="This field is required"
+                  floatingLabelText="Home Phone"
+                  value={this.state.homePhone}
+                  onChange={this.handleTextChange.bind(this, "homePhone")}
+                  onBlur={this.validateHomePhone.bind(this)}
+                  errorText={this.state.homePhoneErr}
+                />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <TextField
+                  hintText="(416) 123-4567"
+                  errorText="This field is required"
+                  floatingLabelText="Cell Phone"
+                  value={this.state.cellPhone}
+                  onChange={this.handleTextChange.bind(this, "cellPhone")}
+                  onBlur={this.validateCellPhone.bind(this)}
+                  errorText={this.state.cellPhoneErr}
+                />
+                <br />
+                <TextField
+                  hintText="name@domain.com"
+                  errorText="This field is required"
+                  floatingLabelText="Email"
+                  value={this.state.email}
+                  onChange={this.handleTextChange.bind(this, "email")}
+                  onBlur={this.validateEmail.bind(this)}
+                  errorText={this.state.emailErr}
+                />
+                <br />
+                <br />
+                <h2>Void Cheque</h2>
+                <Divider />
+                <br />
+                <Card>
+                  <CardHeader
+                    title="URL Avatar"
+                    subtitle="Subtitle"
+                    avatar="http://www.mymusclesinmotion.com/wp-content/uploads/headshot-placeholder.gif"
+                  />
+                  <CardMedia>
+                    <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
+                  </CardMedia>
+                  <CardTitle title="Void Cheque" subtitle="Customer Number: 123-4567" />
+                  <CardText>
+                    Void cheque provided by customer.
+                  </CardText>
+                  <CardActions>
+                    <FlatButton label="Download" />
+                  </CardActions>
+                </Card>
+                <br />
+                <br />
+                <h2>Authorization</h2>
+                <Divider />
+                <br />
+                <Checkbox
+                  label="Homeowner Signature"
+                  style={styles.checkbox}
+                  labelPosition="left"
+                  checked={true}
+                  disabled={true}
+                  value={this.state.homeownerSignature}
+                  onCheck = {this.handleTextChange.bind(this, "homeownerSignature")}
+                />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <DatePicker
+                  hintText="2010-08-20" container="inline"
+                  //errorText="This field is required"
+                  floatingLabelText="Installation Date"
+                  // value={this.state.installationDate}
+                  // onChange={this.handleTextChange.bind(this, "installationDate")}
+                />
+                <br />
+                <br />
+                <Divider />
+                <br />
+                <RaisedButton label="Cancel" secondary={true} />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <RaisedButton label="Save" />
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <RaisedButton label="Submit" primary={true} />
+                </div>
+              </div>
           </div>
         </Tab>
       </Tabs>
