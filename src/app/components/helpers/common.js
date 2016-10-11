@@ -69,7 +69,7 @@ var validations = {
   },
 
   minLength(value, length) {
-    return !isExisty(value) || isEmpty(value) || value.length >= length;
+    return !isExisty(value) || value.length >= length;
   },
 
   //alphanumeric + spaces + hyphens (address field, for example)
