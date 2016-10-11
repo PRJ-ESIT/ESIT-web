@@ -1,29 +1,38 @@
 import React from 'react';
-import { Toolbar, ToolbarTitle, TextField, DropDownMenu, MenuItem, RaisedButton } from 'material-ui';
+import { Toolbar, ToolbarTitle, TextField, DropDownMenu, MenuItem, RaisedButton, SelectField } from 'material-ui';
 import { validations } from '../helpers/common.js';
 
 const styles = {
   customWidth: {
     width: 280,
   },
-  dropdownUnderline: {
-    marginLeft: '0px'
-  },
-  dropdownLabel: {
-    paddingLeft: '0px',
-    paddingRight: '0px'
-  },
   menuStyle: {
     width: '200px'
   }
 };
+
+const provinces = [
+  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
+];
 
 export default class NewEmployee extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      employeeType: 1,
+      employeeType: '',
       //state variables below keep the values of each input field
       fname: '',
       lname: '',
@@ -39,6 +48,7 @@ export default class NewEmployee extends React.Component {
       repeatPassword: '',
 
       //error messages for each input field
+      employeeTypeErr: '',
       fnameErr: '',
       lnameErr: '',
       addressErr: '',
@@ -51,16 +61,21 @@ export default class NewEmployee extends React.Component {
       cellPhoneErr: '',
       passwordErr: '',
       repeatPasswordErr: '',
-
-      //enable submit button when all validations are passed
-      createDisabled: true
+      validated: false,
     };
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
+    this.validateAndSubmit = this.validateAndSubmit.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   handleDropDownChange(event, index, value){
     console.log(value);
     this.setState({employeeType: value});
+  }
+
+  handleSelectChange(event, index, value) {
+    console.log(value);
+    this.setState({province: value});
   }
 
   handleTextChange(fieldname, event) {
@@ -78,10 +93,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         fnameErr: '',
         fname: fname,
+        validated: true,
       });
     } else {
       this.setState({
-        fnameErr: '2 to 25 characters, spaces and hyphens only'
+        fnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -95,10 +112,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         lnameErr: '',
         lname: lname,
+        validated: true,
       });
     } else {
       this.setState({
-        lnameErr: '2 to 25 characters, spaces and hyphens only'
+        lnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -109,10 +128,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         addressErr: '',
         address: address,
+        validated: true,
       });
     } else {
       this.setState({
-        addressErr: 'Can contain characters, numbers, spaces and hyphens only'
+        addressErr: 'Can contain characters, numbers, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -123,10 +144,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
+        validated: true,
       });
     } else {
       this.setState({
-        unitNumErr: 'Has to be 1 word containing numbers/characters only'
+        unitNumErr: 'Has to be 1 word containing numbers/characters only',
+        validated: false,
       });
     }
   }
@@ -137,10 +160,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         cityErr: '',
         city: city,
+        validated: true,
       });
     } else {
       this.setState({
-        cityErr: 'Up to 60 characters, spaces and hyphens only'
+        cityErr: 'Up to 60 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -151,11 +176,33 @@ export default class NewEmployee extends React.Component {
       this.setState({
         provinceErr: '',
         province: province,
+        validated: true,
       });
+      return true;
     } else {
       this.setState({
-        provinceErr: 'Not a valid province name'
+        provinceErr: 'Not a valid province name',
+        validated: false,
       });
+      return false;
+    }
+  }
+
+  validateEmployeeType() {
+    let empType = this.state.employeeType.trim();
+    if(validations.isWords(empType) && validations.maxLength(empType, 30)) {
+      this.setState({
+        employeeTypeErr: '',
+        employeeType: empType,
+        validated: true,
+      });
+      return true;
+    } else {
+      this.setState({
+        employeeTypeErr: 'Not a valid province name',
+        validated: false,
+      });
+      return false;
     }
   }
 
@@ -165,10 +212,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         postalCodeErr: '',
         postalCode: postalCode.toUpperCase(),
+        validated: true,
       });
     } else {
       this.setState({
         postalCodeErr: 'Not a valid postal code',
+        validated: false,
       });
     }
   }
@@ -179,10 +228,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         emailErr: '',
         email: email,
+        validated: true,
       });
     } else {
       this.setState({
-        emailErr: 'Not a valid email'
+        emailErr: 'Not a valid email',
+        validated: false,
       });
     }
   }
@@ -193,10 +244,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
+        validated: true,
       });
     } else {
       this.setState({
-        homePhoneErr: 'Not a valid phone number'
+        homePhoneErr: 'Not a valid phone number',
+        validated: false,
       });
     }
   }
@@ -207,10 +260,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
+        validated: true,
       });
     } else {
       this.setState({
-        cellPhoneErr: 'Not a valid phone number'
+        cellPhoneErr: 'Not a valid phone number',
+        validated: false,
       });
     }
   }
@@ -221,20 +276,25 @@ export default class NewEmployee extends React.Component {
 
       let repeatPswd = this.state.repeatPassword;
       let repeatPasswordErr = '';
+      let validated = true;
+
       if(!(validations.isExisty(repeatPswd) &&
         !validations.isEmpty(repeatPswd) &&
         repeatPswd == this.state.password)) {
 
         repeatPasswordErr = 'Doesn\'t match the password entered';
+        validated = false;
       }
 
       this.setState({
         passwordErr: '',
         repeatPasswordErr: repeatPasswordErr,
+        validated: validated,
       });
     } else {
       this.setState({
-        passwordErr: 'At least 1 character, 1 number, one of the special characters !@#$%^&* and have at least 8 characters'
+        passwordErr: 'At least 1 character, 1 number, one of the special characters !@#$%^&* and have at least 8 characters',
+        validated: false,
       });
     }
   }
@@ -246,12 +306,35 @@ export default class NewEmployee extends React.Component {
       repeatPswd == this.state.password) {
 
       this.setState({
-        repeatPasswordErr: ''
+        repeatPasswordErr: '',
+        validated: true,
       });
     } else {
       this.setState({
-        repeatPasswordErr: 'Doesn\'t match the password entered'
+        repeatPasswordErr: 'Doesn\'t match the password entered',
+        validated: false,
       });
+    }
+  }
+
+  validateAndSubmit() {
+    if(!validations.isEmpty(this.state.fname) &&
+      !validations.isEmpty(this.state.lname) &&
+      !validations.isEmpty(this.state.address) &&
+      !validations.isEmpty(this.state.unitNum) &&
+      !validations.isEmpty(this.state.city) &&
+      !validations.isEmpty(this.state.province) &&
+      !validations.isEmpty(this.state.postalCode) &&
+      !validations.isEmpty(this.state.email) &&
+      !validations.isEmpty(this.state.homePhone) &&
+      !validations.isEmpty(this.state.cellPhone) &&
+      !validations.isEmpty(this.state.password) &&
+      !validations.isEmpty(this.state.repeatPassword) &&
+      this.state.validated) {
+
+      console.log('everything is fine, we will be sending an http post request here');
+    } else {
+      console.log('it didn\'t work');
     }
   }
 
@@ -264,27 +347,27 @@ export default class NewEmployee extends React.Component {
         <div className="newEmployeeFormContainer">
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
+              <SelectField
+                errorText={this.state.provinceErr}
+                errorStyle={{float: "left"}}
+                value={this.state.employeeType}
+                onChange={this.handleDropDownChange}
+                floatingLabelText="Employee"
+                floatingLabelFixed={false}
+                hintText="Select Employee Type"
+                maxHeight={150}
+              >
+                <MenuItem value={"Sales Agent" } primaryText="Sales Agent" />
+                <MenuItem value={"Installation Agent"} primaryText="Installation Agent" />
+                <MenuItem value={"Administrator"} primaryText="Administrator" />
+              </SelectField>
+              &nbsp;
+              &nbsp;
               <TextField
                 disabled={true}
                 defaultValue="555-555-555"
                 floatingLabelText="Employee ID"
-              />
-              &nbsp;
-              &nbsp;
-              <DropDownMenu
-                value={this.state.employeeType}
-                onChange={this.handleDropDownChange}
-                autoWidth={false}
-                style={styles.customWidth}
-                labelStyle={styles.dropdownLabel}
-                underlineStyle={styles.dropdownUnderline}
-                menuStyle={styles.menuStyle}
-              >
-                <MenuItem value={1} primaryText="<Employee Type>" />
-                <MenuItem value={2} primaryText="Sales Agent" />
-                <MenuItem value={3} primaryText="Installation Agent" />
-                <MenuItem value={4} primaryText="Administrator" />
-              </DropDownMenu><br />
+              /><br />
               <TextField
                 hintText="John"
                 floatingLabelText="First Name"
@@ -338,15 +421,6 @@ export default class NewEmployee extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="Province"
-                floatingLabelText="Province"
-                maxLength="30"
-                onChange={this.handleTextChange.bind(this, 'province')}
-                onBlur={this.validateProvince.bind(this)}
-                errorText={this.state.provinceErr}
-                errorStyle={{float: "left"}}
-              /><br />
-              <TextField
                 hintText="Postal Code"
                 floatingLabelText="Postal Code"
                 maxLength="7"
@@ -355,6 +429,18 @@ export default class NewEmployee extends React.Component {
                 errorText={this.state.postalCodeErr}
                 errorStyle={{float: "left"}}
               /><br />
+              <SelectField
+                errorText={this.state.provinceErr}
+                errorStyle={{float: "left"}}
+                value={this.state.province}
+                onChange={this.handleSelectChange}
+                floatingLabelText="Province"
+                floatingLabelFixed={false}
+                hintText="Select a Province"
+                maxHeight={150}
+              >
+                {provinces}
+              </SelectField><br />
               <TextField
                 hintText="john@example.com"
                 floatingLabelText="Email"
@@ -412,8 +498,17 @@ export default class NewEmployee extends React.Component {
               <br />
               <br />
               <br />
-              <RaisedButton style={{float: 'left'}} label="Cancel" secondary={true} />
-              <RaisedButton style={{float: 'right'}} label="Create" primary={true} disabled={this.state.createDisabled} />
+              <RaisedButton
+                style={{float: 'left'}}
+                label="Cancel"
+                secondary={true}
+              />
+              <RaisedButton
+                onClick={this.validateAndSubmit}
+                style={{float: 'right'}}
+                label="Create"
+                primary={true}
+              />
             </div>
           </div>
         </div>
