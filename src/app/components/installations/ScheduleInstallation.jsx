@@ -369,7 +369,7 @@ export default class ScheduleInstallation extends React.Component {
         <div className="newEmployeeFormContainer">
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
-              <h2>Homeowner Information</h2><Divider />
+              <Divider /><h2>Homeowner Information</h2><Divider />
               <TextField
                 floatingLabelText="First Name"
                 hintText="John"
@@ -377,6 +377,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "fname")}
                 onBlur={this.validateFName.bind(this)}
                 errorText={this.state.fnameErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -387,6 +388,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "lname")}
                 onBlur={this.validateLName.bind(this)}
                 errorText={this.state.lnameErr}
+                errorStyle={{float: "left"}}
               /><br />
               <TextField
                 floatingLabelText="Address"
@@ -395,6 +397,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "address")}
                 onBlur={this.validateAddress.bind(this)}
                 errorText={this.state.addressErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -406,6 +409,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "unitNum")}
                 onBlur={this.validateUnit.bind(this)}
                 errorText={this.state.unitNumErr}
+                errorStyle={{float: "left"}}
               /><br />
               <TextField
                 floatingLabelText="City"
@@ -414,6 +418,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "city")}
                 onBlur={this.validateCity.bind(this)}
                 errorText={this.state.cityErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -433,6 +438,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "postalCode")}
                 onBlur={this.validatePostalCode.bind(this)}
                 errorText={this.state.postalCodeErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -443,6 +449,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "enbridge")}
                 onBlur={this.validateEnbridge.bind(this)}
                 errorText={this.state.enbridgeErr}
+                errorStyle={{float: "left"}}
               /><br />
               <TextField
                 floatingLabelText="Email"
@@ -452,6 +459,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "email")}
                 onBlur={this.validateEmail.bind(this)}
                 errorText={this.state.emailErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -463,6 +471,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "homePhone")}
                 onBlur={this.validateHomePhone.bind(this)}
                 errorText={this.state.homePhoneErr}
+                errorStyle={{float: "left"}}
               /><br />
               <TextField
                 floatingLabelText="Cell Phone"
@@ -472,6 +481,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
                 onBlur={this.validateCellPhone.bind(this)}
                 errorText={this.state.cellPhoneErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -483,6 +493,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "sqft")}
                 onBlur={this.validateSqft.bind(this)}
                 errorText={this.state.sqftErr}
+                errorStyle={{float: "left"}}
               /><br />
               <TextField
                 floatingLabelText="Bathrooms"
@@ -492,6 +503,7 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "bathrooms")}
                 onBlur={this.validateBathrooms.bind(this)}
                 errorText={this.state.bathroomsErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -503,8 +515,10 @@ export default class ScheduleInstallation extends React.Component {
                 onChange={this.handleTextChange.bind(this, "residents")}
                 onBlur={this.validateResidents.bind(this)}
                 errorText={this.state.residentsErr}
+                errorStyle={{float: "left"}}
               /><br />
-              <div className="radioActionText">Pool
+              <div className="radioActionText">
+                <p className="radioRow">Pool</p>
                 <RadioButtonGroup name="hasPool" className="radioGroup"
                 onChange={this.handleRadioChange}>
                   <RadioButton
@@ -520,7 +534,7 @@ export default class ScheduleInstallation extends React.Component {
                 </RadioButtonGroup>
               </div><br />
 
-              <h2>Program Installation</h2><Divider />
+              <Divider /><h2>Program Installation</h2><Divider />
               <Table
                 onRowSelection={this.handleSelection}
                 onCellClick={this.handleCellClick}
@@ -563,8 +577,9 @@ export default class ScheduleInstallation extends React.Component {
                 </TableBody>
               </Table>
 
-              <h2>Installation Checklist</h2><Divider />
-              <div className="radioActionText">Bypass Installed
+              <Divider /><h2>Installation Checklist</h2><Divider />
+              <div className="radioActionText">
+                <p className="radioRow">Bypass Installed</p>
                 <RadioButtonGroup name="installationCheck" className="radioGroup"
                 onChange={this.handleRadioChange}>
                   <RadioButton
@@ -579,7 +594,8 @@ export default class ScheduleInstallation extends React.Component {
                   />
                 </RadioButtonGroup>
               </div>
-              <div className="radioActionText">Leak Check Equipment
+              <div className="radioActionText">
+                <p className="radioRow">Leak Check Equipment</p>
                 <RadioButtonGroup name="installationCheck" className="radioGroup"
                 onChange={this.handleRadioChange}>
                   <RadioButton
@@ -594,7 +610,8 @@ export default class ScheduleInstallation extends React.Component {
                   />
                 </RadioButtonGroup>
               </div>
-              <div className="radioActionText">System Flushed
+              <div className="radioActionText">
+                <p className="radioRow">System Flushed</p>
                 <RadioButtonGroup name="installationCheck" className="radioGroup"
                 onChange={this.handleRadioChange}>
                   <RadioButton
@@ -609,7 +626,8 @@ export default class ScheduleInstallation extends React.Component {
                   />
                 </RadioButtonGroup>
               </div>
-              <div className="radioActionText">Conservation System Explanation
+              <div className="radioActionText">
+                <p className="radioRow">Conservation System Explanation</p>
                 <RadioButtonGroup name="installationCheck" className="radioGroup"
                 onChange={this.handleRadioChange}>
                   <RadioButton
@@ -624,7 +642,8 @@ export default class ScheduleInstallation extends React.Component {
                   />
                 </RadioButtonGroup>
               </div>
-              <div className="radioActionText">Shut-off Valve Explanation
+              <div className="radioActionText">
+                <p className="radioRow">Shut-off Valve Explanation</p>
                 <RadioButtonGroup name="installationCheck" className="radioGroup"
                 onChange={this.handleRadioChange}>
                   <RadioButton
@@ -639,7 +658,8 @@ export default class ScheduleInstallation extends React.Component {
                   />
                 </RadioButtonGroup>
               </div>
-              <div className="radioActionText">Filter Replacement Explanation
+              <div className="radioActionText">
+                <p className="radioRow">Filter Replacement Explanation</p>
                 <RadioButtonGroup name="installationCheck" className="radioGroup"
                 onChange={this.handleRadioChange}>
                   <RadioButton
@@ -662,8 +682,9 @@ export default class ScheduleInstallation extends React.Component {
                 rowsMax={10}
               />
 
-              <h2>Customer Acknowledgement</h2><Divider />
-              <div>I hereby confirm the following statements:
+              <Divider /><h2>Customer Acknowledgement</h2><Divider />
+              <div>
+                <p>I hereby confirm the following statements:</p>
                 <Checkbox
                   label="Installation was completed to my satisfaction."
                 />
