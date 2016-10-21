@@ -15,10 +15,17 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 
 */
 
+//***********************//
+//     Global styles     //
+//***********************//
+
 body {
   background-color: #2DA9AE;
 }
 
+p, h2 {
+  font-family: sans-serif;
+}
 
 .contentContainer {
   position: absolute;
@@ -197,7 +204,7 @@ body {
 }
 
 .newEmployeeFormBox {
-  padding-top: 110px;
+  padding-top: 70px;
 }
 
 
@@ -211,6 +218,7 @@ body {
 .radioActionText {
   display: flex;
   flex-direction: row;
+  margin-top: 20px;
 }
 
 .radioGroup {
@@ -221,4 +229,11 @@ body {
 
 .radioGroup div.radio {
   width: 10% !important;
+  padding-right: 20px;
+}
+
+.radioRow {
+  width: 300px;
+  margin: 0px;
+  font-family: sans-serif;
 }
