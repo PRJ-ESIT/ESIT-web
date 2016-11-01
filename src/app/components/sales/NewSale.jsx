@@ -728,11 +728,6 @@ export default class NewSale extends React.Component {
                 <Divider />
                 <br />
                 <Card>
-                  <CardHeader
-                    title="URL Avatar"
-                    subtitle="Subtitle"
-                    avatar="http://www.mymusclesinmotion.com/wp-content/uploads/headshot-placeholder.gif"
-                  />
                   <CardMedia>
                     <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
                   </CardMedia>
