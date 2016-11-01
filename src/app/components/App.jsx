@@ -4,7 +4,6 @@ import { AppBar, FlatButton  } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LoginDialog from './modals/LoginDialog.jsx';
-import SignupDialog from './modals/SignupDialog.jsx';
 import LeftMenu from './LeftMenu.jsx';
 import Dashboard from './dashboard/Dashboard.jsx';
 import NewSale from './sales/NewSale.jsx';
@@ -35,13 +34,11 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       loginDialog: false,
-      signupDialog: false,
       leftMenuOpen: true,
       currentContent: <Dashboard />,
     }
 
     this.handleLogin = this.handleLogin.bind(this);
-    this.handleSignup = this.handleSignup.bind(this);
     this.closeHandler = this.closeHandler.bind(this);
     this.menuClickHandler = this.menuClickHandler.bind(this);
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
@@ -54,7 +51,6 @@ export default class App extends React.Component {
   closeHandler() {
     this.setState({
       loginDialog: false,
-      signupDialog: false,
     });
   }
 
@@ -62,15 +58,6 @@ export default class App extends React.Component {
     console.log('handle login');
     this.setState({
       loginDialog: true,
-      signupDialog: false,
-    });
-  };
-
-  handleSignup() {
-    console.log('handle signup');
-    this.setState({
-      loginDialog: false,
-      signupDialog: true,
     });
   };
 
@@ -91,14 +78,6 @@ export default class App extends React.Component {
           style={rightButtonsStyle}
           onTouchTap={this.handleLogin}
           label="Login"
-        />
-        <FlatButton
-          labelStyle={{'color': 'white'}}
-          backgroundColor="#1a75ff"
-          hoverColor="#005ce6"
-          style={rightButtonsStyle}
-          onTouchTap={this.handleSignup}
-          label="Sign up"
         />
       </div>
     );
@@ -140,16 +119,8 @@ export default class App extends React.Component {
         </div>
         { this.state.loginDialog ?
           <LoginDialog
-            registerClickHandler={this.handleSignup}
             closeHandler={this.closeHandler}
             open={this.state.loginDialog}
-          />
-        : null }
-        { this.state.signupDialog ?
-          <SignupDialog
-            loginClickHandler={this.handleLogin}
-            closeHandler={this.closeHandler}
-            open={this.state.signupDialog}
           />
         : null }
       </div>

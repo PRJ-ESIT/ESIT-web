@@ -82,11 +82,6 @@ export default class LoginDialog extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="REGISTER"
-        primary={true}
-        onTouchTap={this.props.registerClickHandler}
-      />,
-      <FlatButton
         label="LOG IN"
         primary={true}
         keyboardFocused={true}
