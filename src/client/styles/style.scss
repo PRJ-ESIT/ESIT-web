@@ -21,6 +21,13 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 
 body {
   background-color: #2DA9AE;
+  margin: 0px;
+  @media #{$desktop-landscape}, #{$desktop-portrait} {
+    background-color: black;
+  }
+  @media #{$tablet-portrait} {
+    background-color: red;
+  }
 }
 
 p, h2 {
@@ -31,8 +38,8 @@ p, h2 {
   position: absolute;
   display: flex;
   flex-direction: row;
-  height: calc(100% - 80px);
-  width: calc(100% - 16px);
+  height: calc(100% - 64px);
+  width: 100%;
 }
 
 .leftPanel {
