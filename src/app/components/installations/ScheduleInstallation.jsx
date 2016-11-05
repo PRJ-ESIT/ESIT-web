@@ -173,10 +173,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         fnameErr: '',
         fname: fname,
+        validated: true,
       });
     } else {
       this.setState({
-        fnameErr: '2 to 25 characters, spaces and hyphens only'
+        fnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -190,10 +192,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         lnameErr: '',
         lname: lname,
+        validated: true,
       });
     } else {
       this.setState({
-        lnameErr: '2 to 25 characters, spaces and hyphens only'
+        lnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -204,10 +208,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         addressErr: '',
         address: address,
+        validated: true,
       });
     } else {
       this.setState({
-        addressErr: 'Can contain characters, numbers, spaces and hyphens only'
+        addressErr: 'Can contain characters, numbers, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -218,10 +224,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
+        validated: true,
       });
     } else {
       this.setState({
-        unitNumErr: 'Has to be 1 word containing numbers/characters only'
+        unitNumErr: 'Has to be 1 word containing numbers/characters only',
+        validated: false,
       });
     }
   }
@@ -232,10 +240,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         cityErr: '',
         city: city,
+        validated: true,
       });
     } else {
       this.setState({
-        cityErr: 'Up to 25 characters, spaces and hyphens only'
+        cityErr: 'Up to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -246,10 +256,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         postalCodeErr: '',
         postalCode: postalCode.toUpperCase(),
+        validated: true,
       });
     } else {
       this.setState({
-        postalCodeErr: 'Not a valid postal code'
+        postalCodeErr: 'Not a valid postal code',
+        validated: false,
       });
     }
   }
@@ -260,10 +272,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         enbridgeErr: '',
         enbridge: enbridge,
+        validated: true,
       });
     } else {
       this.setState({
-        enbridgeErr: 'Must only consist of numbers'
+        enbridgeErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }
@@ -274,10 +288,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         emailErr: '',
         email: email,
+        validated: true,
       });
     } else {
       this.setState({
-        emailErr: 'Not a valid email'
+        emailErr: 'Not a valid email',
+        validated: false,
       });
     }
   }
@@ -288,10 +304,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
+        validated: true,
       });
     } else {
       this.setState({
-        homePhoneErr: 'Not a valid phone number'
+        homePhoneErr: 'Not a valid phone number',
+        validated: false,
       });
     }
   }
@@ -302,10 +320,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
+        validated: true,
       });
     } else {
       this.setState({
-        cellPhoneErr: 'Not a valid phone number'
+        cellPhoneErr: 'Not a valid phone number',
+        validated: false,
       });
     }
   }
@@ -316,10 +336,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         sqftErr: '',
         sqft: sqft,
+        validated: true,
       });
     } else {
       this.setState({
-        sqftErr: 'Must only consist of numbers'
+        sqftErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }
@@ -330,10 +352,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         bathroomsErr: '',
         bathrooms: bathrooms,
+        validated: true,
       });
     } else {
       this.setState({
-        bathroomsErr: 'Must only consist of numbers'
+        bathroomsErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }
@@ -344,10 +368,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         residentsErr: '',
         residents: residents,
+        validated: true,
       });
     } else {
       this.setState({
-        residentsErr: 'Must only consist of numbers'
+        residentsErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }

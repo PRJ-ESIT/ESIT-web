@@ -21,6 +21,13 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 
 body {
   background-color: #2DA9AE;
+  margin: 0px;
+  @media #{$desktop-landscape}, #{$desktop-portrait} {
+    background-color: black;
+  }
+  @media #{$tablet-portrait} {
+    background-color: red;
+  }
 }
 
 p, h2 {
@@ -31,8 +38,8 @@ p, h2 {
   position: absolute;
   display: flex;
   flex-direction: row;
-  height: calc(100% - 80px);
-  width: calc(100% - 16px);
+  height: calc(100% - 64px);
+  width: 100%;
 }
 
 .leftPanel {
@@ -76,6 +83,7 @@ p, h2 {
 //************************//
 //Dashboard Content styles//
 //************************//
+
 .dashboard {
   height: 100%;
   width: 100%;
@@ -96,31 +104,60 @@ p, h2 {
   }
 
   .dashboardTables {
-    flex: 2;
-    width: 100%;
-    flex-basis: calc(100% - 150px);
-    height: calc(100% - 150px);
-    display: flex;
-    flex-direction: row;
+    @media #{$desktop-landscape}, #{$desktop-portrait} {
+      flex: 2;
+      width: 100%;
+      flex-basis: calc(100% - 150px);
+      height: calc(100% - 150px);
+      display: flex;
+      flex-direction: row;
+    }
+    @media #{$tablet-portrait} {
+      width: 100%;
+      height: calc(100% - 150px);
+    }
+
 
     .recentSales {
-      flex: 1;
+      @media #{$desktop-landscape}, #{$desktop-portrait} {
+        flex: 1;
+      }
+      @media #{$tablet-portrait} {
+
+      }
     }
 
     .recentInstallations {
-      flex: 2;
+      @media #{$desktop-landscape}, #{$desktop-portrait} {
+        flex: 2;
+      }
+      @media #{$tablet-portrait} {
+
+      }
     }
 
     .salesAndInstallation {
-      flex-basis: 50%;
-      //half of the content window minus margin minus border
-      width:calc(50% - 40px - 2px);
-      //100% of the parent's height minus margin minus border
-      height: calc(100% - 40px - 2px);
-      margin: 20px;
-      border: 1px solid black;
-      border-radius: 5px;
-      background-color: white;
+      @media #{$desktop-landscape}, #{$desktop-portrait} {
+        flex-basis: 50%;
+        //half of the content window minus margin minus border
+        width:calc(50% - 40px - 2px);
+        //100% of the parent's height minus margin minus border
+        height: calc(100% - 40px - 2px);
+        margin: 20px;
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: white;
+      }
+      @media #{$tablet-portrait} {
+        width:calc(100% - 40px - 2px);
+        //100% of the parent's height minus margin minus border
+        height: calc(50% - 40px - 2px);
+        margin: 20px;
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: white;
+      }
+
     }
 
     .salesInstallationToolBar {
@@ -198,13 +235,13 @@ p, h2 {
 .newEmployeeForm {
   height: 100%;
   background-color: white;
-  padding-left: 120px;
-  padding-right: 120px;
+  padding-left: 75px;
+  padding-right: 75px;
   padding-bottom: 20px;
 }
 
 .newEmployeeFormBox {
-  padding-top: 70px;
+  padding-top: 30px;
 }
 
 
@@ -237,3 +274,7 @@ p, h2 {
   margin: 0px;
   font-family: sans-serif;
 }
+
+//*****************************************//
+//End of Schedule Installations page styles//
+//*****************************************//

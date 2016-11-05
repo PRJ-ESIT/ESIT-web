@@ -1,22 +1,10 @@
 import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
-  Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
-  TableRow, TableRowColumn, TextField, DropDownMenu, MenuItem,
-  RaisedButton} from 'material-ui';
-
+  Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
+  TextField, MenuItem, DropDownMenu, RaisedButton
+} from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
-
-const styles = {
-  propContainer: {
-    width: 200,
-    overflow: 'hidden',
-    margin: '20px auto 0',
-  },
-  propToggleHeader: {
-    margin: '20px auto 10px',
-  },
-};
 
 const tableData = [
   {
@@ -60,17 +48,18 @@ export default class AllSales extends React.Component {
     this.state = {
       //dropdown state variable
       dropdownValue: 1,
-
+      // table state variable
       fixedHeader: true,
-      fixedFooter: false,
-      stripedRows: true,
+      stripedRows: false,
       showRowHover: false,
       selectable: true,
       multiSelectable: false,
       enableSelectAll: false,
       deselectOnClickaway: true,
       showCheckboxes: true,
-      height: '300px',
+      //100% minus Toolbar minus 2px border
+      height: 'calc(100% - 72px)',
+      //end of table state variables
 
       //this variable keeps the state of a current selected row
       currentSelected: false,
@@ -104,8 +93,8 @@ export default class AllSales extends React.Component {
 
   render() {
     return (
-      <div>
-        <Toolbar>
+      <div className="allCustomers">
+        <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Sales" />
             <Search
@@ -146,7 +135,6 @@ export default class AllSales extends React.Component {
           onRowSelection={this.handleSelection}
           height={this.state.height}
           fixedHeader={this.state.fixedHeader}
-          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >
@@ -156,11 +144,11 @@ export default class AllSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn tooltip="Sales Number">Sales Number</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer Name">Name</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Sale #">Sale #</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn tooltip="Product Sold">Product</TableHeaderColumn>
               <TableHeaderColumn tooltip="Sale Date">Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer Address">Address</TableHeaderColumn>
+              <TableHeaderColumn tooltip="Customer's Address">Address</TableHeaderColumn>
               <TableHeaderColumn tooltip="Sale Status">Status</TableHeaderColumn>
             </TableRow>
           </TableHeader>

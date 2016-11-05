@@ -336,56 +336,56 @@ export default class NewSale extends React.Component {
               <br />
               <TextField
                 hintText="John"
-                errorText="This field is required"
                 floatingLabelText="First Name"
                 value={this.state.fname}
                 onChange={this.handleTextChange.bind(this, "fname")}
                 onBlur={this.validateFName.bind(this)}
                 errorText={this.state.fnameErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
               &nbsp;
               <TextField
                 hintText="Doe"
-                errorText="This field is required"
                 floatingLabelText="Last Name"
                 value={this.state.lname}
                 onChange={this.handleTextChange.bind(this, "lname")}
                 onBlur={this.validateLName.bind(this)}
                 errorText={this.state.lnameErr}
+                errorStyle={{float: "left"}}
               />
               <br />
               <TextField
                 hintText="123 Fake Street"
-                errorText="This field is required"
                 floatingLabelText="Address"
                 value={this.state.address}
                 onChange={this.handleTextChange.bind(this, "address")}
                 onBlur={this.validateAddress.bind(this)}
                 errorText={this.state.addressErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
               &nbsp;
               <TextField
                 hintText="77"
-                errorText="This field is required"
                 floatingLabelText="Unit #"
                 value={this.state.unitNum}
                 onChange={this.handleTextChange.bind(this, "unitNum")}
                 onBlur={this.validateUnit.bind(this)}
                 errorText={this.state.unitNumErr}
+                errorStyle={{float: "left"}}
               />
               <br />
               <TextField
                 hintText="Toronto"
-                errorText="This field is required"
                 floatingLabelText="City"
                 value={this.state.city}
                 onChange={this.handleTextChange.bind(this, "city")}
                 onBlur={this.validateCity.bind(this)}
                 errorText={this.state.cityErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
@@ -397,62 +397,63 @@ export default class NewSale extends React.Component {
                 floatingLabelFixed={true}
                 hintText="Select a Province"
                 errorText={this.state.provinceErr}
+                errorStyle={{float: "left"}}
               >
                 {provinces}
               </SelectField>
               <br />
               <TextField
                 hintText="M4B 5V9"
-                errorText="This field is required"
                 floatingLabelText="Postal Code"
                 value={this.state.postalCode}
                 onChange={this.handleTextChange.bind(this, "postalCode")}
                 onBlur={this.validatePostalCode.bind(this)}
                 errorText={this.state.postalCodeErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
               &nbsp;
               <TextField
                 hintText="1234567890"
-                errorText="This field is required"
                 floatingLabelText="Enbridge Gas Number"
                 value={this.state.enbridge}
                 onChange={this.handleTextChange.bind(this, "enbridge")}
                 onBlur={this.validateEnbridge.bind(this)}
                 errorText={this.state.enbridgeErr}
+                errorStyle={{float: "left"}}
               />
               <br />
               <TextField
                 hintText="(416) 123-4567"
-                errorText="This field is required"
                 floatingLabelText="Home Phone"
                 value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, "homePhone")}
                 onBlur={this.validateHomePhone.bind(this)}
                 errorText={this.state.homePhoneErr}
+                errorStyle={{float: "left"}}
               />
               &nbsp;
               &nbsp;
               &nbsp;
               <TextField
                 hintText="(416) 123-4567"
-                errorText="This field is required"
                 floatingLabelText="Cell Phone"
                 value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
                 onBlur={this.validateCellPhone.bind(this)}
                 errorText={this.state.cellPhoneErr}
+                errorStyle={{float: "left"}}
               />
               <br />
               <TextField
                 hintText="name@domain.com"
-                errorText="This field is required"
                 floatingLabelText="Email"
                 value={this.state.email}
                 onChange={this.handleTextChange.bind(this, "email")}
                 onBlur={this.validateEmail.bind(this)}
                 errorText={this.state.emailErr}
+                errorStyle={{float: "left"}}
               />
               <br />
               <br />
@@ -485,26 +486,26 @@ export default class NewSale extends React.Component {
               <br />
               <DatePicker
                 hintText="2010-08-20" container="inline"
-                //errorText="This field is required"
                 floatingLabelText="Installation Date"
-                // value={this.state.installationDate}
-                // onChange={this.handleTextChange.bind(this, "installationDate")}
+                style={{ display: 'inline-block' }}
               />
+              &nbsp;
+              &nbsp;
+              &nbsp;
               <TimePicker
                 hintText="Installation Time"
-                //errorText="This field is required"
                 floatingLabelText="Installation Time"
-                // value={this.state.installationTime}
+                style={{ display: 'inline-block' }}
               />
               <br />
               <TextField
                 hintText="Notes"
                 multiLine={true}
                 rows={5}
-                // errorText="This field is required"
                 floatingLabelText="Notes"
                 value={this.state.notes}
                 onChange={this.handleTextChange.bind(this, "notes")}
+                style={{ width: '100%' }}
               />
               <br />
               <br />
@@ -519,7 +520,7 @@ export default class NewSale extends React.Component {
                 checked={true}
                 disabled={true}
                 value={this.state.homeownerSignature}
-                onCheck = {this.handleTextChange.bind(this, "homeownerSignature")}
+                onCheck={this.handleTextChange.bind(this, "homeownerSignature")}
               />
               <TextField
                 floatingLabelText="Date Signed"
@@ -535,16 +536,16 @@ export default class NewSale extends React.Component {
                 checked={true}
                 disabled={true}
                 value={this.state.salesRepSignature}
-                onCheck = {this.handleTextChange.bind(this, "salesRepSignature")}
+                onCheck={this.handleTextChange.bind(this, "salesRepSignature")}
               />
               <TextField
                 hintText="1234567"
-                //errorText="This field is required"
                 floatingLabelText="Sales Rep ID"
                 value={this.state.salesRepId}
                 onChange={this.handleTextChange.bind(this, "salesRepId")}
                 onBlur={this.validateSalesRepId.bind(this)}
                 errorText={this.state.salesRepIdErr}
+                errorStyle={{float: "left"}}
               />
               <br />
               <br />
@@ -572,7 +573,6 @@ export default class NewSale extends React.Component {
                 <TextField
                   disabled={true}
                   defaultValue="123-4567"
-                  //errorText="This field is required"
                   floatingLabelText="Sale Number"
                   //value={this.state.saleNumber}
                   //onChange={this.handleTextChange.bind(this, "saleNumber")}
@@ -582,12 +582,12 @@ export default class NewSale extends React.Component {
                 &nbsp;
                 <TextField
                   hintText="1234567"
-                  errorText="This field is required"
                   floatingLabelText="Application Number"
                   value={this.state.applicationNumber}
                   onChange={this.handleTextChange.bind(this, "applicationNumber")}
                   onBlur={this.validateApplicationNumber.bind(this)}
                   errorText={this.state.applicationNumberErr}
+                  errorStyle={{float: "left"}}
                 />
                 <br />
                 <DatePicker
@@ -604,56 +604,56 @@ export default class NewSale extends React.Component {
                 <br />
                 <TextField
                   hintText="John"
-                  errorText="This field is required"
                   floatingLabelText="First Name"
                   value={this.state.fname}
                   onChange={this.handleTextChange.bind(this, "fname")}
                   onBlur={this.validateFName.bind(this)}
                   errorText={this.state.fnameErr}
+                  errorStyle={{float: "left"}}
                 />
                 &nbsp;
                 &nbsp;
                 &nbsp;
                 <TextField
                   hintText="Doe"
-                  errorText="This field is required"
                   floatingLabelText="Last Name"
                   value={this.state.lname}
                   onChange={this.handleTextChange.bind(this, "lname")}
                   onBlur={this.validateLName.bind(this)}
                   errorText={this.state.lnameErr}
+                  errorStyle={{float: "left"}}
                 />
                 <br />
                 <TextField
                   hintText="123 Fake Street"
-                  errorText="This field is required"
                   floatingLabelText="Address"
                   value={this.state.address}
                   onChange={this.handleTextChange.bind(this, "address")}
                   onBlur={this.validateAddress.bind(this)}
                   errorText={this.state.addressErr}
+                  errorStyle={{float: "left"}}
                 />
                 &nbsp;
                 &nbsp;
                 &nbsp;
                 <TextField
                   hintText="77"
-                  errorText="This field is required"
                   floatingLabelText="Unit #"
                   value={this.state.unit}
                   onChange={this.handleTextChange.bind(this, "unit")}
                   onBlur={this.validateUnit.bind(this)}
                   errorText={this.state.unitNumErr}
+                  errorStyle={{float: "left"}}
                 />
                 <br />
                 <TextField
                   hintText="Toronto"
-                  errorText="This field is required"
                   floatingLabelText="City"
                   value={this.state.city}
                   onChange={this.handleTextChange.bind(this, "city")}
                   onBlur={this.validateCity.bind(this)}
                   errorText={this.state.cityErr}
+                  errorStyle={{float: "left"}}
                 />
                 &nbsp;
                 &nbsp;
@@ -665,62 +665,63 @@ export default class NewSale extends React.Component {
                   floatingLabelFixed={true}
                   hintText="Select a Province"
                   errorText={this.state.provinceErr}
+                  errorStyle={{float: "left"}}
                 >
                   {provinces}
                 </SelectField>
                 <br />
                 <TextField
                   hintText="M4B 5V9"
-                  errorText="This field is required"
                   floatingLabelText="Postal Code"
                   value={this.state.postalCode}
                   onChange={this.handleTextChange.bind(this, "postalCode")}
                   onBlur={this.validatePostalCode.bind(this)}
                   errorText={this.state.postalCodeErr}
+                  errorStyle={{float: "left"}}
                 />
                 &nbsp;
                 &nbsp;
                 &nbsp;
                 <TextField
                   hintText="1234567890"
-                  errorText="This field is required"
                   floatingLabelText="Enbridge Gas Number"
                   value={this.state.enbridge}
                   onChange={this.handleTextChange.bind(this, "enbridge")}
                   onBlur={this.validateEnbridge.bind(this)}
                   errorText={this.state.enbridgeErr}
+                  errorStyle={{float: "left"}}
                 />
                 <br />
                 <TextField
                   hintText="(416) 123-4567"
-                  errorText="This field is required"
                   floatingLabelText="Home Phone"
                   value={this.state.homePhone}
                   onChange={this.handleTextChange.bind(this, "homePhone")}
                   onBlur={this.validateHomePhone.bind(this)}
                   errorText={this.state.homePhoneErr}
+                  errorStyle={{float: "left"}}
                 />
                 &nbsp;
                 &nbsp;
                 &nbsp;
                 <TextField
                   hintText="(416) 123-4567"
-                  errorText="This field is required"
                   floatingLabelText="Cell Phone"
                   value={this.state.cellPhone}
                   onChange={this.handleTextChange.bind(this, "cellPhone")}
                   onBlur={this.validateCellPhone.bind(this)}
                   errorText={this.state.cellPhoneErr}
+                  errorStyle={{float: "left"}}
                 />
                 <br />
                 <TextField
                   hintText="name@domain.com"
-                  errorText="This field is required"
                   floatingLabelText="Email"
                   value={this.state.email}
                   onChange={this.handleTextChange.bind(this, "email")}
                   onBlur={this.validateEmail.bind(this)}
                   errorText={this.state.emailErr}
+                  errorStyle={{float: "left"}}
                 />
                 <br />
                 <br />
@@ -751,17 +752,14 @@ export default class NewSale extends React.Component {
                   checked={true}
                   disabled={true}
                   value={this.state.homeownerSignature}
-                  onCheck = {this.handleTextChange.bind(this, "homeownerSignature")}
+                  onCheck={this.handleTextChange.bind(this, "homeownerSignature")}
                 />
                 &nbsp;
                 &nbsp;
                 &nbsp;
                 <DatePicker
                   hintText="2010-08-20" container="inline"
-                  //errorText="This field is required"
                   floatingLabelText="Installation Date"
-                  // value={this.state.installationDate}
-                  // onChange={this.handleTextChange.bind(this, "installationDate")}
                 />
                 <br />
                 <br />

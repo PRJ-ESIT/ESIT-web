@@ -122,7 +122,7 @@ export default class LeftMenu extends React.Component {
             />
           ]}
         />
-        <ListItem 
+        <ListItem
           open={this.state.currentOpen == "managementOpen" ? true : false}
           primaryText="Management"
           primaryTogglesNestedList={true}
