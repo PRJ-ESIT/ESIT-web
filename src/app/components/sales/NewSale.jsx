@@ -37,7 +37,7 @@ export default class NewSale extends React.Component {
       address: '',
       unitNum: '',
       city: '',
-      province: '',
+      province: -1,
       postalCode: '',
       enbridge: '',
       email: '',
@@ -69,10 +69,32 @@ export default class NewSale extends React.Component {
       cellPhoneErr: '',
       salesRepIdErr: '',
       applicationNumberErr: '',
-      validated: false,
+      programTypeErr: '',
+      installationDateErr: '',
+      installationTimeErr: '',
+
+      // Validation fields
+      fnameValidated: false,
+      lnameValidated: false,
+      addressValidated: false,
+      unitValidated: false,
+      cityValidated: false,
+      provinceValidated: false,
+      postalCodeValidated: false,
+      enbridgeValidated: false,
+      emailValidated: false,
+      homePhoneValidated: false,
+      cellPhoneValidated: false,
+      salesRepIdValidatd: false,
+      applicationNumberValidated: false,
+      programTypeValidated: false,
+      installationDateValidated: false,
+      installationTimeValidated: false,
+
+      allValidated: false,
     };
     this.handleTabChange = this.handleTabChange.bind(this);
-    this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.handleProvinceChange = this.handleProvinceChange.bind(this);
   }
 
   handleTabChange(value) {
@@ -129,12 +151,12 @@ export default class NewSale extends React.Component {
       this.setState({
         fnameErr: '',
         fname: fname,
-        validated: true,
+        fnameValidated: true,
       });
     } else {
       this.setState({
         fnameErr: '2 to 25 characters, spaces and hyphens only',
-        validated: false,
+        fnameValidated: false,
       });
     }
   }
@@ -148,12 +170,12 @@ export default class NewSale extends React.Component {
       this.setState({
         lnameErr: '',
         lname: lname,
-        validated: true,
+        lnameValidated: true,
       });
     } else {
       this.setState({
         lnameErr: '2 to 25 characters, spaces and hyphens only',
-        validated: false,
+        lnameValidated: false,
       });
     }
   }
@@ -164,28 +186,28 @@ export default class NewSale extends React.Component {
       this.setState({
         addressErr: '',
         address: address,
-        validated: true,
+        addressValidated: true,
       });
     } else {
       this.setState({
         addressErr: 'Can contain characters, numbers, spaces and hyphens only',
-        validated: false,
+        addressValidated: false,
       });
     }
   }
 
   validateUnit() {
     let unitNum = this.state.unitNum.trim();
-    if(validations.isAlphanumeric(unitNum) && validations.maxLength(unitNum, 10)) {
+    if(unitNum === '' || (validations.isAlphanumeric(unitNum) && validations.maxLength(unitNum, 10))) {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
-        validated: true,
+        unitValidated: true,
       });
     } else {
       this.setState({
-        unitNumErr: 'Has to be 1 word containing numbers/characters only',
-        validated: false,
+        unitNumErr: 'Can contain numbers/characters only',
+        unitValidated: false,
       });
     }
   }
@@ -196,31 +218,28 @@ export default class NewSale extends React.Component {
       this.setState({
         cityErr: '',
         city: city,
-        validated: true,
+        cityValidated: true,
       });
     } else {
       this.setState({
         cityErr: 'Up to 60 characters, spaces and hyphens only',
-        validated: false,
+        cityValidated: false,
       });
     }
   }
 
   validateProvince() {
-    let province = this.state.province.trim();
-    if(validations.isWords(province) && validations.maxLength(province, 30)) {
+    let province = this.state.province;
+    if(province < 0) {
       this.setState({
-        provinceErr: '',
-        province: province,
-        validated: true,
+        provinceErr: 'Province not selected',
+        provinceValidated: false,
       });
-      return true;
     } else {
       this.setState({
-        provinceErr: 'Not a valid province name',
-        validated: false,
+        provinceErr: '',
+        provinceValidated: true,
       });
-      return false;
     }
   }
 
@@ -230,12 +249,12 @@ export default class NewSale extends React.Component {
       this.setState({
         postalCodeErr: '',
         postalCode: postalCode.toUpperCase(),
-        validated: true,
+        postalCodeValidated: true,
       });
     } else {
       this.setState({
         postalCodeErr: 'Not a valid postal code',
-        validated: false,
+        postalCodeValidated: false,
       });
     }
   }
@@ -246,10 +265,12 @@ export default class NewSale extends React.Component {
       this.setState({
         enbridgeErr: '',
         enbridge: enbridge,
+        enbridgeValidated: true,
       });
     } else {
       this.setState({
-        enbridgeErr: 'Must only consist of numbers'
+        enbridgeErr: 'Must only consist of numbers',
+        enbridgeValidated: false,
       });
     }
   }
@@ -260,10 +281,12 @@ export default class NewSale extends React.Component {
       this.setState({
         salesRepIdErr: '',
         salesRepId: salesRepId,
+        salesRepIdValidatd: true,
       });
     } else {
       this.setState({
-        salesRepIdErr: 'Must only consist of numbers'
+        salesRepIdErr: 'Must only consist of numbers',
+        salesRepIdValidatd: false,
       });
     }
   }
@@ -274,10 +297,12 @@ export default class NewSale extends React.Component {
       this.setState({
         applicationNumberErr: '',
         applicationNumber: applicationNumber,
+        applicationNumberValidated: true,
       });
     } else {
       this.setState({
-        applicationNumberErr: 'Must only consist of numbers'
+        applicationNumberErr: 'Must only consist of numbers',
+        applicationNumberValidated: false,
       });
     }
   }
@@ -288,12 +313,12 @@ export default class NewSale extends React.Component {
       this.setState({
         emailErr: '',
         email: email,
-        validated: true,
+        emailValidated: true,
       });
     } else {
       this.setState({
         emailErr: 'Not a valid email',
-        validated: false,
+        emailValidated: false,
       });
     }
   }
@@ -304,12 +329,12 @@ export default class NewSale extends React.Component {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
-        validated: true,
+        homePhoneValidated: true,
       });
     } else {
       this.setState({
         homePhoneErr: 'Not a valid phone number',
-        validated: false,
+        homePhoneValidated: false,
       });
     }
   }
@@ -320,19 +345,129 @@ export default class NewSale extends React.Component {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
-        validated: true,
+        cellPhoneValidated: true,
       });
     } else {
       this.setState({
         cellPhoneErr: 'Not a valid phone number',
-        validated: false,
+        cellPhoneValidated: false,
       });
     }
   }
 
-  handleSelectChange(event, index, value) {
-    this.setState({selectValue: value});
+  handleProvinceChange(event, index, value) {
+    this.setState({province: value});
   };
+
+  handleDateChange(event, date) {
+    this.setState({installationDate: date});
+  }
+
+  handleTimeChange(event, time) {
+    this.setState({installationTime: time});
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.province !== this.state.province) {
+      this.validateProvince();
+    }
+
+    if (prevState.programType !== this.state.programType) {
+      this.validateProgramType();
+    }
+
+    if (prevState.installationDate !== this.state.installationDate) {
+      this.validateInstallationDate();
+    }
+
+    if (prevState.installationTime !== this.state.installationTime) {
+      this.validateInstallationTime();
+    }
+  }
+
+  validateProgramType() {
+    let programType = this.state.programType;
+    if(programType === '') {
+      this.setState({
+        programTypeErr: 'Must select a program type',
+        programTypeValidated: false,
+      });
+    } else {
+      this.setState({
+        programTypeErr: '',
+        programTypeValidated: true,
+      });
+    }
+  }
+
+  validateInstallationDate() {
+    let installationDate = this.state.installationDate;
+
+    if (installationDate === '') {
+      this.setState({
+        installationDateErr: 'Must select an installation date',
+        installationDateValidated: false,
+      });
+    } else {
+      this.setState({
+        installationDateErr: '',
+        installationDateValidated: true,
+      });
+    }
+  }
+
+  validateInstallationTime() {
+    let installationTime = this.state.installationTime;
+
+    if (installationTime === '') {
+      this.setState({
+        installationTimeErr: 'Must select an installation time',
+        installationTimeValidated: false,
+      });
+    } else {
+      this.setState({
+        installationTimeErr: '',
+        installationTimeValidated: true,
+      });
+    }
+  }
+
+  validateAllFields() {
+    console.log("validateAllFields");
+    this.validateFName();
+    this.validateLName();
+    this.validateAddress();
+    this.validateUnit();
+    this.validateCity();
+    this.validateProvince();
+    this.validatePostalCode();
+    this.validateEnbridge();
+    this.validateHomePhone();
+    this.validateCellPhone();
+    this.validateEmail();
+    this.validateProgramType();
+    this.validateInstallationDate();
+    this.validateInstallationTime();
+
+    if (this.state.fnameValidated &&
+        this.state.lnameValidated &&
+        this.state.addressValidated &&
+        this.state.unitValidated &&
+        this.state.cityValidated &&
+        this.state.provinceValidated &&
+        this.state.postalCodeValidated &&
+        this.state.enbridgeValidated &&
+        this.state.homePhoneValidated &&
+        this.state.cellPhoneValidated &&
+        this.state.emailValidated &&
+        this.state.programTypeValidated &&
+        this.state.installationDateValidated &&
+        this.state.installationTimeValidated) {
+      this.setState({allValidated: true});
+    } else {
+      this.setState({allValidated: false});
+    }
+  }
 
   render() {
     return (
@@ -414,8 +549,8 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
-                value={this.state.selectValue}
-                onChange={this.handleSelectChange}
+                value={this.state.province}
+                onChange={this.handleProvinceChange}
                 floatingLabelText="Province"
                 floatingLabelFixed={true}
                 hintText="Select a Province"
@@ -479,28 +614,26 @@ export default class NewSale extends React.Component {
                 errorStyle={{float: "left"}}
               />
               <h2 className="headings">Program Type</h2>
-              <RadioButtonGroup name="programType"
-                valueSelected={this.state.programType}
-                onChange={this.handleRadioChange.bind(this, "programType")}>
-                <RadioButton
-                  value="1"
-                  label="Whole Home Filter"
-                />
-                <RadioButton
-                  value="2"
-                  label="Whole Home Descaler"
-                />
-                <RadioButton
-                  value="3"
-                  label="Whole Home Combo"
-                />
-              </RadioButtonGroup>
+              <div>
+                <RadioButtonGroup name="programType"
+                  valueSelected={this.state.programType}
+                  onChange={this.handleRadioChange.bind(this, "programType")}>
+                  <RadioButton
+                    value="1"
+                    label="Whole Home Filter"
+                  />
+                  <RadioButton
+                    value="2"
+                    label="Whole Home Descaler"
+                  />
+                  <RadioButton
+                    value="3"
+                    label="Whole Home Combo"
+                  />
+                </RadioButtonGroup>
+                <div style={{color:"red"}}>{this.state.programTypeErr}</div>
+              </div>
               <h2 className="headings">Installation & Delivery</h2>
-              <br />
-              <br />
-              <h2>Installation & Delivery</h2>
-              <Divider />
-              <br />
               <TextField
                 floatingLabelText="Delivery Charges"
                 value={this.state.deliveryCharges}
@@ -525,19 +658,29 @@ export default class NewSale extends React.Component {
               &nbsp;
               <div>*plus applicable taxes</div>
               <br />
-              <DatePicker
-                hintText="2010-08-20" container="inline"
-                floatingLabelText="Installation Date"
-                style={{ display: 'inline-block' }}
-              />
+              <div style={{ display: 'inline-block' }}>
+                <DatePicker
+                  hintText="2017-08-20" container="inline"
+                  floatingLabelText="Installation Date"
+                  onChange={this.handleDateChange.bind(this)}
+                />
+                <div style={{color:"red", float: "left"}}>
+                  {this.state.installationDateErr}
+                </div>
+              </div>
               &nbsp;
               &nbsp;
               &nbsp;
+              <div style={{ display: 'inline-block' }}>
               <TimePicker
                 hintText="Installation Time"
                 floatingLabelText="Installation Time"
-                style={{ display: 'inline-block' }}
+                onChange={this.handleTimeChange.bind(this)}
               />
+              <div style={{color:"red", float: "left"}}>
+                {this.state.installationTimeErr}
+              </div>
+              </div>
               <br />
               <TextField
                 hintText="Additional Notes"
@@ -590,11 +733,13 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Save" />
+              <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Submit" primary={true} />
+              { this.state.allValidated ?
+              <RaisedButton label="Submit" primary={true} onClick={this.validateProvince.bind(this)} />
+              : null }
               <br />
             </div>
           </div>
@@ -608,8 +753,6 @@ export default class NewSale extends React.Component {
                 disabled={true}
                 defaultValue="123-4567"
                 floatingLabelText="Sale Number"
-                //value={this.state.saleNumber}
-                //onChange={this.handleTextChange.bind(this, "saleNumber")}
               />
               &nbsp;
               &nbsp;
@@ -798,10 +941,10 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <RaisedButton label="Submit" primary={true} />
-              </div>
             </div>
+          </div>
         </div>
-      :null }
+      : null }
       </div>
     );
   }
