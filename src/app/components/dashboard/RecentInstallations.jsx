@@ -119,8 +119,8 @@ export default class RecentInstallations extends React.Component {
             <TableRow>
               <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }} tooltip="Installation #">Installation #</TableHeaderColumn>
               <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}style={tableRowColumnStyles} tooltip="Product's Name">Product</TableHeaderColumn>
-              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}style={tableRowColumnStyles} tooltip="Date">Date</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Product's Name">Product</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }} tooltip="Date">Date</TableHeaderColumn>
               <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '150px' }} tooltip="Address">Address</TableHeaderColumn>
               <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Installer's Name">Installer</TableHeaderColumn>
             </TableRow>
