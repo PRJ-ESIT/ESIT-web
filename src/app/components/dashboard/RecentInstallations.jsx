@@ -107,7 +107,6 @@ export default class RecentInstallations extends React.Component {
         <Table
           wrapperStyle={{height: this.state.height}}
           fixedHeader={this.state.fixedHeader}
-          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >
