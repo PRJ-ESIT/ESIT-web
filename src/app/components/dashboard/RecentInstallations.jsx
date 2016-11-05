@@ -103,10 +103,6 @@ export default class RecentInstallations extends React.Component {
   }
 
   render() {
-    var tableRowColumnStyles = {
-      paddingRight: '2px',
-      paddingLeft: '5px'
-    };
     return (
         <Table
           wrapperStyle={{height: this.state.height}}
@@ -121,12 +117,12 @@ export default class RecentInstallations extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Installation #">Installation #</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Product's Name">Product</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Date">Date</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Address">Address</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Installer's Name">Installer</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }} tooltip="Installation #">Installation #</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}style={tableRowColumnStyles} tooltip="Product's Name">Product</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}style={tableRowColumnStyles} tooltip="Date">Date</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '150px' }} tooltip="Address">Address</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Installer's Name">Installer</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -137,12 +133,12 @@ export default class RecentInstallations extends React.Component {
           >
             {this.props.allInstallations ? this.props.allInstallations.map( (row, index) => (
               <TableRow className="tableRow" style={tableRowColumnStyles} key={index}>
-                <TableRowColumn className="rowColumn" style={tableRowColumnStyles}>{row.installationNumber}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.customerName}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.product}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>01.01.1900</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.address}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.installerName}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}>{row.installationNumber}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.customerName}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '150px' }}>{row.address}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.installerName}</TableRowColumn>
               </TableRow>
               ))
             : null }

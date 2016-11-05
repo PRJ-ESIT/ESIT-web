@@ -13,3 +13,8 @@ $phone-landscape: "all and (orientation: landscape) and (min-device-aspect-ratio
 $tablet-portrait: "all and (orientation: portrait) and (max-device-aspect-ratio: 1/1) and (min-device-width: 481px)";
 $tablet-portrait-with-keyboard: "all and (orientation: landscape) and (max-device-aspect-ratio: 1/1) and (min-device-width: 481px)";
 $tablet-landscape: "all and (orientation: landscape) and (min-device-aspect-ratio: 1/1) and (min-device-width: 960px) and (max-device-width: 1366px)";
+
+/* colour variables */
+$main-blue: #2f3c7d;
+$dark-blue: #28305a;
+$light-blue: #b3b3ff;

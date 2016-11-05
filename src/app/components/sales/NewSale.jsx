@@ -4,17 +4,7 @@ import {Tabs, Tab, TextField, Divider, RadioButton,
   CardHeader, CardMedia, CardTitle, CardText, FlatButton,
   DatePicker, TimePicker, Toggle, Checkbox, SelectField,
   MenuItem} from 'material-ui';
-
 import { validations } from '../helpers/common.js';
-
-const styles = {
-headline: {
-  fontSize: 24,
-  paddingTop: 16,
-  marginBottom: 12,
-  fontWeight: 400,
-},
-};
 
 // Provinces for SelectField
 const provinces = [
@@ -38,7 +28,9 @@ export default class NewSale extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 'a',
+      tabA: true,
+      tabB: false,
+      tabValue: 'a',
       saleNumber: "",
       fname: '',
       lname: '',
@@ -76,14 +68,25 @@ export default class NewSale extends React.Component {
       applicationNumberErr: '',
       validated: false,
     };
-    this.handleChange = this.handleChange.bind(this);
+    this.handleTabChange = this.handleTabChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
-  handleChange(value){
-    this.setState({
-      value: value,
-    });
+  handleTabChange(value) {
+    if (value == 'a') {
+      this.setState({
+        tabValue: value,
+        tabA: true,
+        tabB: false,
+      });
+    }
+    else if (value == 'b') {
+      this.setState({
+        tabValue: value,
+        tabA: false,
+        tabB: true,
+      });
+    }
   };
 
   handleTextChange(fieldname, event) {
@@ -313,27 +316,27 @@ export default class NewSale extends React.Component {
     return (
       <div>
         <Tabs
-        value={this.state.value}
-        onChange={this.handleChange}
+          value={this.state.tabValue}
+          onChange={this.handleTabChange}
+          inkBarStyle={{ backgroundColor: "yellow" }}
         >
-        <Tab label="Rental Agreement Form" value="a" >
+        <Tab label="Rental Agreement Form" value="a" className="tabs">
+        </Tab>
+        <Tab label="Pre-Authorized Debit Form" value="b" className="tabs">
+        </Tab>
+      </Tabs>
+      { this.state.tabA ?
         <div className="newEmployeeFormContainer">
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
               <TextField
-                // hintText="123-4567"
-                //errorText="This field is required"
                 floatingLabelText="Sale Number"
                 defaultValue="123-4567"
                 //value={this.state.saleNumber}
                 disabled={true}
                 //onChange={this.handleTextChange.bind(this, "saleNumber")}
               />
-              <br />
-              <br />
-              <h2>Homeowner Information</h2>
-              <Divider />
-              <br />
+              <h2 className="headings">Homeowner Information</h2>
               <TextField
                 hintText="John"
                 floatingLabelText="First Name"
@@ -455,35 +458,24 @@ export default class NewSale extends React.Component {
                 errorText={this.state.emailErr}
                 errorStyle={{float: "left"}}
               />
-              <br />
-              <br />
-              <h2>Program Type</h2>
-              <Divider />
-              <br />
+              <h2 className="headings">Program Type</h2>
               <RadioButtonGroup name="programType"
                 valueSelected={this.state.programType}
                 onChange={this.handleTextChange.bind(this, "programType")}>
                 <RadioButton
                   value="1"
                   label="Whole Home Filter"
-                  style={styles.radioButton}
                 />
                 <RadioButton
                   value="2"
                   label="Whole Home Descaler"
-                  style={styles.radioButton}
                 />
                 <RadioButton
                   value="3"
                   label="Whole Home Combo"
-                  style={styles.radioButton}
                 />
               </RadioButtonGroup>
-              <br />
-              <br />
-              <h2>Installation & Delivery</h2>
-              <Divider />
-              <br />
+              <h2 className="headings">Installation & Delivery</h2>
               <DatePicker
                 hintText="2010-08-20" container="inline"
                 floatingLabelText="Installation Date"
@@ -499,23 +491,18 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="Notes"
-                multiLine={true}
-                rows={5}
+                hintText="Additional Notes"
                 floatingLabelText="Notes"
+                multiLine={true}
+                rows={1}
+                rowsMax={10}
                 value={this.state.notes}
                 onChange={this.handleTextChange.bind(this, "notes")}
-                style={{ width: '100%' }}
+                className="full-width"
               />
-              <br />
-              <br />
-              <h2>Authorization</h2>
-              <Divider />
-              <br />
-              <br />
+              <h2 className="headings">Authorization</h2>
               <Checkbox
                 label="Homeowner Signature"
-                style={styles.checkbox}
                 labelPosition="left"
                 checked={true}
                 disabled={true}
@@ -531,7 +518,6 @@ export default class NewSale extends React.Component {
               <br />
               <Checkbox
                 label="Sales Rep Signature"
-                style={styles.checkbox}
                 labelPosition="left"
                 checked={true}
                 disabled={true}
@@ -564,221 +550,209 @@ export default class NewSale extends React.Component {
             </div>
           </div>
         </div>
-        </Tab>
-        <Tab label="Pre-Authorized Debit Form" value="b">
-          <div className="newEmployeeFormContainer">
-            <div className="newEmployeeForm">
-              <div className="newEmployeeFormBox">
-                <br />
-                <TextField
-                  disabled={true}
-                  defaultValue="123-4567"
-                  floatingLabelText="Sale Number"
-                  //value={this.state.saleNumber}
-                  //onChange={this.handleTextChange.bind(this, "saleNumber")}
-                />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <TextField
-                  hintText="1234567"
-                  floatingLabelText="Application Number"
-                  value={this.state.applicationNumber}
-                  onChange={this.handleTextChange.bind(this, "applicationNumber")}
-                  onBlur={this.validateApplicationNumber.bind(this)}
-                  errorText={this.state.applicationNumberErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <DatePicker
-                  hintText="2010-08-20" container="inline"
-                  //errorText="This field is required"
-                  floatingLabelText="Date"
-                  // value={this.state.installationDate}
-                  // onChange={this.handleTextChange.bind(this, "installationDate")}
-                />
-                <br />
-                <br />
-                <h2>Homeowner Information</h2>
-                <Divider />
-                <br />
-                <TextField
-                  hintText="John"
-                  floatingLabelText="First Name"
-                  value={this.state.fname}
-                  onChange={this.handleTextChange.bind(this, "fname")}
-                  onBlur={this.validateFName.bind(this)}
-                  errorText={this.state.fnameErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <TextField
-                  hintText="Doe"
-                  floatingLabelText="Last Name"
-                  value={this.state.lname}
-                  onChange={this.handleTextChange.bind(this, "lname")}
-                  onBlur={this.validateLName.bind(this)}
-                  errorText={this.state.lnameErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  hintText="123 Fake Street"
-                  floatingLabelText="Address"
-                  value={this.state.address}
-                  onChange={this.handleTextChange.bind(this, "address")}
-                  onBlur={this.validateAddress.bind(this)}
-                  errorText={this.state.addressErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <TextField
-                  hintText="77"
-                  floatingLabelText="Unit #"
-                  value={this.state.unit}
-                  onChange={this.handleTextChange.bind(this, "unit")}
-                  onBlur={this.validateUnit.bind(this)}
-                  errorText={this.state.unitNumErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  hintText="Toronto"
-                  floatingLabelText="City"
-                  value={this.state.city}
-                  onChange={this.handleTextChange.bind(this, "city")}
-                  onBlur={this.validateCity.bind(this)}
-                  errorText={this.state.cityErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <SelectField
-                  value={this.state.selectValue}
-                  onChange={this.handleSelectChange}
-                  floatingLabelText="Province"
-                  floatingLabelFixed={true}
-                  hintText="Select a Province"
-                  errorText={this.state.provinceErr}
-                  errorStyle={{float: "left"}}
-                >
-                  {provinces}
-                </SelectField>
-                <br />
-                <TextField
-                  hintText="M4B 5V9"
-                  floatingLabelText="Postal Code"
-                  value={this.state.postalCode}
-                  onChange={this.handleTextChange.bind(this, "postalCode")}
-                  onBlur={this.validatePostalCode.bind(this)}
-                  errorText={this.state.postalCodeErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <TextField
-                  hintText="1234567890"
-                  floatingLabelText="Enbridge Gas Number"
-                  value={this.state.enbridge}
-                  onChange={this.handleTextChange.bind(this, "enbridge")}
-                  onBlur={this.validateEnbridge.bind(this)}
-                  errorText={this.state.enbridgeErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  hintText="(416) 123-4567"
-                  floatingLabelText="Home Phone"
-                  value={this.state.homePhone}
-                  onChange={this.handleTextChange.bind(this, "homePhone")}
-                  onBlur={this.validateHomePhone.bind(this)}
-                  errorText={this.state.homePhoneErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <TextField
-                  hintText="(416) 123-4567"
-                  floatingLabelText="Cell Phone"
-                  value={this.state.cellPhone}
-                  onChange={this.handleTextChange.bind(this, "cellPhone")}
-                  onBlur={this.validateCellPhone.bind(this)}
-                  errorText={this.state.cellPhoneErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  hintText="name@domain.com"
-                  floatingLabelText="Email"
-                  value={this.state.email}
-                  onChange={this.handleTextChange.bind(this, "email")}
-                  onBlur={this.validateEmail.bind(this)}
-                  errorText={this.state.emailErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <br />
-                <h2>Void Cheque</h2>
-                <Divider />
-                <br />
-                <Card>
-                  <CardMedia>
-                    <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
-                  </CardMedia>
-                  <CardTitle title="Void Cheque" subtitle="Customer Number: 123-4567" />
-                  <CardText>
-                    Void cheque provided by customer.
-                  </CardText>
-                  <CardActions>
-                    <FlatButton label="Download" />
-                  </CardActions>
-                </Card>
-                <br />
-                <br />
-                <h2>Authorization</h2>
-                <Divider />
-                <br />
-                <Checkbox
-                  label="Homeowner Signature"
-                  style={styles.checkbox}
-                  labelPosition="left"
-                  checked={true}
-                  disabled={true}
-                  value={this.state.homeownerSignature}
-                  onCheck={this.handleTextChange.bind(this, "homeownerSignature")}
-                />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <DatePicker
-                  hintText="2010-08-20" container="inline"
-                  floatingLabelText="Installation Date"
-                />
-                <br />
-                <br />
-                <Divider />
-                <br />
-                <RaisedButton label="Cancel" secondary={true} />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <RaisedButton label="Save" />
-                &nbsp;
-                &nbsp;
-                &nbsp;
-                <RaisedButton label="Submit" primary={true} />
-                </div>
+      : null }
+      { this.state.tabB ?
+        <div className="newEmployeeFormContainer">
+          <div className="newEmployeeForm">
+            <div className="newEmployeeFormBox">
+              <TextField
+                disabled={true}
+                defaultValue="123-4567"
+                floatingLabelText="Sale Number"
+                //value={this.state.saleNumber}
+                //onChange={this.handleTextChange.bind(this, "saleNumber")}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="1234567"
+                floatingLabelText="Application Number"
+                value={this.state.applicationNumber}
+                onChange={this.handleTextChange.bind(this, "applicationNumber")}
+                onBlur={this.validateApplicationNumber.bind(this)}
+                errorText={this.state.applicationNumberErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <DatePicker
+                hintText="2010-08-20"
+                container="inline"
+                floatingLabelText="Date"
+                style={{ display: "inline-block" }}
+                // value={this.state.installationDate}
+                // onChange={this.handleTextChange.bind(this, "installationDate")}
+              />
+              <h2 className="headings">Homeowner Information</h2>
+              <TextField
+                hintText="John"
+                floatingLabelText="First Name"
+                value={this.state.fname}
+                onChange={this.handleTextChange.bind(this, "fname")}
+                onBlur={this.validateFName.bind(this)}
+                errorText={this.state.fnameErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="Doe"
+                floatingLabelText="Last Name"
+                value={this.state.lname}
+                onChange={this.handleTextChange.bind(this, "lname")}
+                onBlur={this.validateLName.bind(this)}
+                errorText={this.state.lnameErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                hintText="123 Fake Street"
+                floatingLabelText="Address"
+                value={this.state.address}
+                onChange={this.handleTextChange.bind(this, "address")}
+                onBlur={this.validateAddress.bind(this)}
+                errorText={this.state.addressErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="77"
+                floatingLabelText="Unit #"
+                value={this.state.unit}
+                onChange={this.handleTextChange.bind(this, "unit")}
+                onBlur={this.validateUnit.bind(this)}
+                errorText={this.state.unitNumErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                hintText="Toronto"
+                floatingLabelText="City"
+                value={this.state.city}
+                onChange={this.handleTextChange.bind(this, "city")}
+                onBlur={this.validateCity.bind(this)}
+                errorText={this.state.cityErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <SelectField
+                value={this.state.selectValue}
+                onChange={this.handleSelectChange}
+                floatingLabelText="Province"
+                floatingLabelFixed={true}
+                hintText="Select a Province"
+                errorText={this.state.provinceErr}
+                errorStyle={{float: "left"}}
+              >
+                {provinces}
+              </SelectField>
+              <br />
+              <TextField
+                hintText="M4B 5V9"
+                floatingLabelText="Postal Code"
+                value={this.state.postalCode}
+                onChange={this.handleTextChange.bind(this, "postalCode")}
+                onBlur={this.validatePostalCode.bind(this)}
+                errorText={this.state.postalCodeErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="1234567890"
+                floatingLabelText="Enbridge Gas Number"
+                value={this.state.enbridge}
+                onChange={this.handleTextChange.bind(this, "enbridge")}
+                onBlur={this.validateEnbridge.bind(this)}
+                errorText={this.state.enbridgeErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                hintText="(416) 123-4567"
+                floatingLabelText="Home Phone"
+                value={this.state.homePhone}
+                onChange={this.handleTextChange.bind(this, "homePhone")}
+                onBlur={this.validateHomePhone.bind(this)}
+                errorText={this.state.homePhoneErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                hintText="(416) 123-4567"
+                floatingLabelText="Cell Phone"
+                value={this.state.cellPhone}
+                onChange={this.handleTextChange.bind(this, "cellPhone")}
+                onBlur={this.validateCellPhone.bind(this)}
+                errorText={this.state.cellPhoneErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                hintText="name@domain.com"
+                floatingLabelText="Email"
+                value={this.state.email}
+                onChange={this.handleTextChange.bind(this, "email")}
+                onBlur={this.validateEmail.bind(this)}
+                errorText={this.state.emailErr}
+                errorStyle={{float: "left"}}
+              />
+              <h2 className="headings">Void Cheque</h2>
+              <Card>
+                <CardMedia>
+                  <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
+                </CardMedia>
+                <CardTitle title="Void Cheque" subtitle="Customer Number: 123-4567" />
+                <CardText>
+                  Void cheque provided by customer.
+                </CardText>
+                <CardActions>
+                  <FlatButton label="Download" />
+                </CardActions>
+              </Card>
+              <h2 className="headings">Authorization</h2>
+              <Checkbox
+                label="Homeowner Signature"
+                labelPosition="left"
+                checked={true}
+                disabled={true}
+                value={this.state.homeownerSignature}
+                onCheck={this.handleTextChange.bind(this, "homeownerSignature")}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <DatePicker
+                hintText="2010-08-20" container="inline"
+                floatingLabelText="Installation Date"
+              />
+              <br />
+              <br />
+              <Divider />
+              <br />
+              <RaisedButton label="Cancel" secondary={true} />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <RaisedButton label="Save" />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <RaisedButton label="Submit" primary={true} />
               </div>
-          </div>
-        </Tab>
-      </Tabs>
+            </div>
+        </div>
+      :null }
       </div>
     );
   }

@@ -3,10 +3,6 @@ import { FlatButton, Toolbar, ToolbarTitle } from 'material-ui';
 import RecentSales from './RecentSales.jsx';
 import RecentInstallations from './RecentInstallations.jsx';
 import { IP } from '../../../../config/config.js';
-const style = {
-  margin: '12px',
-  height: '100px',
-};
 
 export default class Dashboard extends React.Component {
 
