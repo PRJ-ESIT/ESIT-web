@@ -132,7 +132,7 @@ export default class RecentInstallations extends React.Component {
             stripedRows={this.state.stripedRows}
           >
             {this.props.allInstallations ? this.props.allInstallations.map( (row, index) => (
-              <TableRow className="tableRow" style={tableRowColumnStyles} key={index}>
+              <TableRow className="tableRow" key={index}>
                 <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}>{row.installationNumber}</TableRowColumn>
                 <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.customerName}</TableRowColumn>
                 <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.product}</TableRowColumn>
