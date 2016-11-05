@@ -126,6 +126,7 @@ export default class RecentInstallations extends React.Component {
               <TableHeaderColumn style={tableRowColumnStyles} tooltip="Product's Name">Product</TableHeaderColumn>
               <TableHeaderColumn style={tableRowColumnStyles} tooltip="Date">Date</TableHeaderColumn>
               <TableHeaderColumn style={tableRowColumnStyles} tooltip="Address">Address</TableHeaderColumn>
+              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Installer's Name">Installer</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -134,15 +135,17 @@ export default class RecentInstallations extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {temporaryTableData.map( (row, index) => (
+            {this.props.allInstallations ? this.props.allInstallations.map( (row, index) => (
               <TableRow className="tableRow" style={tableRowColumnStyles} key={index}>
-                <TableRowColumn className="rowColumn" style={tableRowColumnStyles}>{row.installNum}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.name}</TableRowColumn>
+                <TableRowColumn className="rowColumn" style={tableRowColumnStyles}>{row.installationNumber}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.customerName}</TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyles}>{row.product}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.date}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>01.01.1900</TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyles}>{row.address}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.installerName}</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
     );

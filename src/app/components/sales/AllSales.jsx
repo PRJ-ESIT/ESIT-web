@@ -5,41 +5,8 @@ import {
   TextField, MenuItem, DropDownMenu, RaisedButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
+import { IP } from '../../../../config/config.js';
 
-const tableData = [
-  {
-    saleNumber: '123-789',
-    name: 'John Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-    status: 'In Progress',
-  },
-  {
-    saleNumber: '124-789',
-    name: 'Jane Brown',
-    product: 'Whole Home Descaler',
-    date: '02/10/16',
-    address: '123 Avenue Rd.',
-    status: 'In Progress',
-  },
-  {
-    saleNumber: '125-789',
-    name: 'Bob Doe',
-    product: 'Whole Home Combo',
-    date: '03/11/16',
-    address: '123 St Clair Ave. W.',
-    status: 'In Progress',
-  },
-  {
-    saleNumber: '126-789',
-    name: 'James Johnson',
-    product: 'Whole Home Combo',
-    date: '04/11/16',
-    address: '123 Bay St.',
-    status: 'Completed',
-  },
-];
 
 export default class AllSales extends React.Component {
 
@@ -64,9 +31,27 @@ export default class AllSales extends React.Component {
       //this variable keeps the state of a current selected row
       currentSelected: false,
       selectedNum: -1,
+
+      //an array to keep the data for the sales table
+      allSales: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allSales = JSON.parse(httpRequest.responseText).sales;
+        _this.setState({allSales: allSales});
+
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/allsales", true);
+    httpRequest.send(null);
   }
 
   handleDropdownChange(event, index, value) {
@@ -158,17 +143,18 @@ export default class AllSales extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {tableData.map( (row, index) => (
+            {this.state.allSales? this.state.allSales.map( (row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false}
                 key={index}>
-                <TableRowColumn>{row.saleNumber}</TableRowColumn>
+                <TableRowColumn>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn>{row.name}</TableRowColumn>
                 <TableRowColumn>{row.product}</TableRowColumn>
-                <TableRowColumn>{row.date}</TableRowColumn>
+                <TableRowColumn>01.01.1900</TableRowColumn>
                 <TableRowColumn>{row.address}</TableRowColumn>
-                <TableRowColumn>{row.status}</TableRowColumn>
+                <TableRowColumn>No status</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
       </div>
