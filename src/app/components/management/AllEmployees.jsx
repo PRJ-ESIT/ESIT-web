@@ -5,109 +5,7 @@ import {
   TextField, MenuItem, DropDownMenu, RaisedButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
-
-
-const temporaryTableData = [
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Installation Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Administrator',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Installation Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'Administrator',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Installation Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  }
-];
+import { IP } from '../../../../config/config.js';
 
 
 export default class AllEmployees extends React.Component {
@@ -134,9 +32,27 @@ export default class AllEmployees extends React.Component {
       //this variable keeps the state of a current selected row
       currentSelected: false,
       selectedNum: -1,
+
+      //an array to keep all employees data
+      allEmployees: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allEmployees = JSON.parse(httpRequest.responseText).employees;
+        _this.setState({allEmployees: allEmployees});
+
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/allemployees", true);
+    httpRequest.send(null);
   }
 
   handleDropdownChange(event, index, value) {
@@ -231,19 +147,20 @@ export default class AllEmployees extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {temporaryTableData.map( (row, index) => (
+            {this.state.allEmployees ? this.state.allEmployees.map( (row, index) => (
               <TableRow
                 selected={index == this.state.selectedNum ? true : false}
                 key={index}>
-                <TableRowColumn>{row.employeeNum}</TableRowColumn>
+                <TableRowColumn>No employee num</TableRowColumn>
                 <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.type}</TableRowColumn>
+                <TableRowColumn>{row.role}</TableRowColumn>
                 <TableRowColumn>{row.email}</TableRowColumn>
                 <TableRowColumn>{row.cellPhone}</TableRowColumn>
                 <TableRowColumn>{row.hireDate}</TableRowColumn>
-                <TableRowColumn>{row.isActive}</TableRowColumn>
+                <TableRowColumn>{row.isActive.toString()}</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
       </div>

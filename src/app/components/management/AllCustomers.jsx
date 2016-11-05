@@ -5,97 +5,7 @@ import {
   TextField, MenuItem, DropDownMenu, RaisedButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
-
-const temporaryTableData = [
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  },
-  {
-    customerNum: 12345,
-    name: 'James Smith',
-    email: 'james.smith@example.com',
-    phoneNum: '647-555-1234',
-    enbridgeNum: '123-789-456',
-    lastSale: '02/13/16'
-  }
-];
+import { IP } from '../../../../config/config.js';
 
 
 export default class AllCustomers extends React.Component {
@@ -121,9 +31,26 @@ export default class AllCustomers extends React.Component {
       //this variable keeps the state of a current selected row
       currentSelected: false,
       selectedNum: -1,
+
+      //an array to keep the data for the AllCustomers table
+      allCustomers: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allCustomers = JSON.parse(httpRequest.responseText).customers;
+        _this.setState({allCustomers: allCustomers});
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/allcustomers", true);
+    httpRequest.send(null);
   }
 
   handleDropdownChange(event, index, value) {
@@ -216,18 +143,19 @@ export default class AllCustomers extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {temporaryTableData.map( (row, index) => (
+            {this.state.allCustomers ? this.state.allCustomers.map( (row, index) => (
               <TableRow
                 selected={index == this.state.selectedNum ? true : false}
                 key={index}>
-                <TableRowColumn>{row.customerNum}</TableRowColumn>
+                <TableRowColumn>{row.customerId}</TableRowColumn>
                 <TableRowColumn>{row.name}</TableRowColumn>
                 <TableRowColumn>{row.email}</TableRowColumn>
-                <TableRowColumn>{row.phoneNum}</TableRowColumn>
-                <TableRowColumn>{row.enbridgeNum}</TableRowColumn>
-                <TableRowColumn>{row.lastSale}</TableRowColumn>
+                <TableRowColumn>{row.phoneNumber}</TableRowColumn>
+                <TableRowColumn>{row.enbridgeNumber}</TableRowColumn>
+                <TableRowColumn>No last sale</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
       </div>

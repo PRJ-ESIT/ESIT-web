@@ -2,85 +2,6 @@ import React from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui';
 
-const temporaryTableData = [
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-];
 
 export default class RecentSales extends React.Component {
 
@@ -134,15 +55,16 @@ export default class RecentSales extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {temporaryTableData.map( (row, index) => (
+            {this.props.allSales ? this.props.allSales.map((row, index) => (
               <TableRow key={index}>
-                <TableRowColumn style={tableRowColumnStyles}>{row.saleNum}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyles}>{row.name}</TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyles}>{row.product}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.date}</TableRowColumn>
+                <TableRowColumn style={tableRowColumnStyles}>01.01.1900</TableRowColumn>
                 <TableRowColumn style={tableRowColumnStyles}>{row.address}</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
     );
