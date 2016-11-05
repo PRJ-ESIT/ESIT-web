@@ -48,9 +48,12 @@ export default class NewSale extends React.Component {
       notes: '',
       salesRepId: '',
       applicationNumber: '',
-      homeownerSignature:'',
-      programType:'',
-      salesRepSignature:'',
+      homeownerSignature: '',
+      programType: '',
+      salesRepSignature: '',
+      deliveryCharges: '150',
+      installationCharges: '',
+      totalCharges: '',
 
       // Error for fields
       fnameErr: '',
@@ -94,6 +97,25 @@ export default class NewSale extends React.Component {
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
+  };
+
+  handleRadioChange(fieldname, event) {
+    event.stopPropagation();
+    var obj = {};
+    obj[fieldname] = event.target.value;
+    this.setState(obj);
+
+    // Change the installationCharges and totalCharges
+    // depending on the Program chosen.
+    if (event.target.value == "3") {
+      this.state.installationCharges = 550;
+    } else {
+      this.state.installationCharges = 450;
+    }
+
+    this.state.totalCharges =
+    parseInt(this.state.deliveryCharges) +
+    parseInt(this.state.installationCharges);
   };
 
   // Validation
@@ -332,9 +354,7 @@ export default class NewSale extends React.Component {
               <TextField
                 floatingLabelText="Sale Number"
                 defaultValue="123-4567"
-                //value={this.state.saleNumber}
                 disabled={true}
-                //onChange={this.handleTextChange.bind(this, "saleNumber")}
               />
               <h2 className="headings">Homeowner Information</h2>
               <TextField
@@ -461,7 +481,7 @@ export default class NewSale extends React.Component {
               <h2 className="headings">Program Type</h2>
               <RadioButtonGroup name="programType"
                 valueSelected={this.state.programType}
-                onChange={this.handleTextChange.bind(this, "programType")}>
+                onChange={this.handleRadioChange.bind(this, "programType")}>
                 <RadioButton
                   value="1"
                   label="Whole Home Filter"
@@ -476,6 +496,35 @@ export default class NewSale extends React.Component {
                 />
               </RadioButtonGroup>
               <h2 className="headings">Installation & Delivery</h2>
+              <br />
+              <br />
+              <h2>Installation & Delivery</h2>
+              <Divider />
+              <br />
+              <TextField
+                floatingLabelText="Delivery Charges"
+                value={this.state.deliveryCharges}
+                disabled={true}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <TextField
+                floatingLabelText="Installation Charges"
+                value={this.state.installationCharges}
+                disabled={true}
+              />
+              <br />
+              <TextField
+                floatingLabelText="Total Charges"
+                value={this.state.totalCharges}
+                disabled={true}
+              />
+              &nbsp;
+              &nbsp;
+              &nbsp;
+              <div>*plus applicable taxes</div>
+              <br />
               <DatePicker
                 hintText="2010-08-20" container="inline"
                 floatingLabelText="Installation Date"
