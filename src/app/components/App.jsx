@@ -34,7 +34,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       loginDialog: false,
-      leftMenuOpen: true,
+      leftMenuOpen: false,
       currentContent: <Dashboard />,
     }
 
@@ -85,7 +85,8 @@ export default class App extends React.Component {
 
   menuClickHandler(contentName) {
     this.setState({
-      currentContent: this.props[contentName]
+      currentContent: this.props[contentName],
+      leftMenuOpen: false,
     });
   }
 
