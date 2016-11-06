@@ -106,7 +106,7 @@ export default class LoginDialog extends React.Component {
           </IconButton>
           <TextField
             ref="lg_login"
-            className="loginSignupTextFields"
+            className="full-width"
             hintText="John_Doe"
             floatingLabelText="Username"
             value={this.state.loginTxtField}
@@ -115,7 +115,7 @@ export default class LoginDialog extends React.Component {
           /><br />
           <TextField
             ref="lg_password"
-            className="loginSignupTextFields"
+            className="full-width"
             hintText="<your_secure_password>"
             floatingLabelText="Password"
             type="password"

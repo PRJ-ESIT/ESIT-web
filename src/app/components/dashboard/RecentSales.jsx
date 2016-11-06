@@ -10,7 +10,6 @@ export default class RecentSales extends React.Component {
 
     this.state = {
       fixedHeader: true,
-      fixedFooter: true,
       stripedRows: true,
       showRowHover: false,
       selectable: true,
@@ -24,15 +23,10 @@ export default class RecentSales extends React.Component {
   }
 
   render() {
-    var tableRowColumnStyles = {
-      paddingRight: '2px',
-      paddingLeft: '5px'
-    };
     return (
         <Table
           wrapperStyle={{height: this.state.height}}
           fixedHeader={this.state.fixedHeader}
-          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >
@@ -42,11 +36,11 @@ export default class RecentSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Sale #">Sale #</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Product's Name">Product</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Date">Date</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Address">Address</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }} tooltip="Sale #">Sale #</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Product's Name">Product</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }} tooltip="Date">Date</TableHeaderColumn>
+              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '150px' }} tooltip="Address">Address</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -57,11 +51,11 @@ export default class RecentSales extends React.Component {
           >
             {this.props.allSales ? this.props.allSales.map((row, index) => (
               <TableRow key={index}>
-                <TableRowColumn style={tableRowColumnStyles}>{row.salesNumber}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.name}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.product}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>01.01.1900</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.address}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}>{row.salesNumber}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '150px' }}>{row.address}</TableRowColumn>
               </TableRow>
               ))
             : null }

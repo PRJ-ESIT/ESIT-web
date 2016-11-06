@@ -34,6 +34,19 @@ p, h2 {
   font-family: sans-serif;
 }
 
+h2 {
+  padding: 10px;
+}
+
+.headings {
+  background: $main-blue;
+  color: white;
+}
+
+.tabs {
+  background-color: grey !important;
+}
+
 .contentContainer {
   position: absolute;
   display: flex;
@@ -46,23 +59,23 @@ p, h2 {
   flex: 1;
   flex-basis: 20%;
   min-width: 279px;
-  background-color: #28305a;
+  background-color: $dark-blue;
   overflow: auto;
 }
 
 .mainContent {
   flex: 2;
   flex-basis: 80%;
-  background-color: #b3b3ff;
+  background-color: $light-blue;
   overflow: auto;
+}
+
+.full-width {
+  width: 100% !important;
 }
 
 .appBarButtonsContainer {
   height: 48px;
-}
-
-.loginSignupTextFields {
-  width: 100% !important;
 }
 
 .dialogTitle {
@@ -210,6 +223,7 @@ p, h2 {
 
 .newEmployee {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -237,7 +251,6 @@ p, h2 {
   background-color: white;
   padding-left: 75px;
   padding-right: 75px;
-  padding-bottom: 20px;
 }
 
 .newEmployeeFormBox {
@@ -245,7 +258,7 @@ p, h2 {
 }
 
 
-//********************************//
+//*******************************//
 //End of New Employee page styles//
 //*******************************//
 
@@ -273,6 +286,10 @@ p, h2 {
   width: 300px;
   margin: 0px;
   font-family: sans-serif;
+}
+
+.inst-table-header {
+  width: 50px;
 }
 
 //*****************************************//
