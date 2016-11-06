@@ -151,7 +151,7 @@ export default class AllEmployees extends React.Component {
               <TableRow
                 selected={index == this.state.selectedNum ? true : false}
                 key={index}>
-                <TableRowColumn>No employee num</TableRowColumn>
+                <TableRowColumn>{row.employeeNumber}</TableRowColumn>
                 <TableRowColumn>{row.name}</TableRowColumn>
                 <TableRowColumn>{row.role}</TableRowColumn>
                 <TableRowColumn>{row.email}</TableRowColumn>
