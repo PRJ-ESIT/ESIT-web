@@ -662,6 +662,7 @@ export default class NewSale extends React.Component {
                 <DatePicker
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
+                  value={this.state.installationDate}
                   onChange={this.handleDateChange.bind(this)}
                 />
                 <div style={{color:"red", float: "left"}}>
@@ -672,14 +673,15 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <div style={{ display: 'inline-block' }}>
-              <TimePicker
-                hintText="Installation Time"
-                floatingLabelText="Installation Time"
-                onChange={this.handleTimeChange.bind(this)}
-              />
-              <div style={{color:"red", float: "left"}}>
-                {this.state.installationTimeErr}
-              </div>
+                <TimePicker
+                  hintText="Installation Time"
+                  floatingLabelText="Installation Time"
+                  value={this.state.installationTime}
+                  onChange={this.handleTimeChange.bind(this)}
+                />
+                <div style={{color:"red", float: "left"}}>
+                  {this.state.installationTimeErr}
+                </div>
               </div>
               <br />
               <TextField
@@ -696,26 +698,35 @@ export default class NewSale extends React.Component {
               <Checkbox
                 label="Homeowner Signature"
                 labelPosition="left"
+                labelStyle={{width:"auto"}}
+                style={{display:"inline-block", width:"256px"}}
                 checked={true}
                 disabled={true}
                 value={this.state.homeownerSignature}
                 onCheck={this.handleTextChange.bind(this, "homeownerSignature")}
               />
+              &nbsp;
+              &nbsp;
+              &nbsp;
               <TextField
                 floatingLabelText="Date Signed"
                 defaultValue="10/13/2016"
                 disabled={true}
               />
               <br />
-              <br />
               <Checkbox
-                label="Sales Rep Signature"
+                label="Sales Rep Signature&nbsp;&nbsp;&nbsp;"
                 labelPosition="left"
+                labelStyle={{width:"auto"}}
+                style={{display:"inline-block", width:"256px"}}
                 checked={true}
                 disabled={true}
                 value={this.state.salesRepSignature}
                 onCheck={this.handleTextChange.bind(this, "salesRepSignature")}
               />
+              &nbsp;
+              &nbsp;
+              &nbsp;
               <TextField
                 hintText="1234567"
                 floatingLabelText="Sales Rep ID"
@@ -738,7 +749,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} onClick={this.validateProvince.bind(this)} />
+              <RaisedButton label="Submit" primary={true} />
               : null }
               <br />
             </div>
@@ -754,9 +765,7 @@ export default class NewSale extends React.Component {
                 defaultValue="123-4567"
                 floatingLabelText="Sale Number"
               />
-              &nbsp;
-              &nbsp;
-              &nbsp;
+              <br />
               <TextField
                 hintText="1234567"
                 floatingLabelText="Application Number"
@@ -815,8 +824,8 @@ export default class NewSale extends React.Component {
               <TextField
                 hintText="77"
                 floatingLabelText="Unit #"
-                value={this.state.unit}
-                onChange={this.handleTextChange.bind(this, "unit")}
+                value={this.state.unitNum}
+                onChange={this.handleTextChange.bind(this, "unitNum")}
                 onBlur={this.validateUnit.bind(this)}
                 errorText={this.state.unitNumErr}
                 errorStyle={{float: "left"}}
@@ -835,8 +844,8 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
-                value={this.state.selectValue}
-                onChange={this.handleSelectChange}
+                value={this.state.province}
+                onChange={this.handleProvinceChange}
                 floatingLabelText="Province"
                 floatingLabelFixed={true}
                 hintText="Select a Province"
@@ -901,7 +910,7 @@ export default class NewSale extends React.Component {
               />
               <h2 className="headings">Void Cheque</h2>
               <Card>
-                <CardMedia>
+                <CardMedia style={{maxWidth:"550px"}}>
                   <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
                 </CardMedia>
                 <CardTitle title="Void Cheque" subtitle="Customer Number: 123-4567" />
@@ -916,6 +925,8 @@ export default class NewSale extends React.Component {
               <Checkbox
                 label="Homeowner Signature"
                 labelPosition="left"
+                labelStyle={{width:"auto"}}
+                style={{display:"inline-block", width:"256px"}}
                 checked={true}
                 disabled={true}
                 value={this.state.homeownerSignature}
@@ -924,10 +935,17 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <DatePicker
-                hintText="2010-08-20" container="inline"
-                floatingLabelText="Installation Date"
-              />
+              <div style={{ display: 'inline-block' }}>
+                <DatePicker
+                  hintText="2017-08-20" container="inline"
+                  floatingLabelText="Installation Date"
+                  value={this.state.installationDate}
+                  onChange={this.handleDateChange.bind(this)}
+                />
+                <div style={{color:"red", float: "left"}}>
+                  {this.state.installationDateErr}
+                </div>
+              </div>
               <br />
               <br />
               <Divider />
@@ -936,11 +954,13 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Save" />
+              <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
               &nbsp;
               &nbsp;
               &nbsp;
+              { this.state.allValidated ?
               <RaisedButton label="Submit" primary={true} />
+              : null }
             </div>
           </div>
         </div>
