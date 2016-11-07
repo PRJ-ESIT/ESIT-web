@@ -7,98 +7,6 @@ import {
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
 
-const temporaryTableData = [
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  },
-  {
-    saleNum: 12345,
-    name: 'John Doe',
-    product: 'john.doe@example.com',
-    date: '01/10/2016',
-    address: '123 Jane Street',
-    status: 'Complete'
-  }
-];
-
-
 export default class AllInstallations extends React.Component {
 
   constructor(props) {
@@ -238,10 +146,10 @@ export default class AllInstallations extends React.Component {
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.customerName}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.product}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>{row.installationDate}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>{row.address}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '80px' }}>{row.installerName}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>No status</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.status}</TableRowColumn>
               </TableRow>
               ))
             : null }
