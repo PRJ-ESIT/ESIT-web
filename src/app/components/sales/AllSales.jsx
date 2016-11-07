@@ -129,12 +129,12 @@ export default class AllSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn tooltip="Sale #">Sale #</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Product Sold">Product</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Sale Date">Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Address">Address</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Sale Status">Status</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Sale Number">#</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Product Sold">Product</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Date">Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Address">Address</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Status">Status</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -144,14 +144,13 @@ export default class AllSales extends React.Component {
             stripedRows={this.state.stripedRows}
           >
             {this.state.allSales? this.state.allSales.map( (row, index) => (
-              <TableRow selected={index == this.state.selectedNum ? true : false}
-                key={index}>
-                <TableRowColumn>{row.salesNumber}</TableRowColumn>
-                <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.product}</TableRowColumn>
-                <TableRowColumn>01.01.1900</TableRowColumn>
-                <TableRowColumn>{row.address}</TableRowColumn>
-                <TableRowColumn>No status</TableRowColumn>
+              <TableRow selected={index == this.state.selectedNum ? true : false} key={index}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} >{row.address}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>In Progress</TableRowColumn>
               </TableRow>
               ))
             : null }

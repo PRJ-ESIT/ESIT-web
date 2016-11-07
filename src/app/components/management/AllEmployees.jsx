@@ -131,14 +131,13 @@ export default class AllEmployees extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow>
-              <TableHeaderColumn tooltip="Employee #">Employee #</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Employee Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Employee Type">Type</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Email">Email</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Cellphone Number">Phone</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Hire Date">Hire Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Is active">Is Active</TableHeaderColumn>
+            <TableRow className={'trow'}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '110px' }} tooltip="Employee Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }} tooltip="Employee Type">Type</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Email">Email</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }} tooltip="Cellphone Number">Phone</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '50px' }} tooltip="Hire Date">Hire Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Is active">Active</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -148,16 +147,13 @@ export default class AllEmployees extends React.Component {
             stripedRows={this.state.stripedRows}
           >
             {this.state.allEmployees ? this.state.allEmployees.map( (row, index) => (
-              <TableRow
-                selected={index == this.state.selectedNum ? true : false}
-                key={index}>
-                <TableRowColumn>{row.employeeNumber}</TableRowColumn>
-                <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.role}</TableRowColumn>
-                <TableRowColumn>{row.email}</TableRowColumn>
-                <TableRowColumn>{row.cellPhone}</TableRowColumn>
-                <TableRowColumn>{row.hireDate}</TableRowColumn>
-                <TableRowColumn>{row.isActive.toString()}</TableRowColumn>
+              <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '110px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }}>{row.role}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.email}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }}>{row.cellPhone}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '50px' }}>{row.hireDate}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.isActive.toString()}</TableRowColumn>
               </TableRow>
               ))
             : null }
