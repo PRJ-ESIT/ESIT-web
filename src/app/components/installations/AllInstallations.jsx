@@ -219,14 +219,13 @@ export default class AllInstallations extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow>
-              <TableHeaderColumn tooltip="Installation #">Installation #</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Product Installed">Product</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Installation Date">Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Address">Address</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Installer's Name">Installer</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Installation Status">Status</TableHeaderColumn>
+            <TableRow className={'trow'}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Product Installed">Product</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Installation Date">Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Customer's Address">Address</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '80px' }} tooltip="Installer's Name">Installer</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Installation Status">Status</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -236,16 +235,13 @@ export default class AllInstallations extends React.Component {
             stripedRows={this.state.stripedRows}
           >
             {this.state.allInstallations ? this.state.allInstallations.map( (row, index) => (
-              <TableRow
-                selected={index == this.state.selectedNum ? true : false}
-                key={index}>
-                <TableRowColumn>{row.installationNumber}</TableRowColumn>
-                <TableRowColumn>{row.customerName}</TableRowColumn>
-                <TableRowColumn>{row.product}</TableRowColumn>
-                <TableRowColumn>01.01.1900</TableRowColumn>
-                <TableRowColumn>{row.address}</TableRowColumn>
-                <TableRowColumn>{row.installerName}</TableRowColumn>
-                <TableRowColumn>No status</TableRowColumn>
+              <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.customerName}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>{row.address}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '80px' }}>{row.installerName}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>No status</TableRowColumn>
               </TableRow>
               ))
             : null }

@@ -128,13 +128,12 @@ export default class AllCustomers extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow>
-              <TableHeaderColumn tooltip="Customer #">Customer #</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Email">Email</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Phone Number">Phone Number</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Enbridge Number">Enbridge Number</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Last Sale">Last Sale</TableHeaderColumn>
+            <TableRow className={'trow'}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Email">Email</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Phone Number</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Enbridge Number">Enbridge Number</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Last Sale">Last Sale</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -144,15 +143,12 @@ export default class AllCustomers extends React.Component {
             stripedRows={this.state.stripedRows}
           >
             {this.state.allCustomers ? this.state.allCustomers.map( (row, index) => (
-              <TableRow
-                selected={index == this.state.selectedNum ? true : false}
-                key={index}>
-                <TableRowColumn>{row.customerId}</TableRowColumn>
-                <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.email}</TableRowColumn>
-                <TableRowColumn>{row.phoneNumber}</TableRowColumn>
-                <TableRowColumn>{row.enbridgeNumber}</TableRowColumn>
-                <TableRowColumn>No last sale</TableRowColumn>
+              <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.email}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.phoneNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.enbridgeNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>No last sale</TableRowColumn>
               </TableRow>
               ))
             : null }

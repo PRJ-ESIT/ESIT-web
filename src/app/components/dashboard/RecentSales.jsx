@@ -36,11 +36,11 @@ export default class RecentSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }} tooltip="Sale #">Sale #</TableHeaderColumn>
-              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }} tooltip="Product's Name">Product</TableHeaderColumn>
-              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }} tooltip="Date">Date</TableHeaderColumn>
-              <TableHeaderColumn style={{ padding: '0px 5px 0px 5px', width: '150px' }} tooltip="Address">Address</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '40px' }} tooltip="Sale Number">#</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Product's Name">Product</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Date">Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '150px' }} tooltip="Address">Address</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -51,11 +51,11 @@ export default class RecentSales extends React.Component {
           >
             {this.props.allSales ? this.props.allSales.map((row, index) => (
               <TableRow key={index}>
-                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}>{row.salesNumber}</TableRowColumn>
-                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.name}</TableRowColumn>
-                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '125px' }}>{row.product}</TableRowColumn>
-                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '75px' }}>01.01.1900</TableRowColumn>
-                <TableRowColumn style={{ padding: '0px 5px 0px 5px', width: '150px' }}>{row.address}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '40px' }}>{row.salesNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '150px' }}>{row.address}</TableRowColumn>
               </TableRow>
               ))
             : null }

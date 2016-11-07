@@ -38,6 +38,18 @@ h2 {
   padding: 10px;
 }
 
+.tableRowHeaderColumn {
+  padding: 0px 5px 0px 5px !important;
+  position: inherit !important;
+}
+
+.trow {
+  td:first-child, th:first-child {
+    width: 10px !important;
+    padding: 0px 15px 0px 24px !important;
+  }
+}
+
 .headings {
   background: $main-blue;
   color: white;
@@ -138,6 +150,11 @@ h2 {
       @media #{$tablet-portrait} {
 
       }
+      @media #{$tablet-landscape} {
+        padding-bottom: 25px;
+        margin-right: 25px;
+        margin-left: 25px;
+      }
     }
 
     .recentInstallations {
@@ -146,6 +163,11 @@ h2 {
       }
       @media #{$tablet-portrait} {
 
+      }
+      @media #{$tablet-landscape} {
+        padding-bottom: 25px;
+        margin-right: 25px;
+        margin-left: 25px;
       }
     }
 
