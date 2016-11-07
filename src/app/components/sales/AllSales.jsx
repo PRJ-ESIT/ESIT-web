@@ -148,9 +148,9 @@ export default class AllSales extends React.Component {
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.product}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.date}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} >{row.address}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>In Progress</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.status}</TableRowColumn>
               </TableRow>
               ))
             : null }

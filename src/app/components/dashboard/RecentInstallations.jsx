@@ -135,7 +135,7 @@ export default class RecentInstallations extends React.Component {
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '40px' }}>{row.installationNumber}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.customerName}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.product}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>{row.installationDate}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '150px' }}>{row.address}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.installerName}</TableRowColumn>
               </TableRow>

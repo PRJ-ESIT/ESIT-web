@@ -54,7 +54,7 @@ export default class RecentSales extends React.Component {
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '40px' }}>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.product}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>{row.date}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '150px' }}>{row.address}</TableRowColumn>
               </TableRow>
               ))

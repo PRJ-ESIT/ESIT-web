@@ -148,7 +148,7 @@ export default class AllCustomers extends React.Component {
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.email}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.phoneNumber}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.enbridgeNumber}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>No last sale</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.date}</TableRowColumn>
               </TableRow>
               ))
             : null }
