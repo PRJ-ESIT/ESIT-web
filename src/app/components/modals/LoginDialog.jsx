@@ -1,5 +1,5 @@
 import React from 'react';
-import IP from '../../../../config/config.js';
+import { IP } from '../../../../config/config.js';
 import { Dialog, FlatButton, RaisedButton, TextField, IconButton } from 'material-ui';
 import '../../../client/styles/style.scss';
 import { validateLogin, validations } from '../helpers/common.js';
@@ -82,11 +82,6 @@ export default class LoginDialog extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="REGISTER"
-        primary={true}
-        onTouchTap={this.props.registerClickHandler}
-      />,
-      <FlatButton
         label="LOG IN"
         primary={true}
         keyboardFocused={true}
@@ -111,7 +106,7 @@ export default class LoginDialog extends React.Component {
           </IconButton>
           <TextField
             ref="lg_login"
-            className="loginSignupTextFields"
+            className="full-width"
             hintText="John_Doe"
             floatingLabelText="Username"
             value={this.state.loginTxtField}
@@ -120,7 +115,7 @@ export default class LoginDialog extends React.Component {
           /><br />
           <TextField
             ref="lg_password"
-            className="loginSignupTextFields"
+            className="full-width"
             hintText="<your_secure_password>"
             floatingLabelText="Password"
             type="password"

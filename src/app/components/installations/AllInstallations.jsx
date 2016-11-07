@@ -5,6 +5,7 @@ import {
   TextField, MenuItem, DropDownMenu, RaisedButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
+import { IP } from '../../../../config/config.js';
 
 const temporaryTableData = [
   {
@@ -121,9 +122,26 @@ export default class AllInstallations extends React.Component {
       //this variable keeps the state of a current selected row
       currentSelected: false,
       selectedNum: -1,
+
+      //an array to keep the data for all installations
+      allInstallations: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allInstallations = JSON.parse(httpRequest.responseText).installations;
+        _this.setState({allInstallations: allInstallations});
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/allinstallations", true);
+    httpRequest.send(null);
   }
 
   handleDropdownChange(event, index, value) {
@@ -201,13 +219,13 @@ export default class AllInstallations extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow>
-              <TableHeaderColumn tooltip="Sale #">Sale #</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Product Installed">Product</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Installation Date">Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer's Address">Address</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Installation Status">Status</TableHeaderColumn>
+            <TableRow className={'trow'}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Product Installed">Product</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Installation Date">Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Customer's Address">Address</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '80px' }} tooltip="Installer's Name">Installer</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Installation Status">Status</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -216,18 +234,17 @@ export default class AllInstallations extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {temporaryTableData.map( (row, index) => (
-              <TableRow
-                selected={index == this.state.selectedNum ? true : false}
-                key={index}>
-                <TableRowColumn>{row.saleNum}</TableRowColumn>
-                <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.product}</TableRowColumn>
-                <TableRowColumn>{row.date}</TableRowColumn>
-                <TableRowColumn>{row.address}</TableRowColumn>
-                <TableRowColumn>{row.status}</TableRowColumn>
+            {this.state.allInstallations ? this.state.allInstallations.map( (row, index) => (
+              <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.customerName}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>{row.address}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '80px' }}>{row.installerName}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>No status</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
       </div>

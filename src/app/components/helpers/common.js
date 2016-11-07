@@ -136,11 +136,46 @@ function validateEmail(email) {
   }
 }
 
+function isTabletPortrait() {
+  // @tablet-portrait media query:
+  return (window.matchMedia('(orientation: portrait)').matches &&
+    window.matchMedia('(max-device-aspect-ratio: 1/1)').matches &&
+    window.matchMedia('(min-device-width: 481px)').matches) ||
+    // @tablet-portrait-with-keyboard media query:
+    (window.matchMedia('(orientation: landscape)').matches &&
+    window.matchMedia('(max-device-aspect-ratio: 1/1)').matches &&
+    window.matchMedia('(min-device-width: 481px)').matches);
+}
+
+function isTabletLandscape() {
+  // @tablet-landscape media query:
+  return (window.matchMedia('(orientation: landscape)').matches &&
+    window.matchMedia('(min-device-aspect-ratio: 1/1)').matches &&
+    window.matchMedia('(min-device-width: 960px)').matches &&
+    window.matchMedia('(max-device-width: 1366px)').matches);
+}
+
+function isDesktopPortrait() {
+  // @desktop-portrait media query:
+  return (window.matchMedia('(orientation: portrait)').matches &&
+    window.matchMedia('(min-device-aspect-ratio: 1/1)').matches);
+}
+
+function isDesktopLandscape() {
+  // @desktop-landscape media query:
+  return (window.matchMedia('(orientation: landscape)').matches &&
+    window.matchMedia('(min-device-aspect-ratio: 1/1)').matches &&
+    window.matchMedia('(min-device-width: 1367px)').matches);
+}
+
 
 module.exports = {
+  isTabletPortrait,
+  isTabletLandscape,
+  isDesktopPortrait,
+  isDesktopLandscape,
 
   validations,
-
   //TODO remove next 2 functions
   validateLogin,
   validateEmail

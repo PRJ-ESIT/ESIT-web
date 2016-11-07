@@ -15,40 +15,79 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 
 */
 
+//***********************//
+//     Global styles     //
+//***********************//
+
 body {
   background-color: #2DA9AE;
+  margin: 0px;
+  @media #{$desktop-landscape}, #{$desktop-portrait} {
+    background-color: black;
+  }
+  @media #{$tablet-portrait} {
+    background-color: red;
+  }
 }
 
+p, h2 {
+  font-family: sans-serif;
+}
+
+h2 {
+  padding: 10px;
+}
+
+.tableRowHeaderColumn {
+  padding: 0px 5px 0px 5px !important;
+  position: inherit !important;
+}
+
+.trow {
+  td:first-child, th:first-child {
+    width: 10px !important;
+    padding: 0px 15px 0px 24px !important;
+  }
+}
+
+.headings {
+  background: $main-blue;
+  color: white;
+}
+
+.tabs {
+  background-color: grey !important;
+}
 
 .contentContainer {
   position: absolute;
   display: flex;
   flex-direction: row;
-  height: calc(100% - 80px);
-  width: calc(100% - 16px);
+  height: calc(100% - 64px);
+  width: 100%;
 }
 
 .leftPanel {
   flex: 1;
   flex-basis: 20%;
   min-width: 279px;
-  background-color: #28305a;
+  background-color: $dark-blue;
   overflow: auto;
 }
 
 .mainContent {
   flex: 2;
   flex-basis: 80%;
-  background-color: #b3b3ff;
+  background-color: $light-blue;
   overflow: auto;
+}
+
+.full-width {
+  width: 100% !important;
 }
 
 .appBarButtonsContainer {
   height: 48px;
-}
-
-.loginSignupTextFields {
-  width: 100% !important;
 }
 
 .dialogTitle {
@@ -69,6 +108,7 @@ body {
 //************************//
 //Dashboard Content styles//
 //************************//
+
 .dashboard {
   height: 100%;
   width: 100%;
@@ -89,31 +129,70 @@ body {
   }
 
   .dashboardTables {
-    flex: 2;
-    width: 100%;
-    flex-basis: calc(100% - 150px);
-    height: calc(100% - 150px);
-    display: flex;
-    flex-direction: row;
+    @media #{$desktop-landscape}, #{$desktop-portrait} {
+      flex: 2;
+      width: 100%;
+      flex-basis: calc(100% - 150px);
+      height: calc(100% - 150px);
+      display: flex;
+      flex-direction: row;
+    }
+    @media #{$tablet-portrait} {
+      width: 100%;
+      height: calc(100% - 150px);
+    }
+
 
     .recentSales {
-      flex: 1;
+      @media #{$desktop-landscape}, #{$desktop-portrait} {
+        flex: 1;
+      }
+      @media #{$tablet-portrait} {
+
+      }
+      @media #{$tablet-landscape} {
+        padding-bottom: 25px;
+        margin-right: 25px;
+        margin-left: 25px;
+      }
     }
 
     .recentInstallations {
-      flex: 2;
+      @media #{$desktop-landscape}, #{$desktop-portrait} {
+        flex: 2;
+      }
+      @media #{$tablet-portrait} {
+
+      }
+      @media #{$tablet-landscape} {
+        padding-bottom: 25px;
+        margin-right: 25px;
+        margin-left: 25px;
+      }
     }
 
     .salesAndInstallation {
-      flex-basis: 50%;
-      //half of the content window minus margin minus border
-      width:calc(50% - 40px - 2px);
-      //100% of the parent's height minus margin minus border
-      height: calc(100% - 40px - 2px);
-      margin: 20px;
-      border: 1px solid black;
-      border-radius: 5px;
-      background-color: white;
+      @media #{$desktop-landscape}, #{$desktop-portrait} {
+        flex-basis: 50%;
+        //half of the content window minus margin minus border
+        width:calc(50% - 40px - 2px);
+        //100% of the parent's height minus margin minus border
+        height: calc(100% - 40px - 2px);
+        margin: 20px;
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: white;
+      }
+      @media #{$tablet-portrait} {
+        width:calc(100% - 40px - 2px);
+        //100% of the parent's height minus margin minus border
+        height: calc(50% - 40px - 2px);
+        margin: 20px;
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: white;
+      }
+
     }
 
     .salesInstallationToolBar {
@@ -166,6 +245,7 @@ body {
 
 .newEmployee {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -191,17 +271,16 @@ body {
 .newEmployeeForm {
   height: 100%;
   background-color: white;
-  padding-left: 120px;
-  padding-right: 120px;
-  padding-bottom: 20px;
+  padding-left: 75px;
+  padding-right: 75px;
 }
 
 .newEmployeeFormBox {
-  padding-top: 110px;
+  padding-top: 30px;
 }
 
 
-//********************************//
+//*******************************//
 //End of New Employee page styles//
 //*******************************//
 
@@ -211,6 +290,7 @@ body {
 .radioActionText {
   display: flex;
   flex-direction: row;
+  margin-top: 20px;
 }
 
 .radioGroup {
@@ -221,4 +301,19 @@ body {
 
 .radioGroup div.radio {
   width: 10% !important;
+  padding-right: 20px;
 }
+
+.radioRow {
+  width: 300px;
+  margin: 0px;
+  font-family: sans-serif;
+}
+
+.inst-table-header {
+  width: 50px;
+}
+
+//*****************************************//
+//End of Schedule Installations page styles//
+//*****************************************//

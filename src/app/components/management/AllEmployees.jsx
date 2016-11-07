@@ -5,109 +5,7 @@ import {
   TextField, MenuItem, DropDownMenu, RaisedButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
-
-
-const temporaryTableData = [
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Installation Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Administrator',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Installation Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'Administrator',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Sales Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  },
-  {
-    employeeNum: 12345,
-    name: 'James Smith',
-    type: 'Installation Agent',
-    email: '123@filterbutler.ca',
-    cellPhone: '647-555-1234',
-    hireDate: '02/13/16',
-    isActive: 'yes'
-  }
-];
+import { IP } from '../../../../config/config.js';
 
 
 export default class AllEmployees extends React.Component {
@@ -134,9 +32,27 @@ export default class AllEmployees extends React.Component {
       //this variable keeps the state of a current selected row
       currentSelected: false,
       selectedNum: -1,
+
+      //an array to keep all employees data
+      allEmployees: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allEmployees = JSON.parse(httpRequest.responseText).employees;
+        _this.setState({allEmployees: allEmployees});
+
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/allemployees", true);
+    httpRequest.send(null);
   }
 
   handleDropdownChange(event, index, value) {
@@ -215,14 +131,13 @@ export default class AllEmployees extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow>
-              <TableHeaderColumn tooltip="Employee #">Employee #</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Employee Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Employee Type">Type</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Email">Email</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Cellphone Number">Phone</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Hire Date">Hire Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Is active">Is Active</TableHeaderColumn>
+            <TableRow className={'trow'}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '110px' }} tooltip="Employee Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }} tooltip="Employee Type">Type</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Email">Email</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }} tooltip="Cellphone Number">Phone</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '50px' }} tooltip="Hire Date">Hire Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Is active">Active</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -231,19 +146,17 @@ export default class AllEmployees extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {temporaryTableData.map( (row, index) => (
-              <TableRow
-                selected={index == this.state.selectedNum ? true : false}
-                key={index}>
-                <TableRowColumn>{row.employeeNum}</TableRowColumn>
-                <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.type}</TableRowColumn>
-                <TableRowColumn>{row.email}</TableRowColumn>
-                <TableRowColumn>{row.cellPhone}</TableRowColumn>
-                <TableRowColumn>{row.hireDate}</TableRowColumn>
-                <TableRowColumn>{row.isActive}</TableRowColumn>
+            {this.state.allEmployees ? this.state.allEmployees.map( (row, index) => (
+              <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '110px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }}>{row.role}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.email}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }}>{row.cellPhone}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '50px' }}>{row.hireDate}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.isActive.toString()}</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
       </div>

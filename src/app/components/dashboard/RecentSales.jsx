@@ -2,85 +2,6 @@ import React from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui';
 
-const temporaryTableData = [
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-  {
-    saleNum:12345,
-    name: 'James Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-  },
-];
 
 export default class RecentSales extends React.Component {
 
@@ -89,7 +10,6 @@ export default class RecentSales extends React.Component {
 
     this.state = {
       fixedHeader: true,
-      fixedFooter: true,
       stripedRows: true,
       showRowHover: false,
       selectable: true,
@@ -103,15 +23,10 @@ export default class RecentSales extends React.Component {
   }
 
   render() {
-    var tableRowColumnStyles = {
-      paddingRight: '2px',
-      paddingLeft: '5px'
-    };
     return (
         <Table
           wrapperStyle={{height: this.state.height}}
           fixedHeader={this.state.fixedHeader}
-          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >
@@ -121,11 +36,11 @@ export default class RecentSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Sale #">Sale #</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Customer's Name">Name</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Product's Name">Product</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Date">Date</TableHeaderColumn>
-              <TableHeaderColumn style={tableRowColumnStyles} tooltip="Address">Address</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '40px' }} tooltip="Sale Number">#</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Product's Name">Product</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Date">Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '150px' }} tooltip="Address">Address</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -134,15 +49,16 @@ export default class RecentSales extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {temporaryTableData.map( (row, index) => (
+            {this.props.allSales ? this.props.allSales.map((row, index) => (
               <TableRow key={index}>
-                <TableRowColumn style={tableRowColumnStyles}>{row.saleNum}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.name}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.product}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.date}</TableRowColumn>
-                <TableRowColumn style={tableRowColumnStyles}>{row.address}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '40px' }}>{row.salesNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '150px' }}>{row.address}</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
     );

@@ -1,57 +1,12 @@
 import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
-  Table, TableBody, TableFooter, TableHeader, TableHeaderColumn,
-  TableRow, TableRowColumn, TextField, DropDownMenu, MenuItem,
-  RaisedButton} from 'material-ui';
-
+  Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
+  TextField, MenuItem, DropDownMenu, RaisedButton
+} from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
+import { IP } from '../../../../config/config.js';
 
-const styles = {
-  propContainer: {
-    width: 200,
-    overflow: 'hidden',
-    margin: '20px auto 0',
-  },
-  propToggleHeader: {
-    margin: '20px auto 10px',
-  },
-};
-
-const tableData = [
-  {
-    saleNumber: '123-789',
-    name: 'John Smith',
-    product: 'Whole Home Filter',
-    date: '01/10/16',
-    address: '123 Yonge St.',
-    status: 'In Progress',
-  },
-  {
-    saleNumber: '124-789',
-    name: 'Jane Brown',
-    product: 'Whole Home Descaler',
-    date: '02/10/16',
-    address: '123 Avenue Rd.',
-    status: 'In Progress',
-  },
-  {
-    saleNumber: '125-789',
-    name: 'Bob Doe',
-    product: 'Whole Home Combo',
-    date: '03/11/16',
-    address: '123 St Clair Ave. W.',
-    status: 'In Progress',
-  },
-  {
-    saleNumber: '126-789',
-    name: 'James Johnson',
-    product: 'Whole Home Combo',
-    date: '04/11/16',
-    address: '123 Bay St.',
-    status: 'Completed',
-  },
-];
 
 export default class AllSales extends React.Component {
 
@@ -60,24 +15,43 @@ export default class AllSales extends React.Component {
     this.state = {
       //dropdown state variable
       dropdownValue: 1,
-
+      // table state variable
       fixedHeader: true,
-      fixedFooter: false,
-      stripedRows: true,
+      stripedRows: false,
       showRowHover: false,
       selectable: true,
       multiSelectable: false,
       enableSelectAll: false,
       deselectOnClickaway: true,
       showCheckboxes: true,
-      height: '300px',
+      //100% minus Toolbar minus 2px border
+      height: 'calc(100% - 72px)',
+      //end of table state variables
 
       //this variable keeps the state of a current selected row
       currentSelected: false,
       selectedNum: -1,
+
+      //an array to keep the data for the sales table
+      allSales: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allSales = JSON.parse(httpRequest.responseText).sales;
+        _this.setState({allSales: allSales});
+
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/allsales", true);
+    httpRequest.send(null);
   }
 
   handleDropdownChange(event, index, value) {
@@ -104,8 +78,8 @@ export default class AllSales extends React.Component {
 
   render() {
     return (
-      <div>
-        <Toolbar>
+      <div className="allCustomers">
+        <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Sales" />
             <Search
@@ -146,7 +120,6 @@ export default class AllSales extends React.Component {
           onRowSelection={this.handleSelection}
           height={this.state.height}
           fixedHeader={this.state.fixedHeader}
-          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >
@@ -156,12 +129,12 @@ export default class AllSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow>
-              <TableHeaderColumn tooltip="Sales Number">Sales Number</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer Name">Name</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Product Sold">Product</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Sale Date">Date</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Customer Address">Address</TableHeaderColumn>
-              <TableHeaderColumn tooltip="Sale Status">Status</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Sale Number">#</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Product Sold">Product</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Date">Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Address">Address</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Status">Status</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -170,17 +143,17 @@ export default class AllSales extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {tableData.map( (row, index) => (
-              <TableRow selected={index == this.state.selectedNum ? true : false}
-                key={index}>
-                <TableRowColumn>{row.saleNumber}</TableRowColumn>
-                <TableRowColumn>{row.name}</TableRowColumn>
-                <TableRowColumn>{row.product}</TableRowColumn>
-                <TableRowColumn>{row.date}</TableRowColumn>
-                <TableRowColumn>{row.address}</TableRowColumn>
-                <TableRowColumn>{row.status}</TableRowColumn>
+            {this.state.allSales? this.state.allSales.map( (row, index) => (
+              <TableRow selected={index == this.state.selectedNum ? true : false} key={index}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>01.01.1900</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} >{row.address}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>In Progress</TableRowColumn>
               </TableRow>
-              ))}
+              ))
+            : null }
           </TableBody>
         </Table>
       </div>

@@ -6,7 +6,6 @@ import {
 } from 'material-ui';
 import { validations } from '../helpers/common.js';
 
-
 const provinces = [
   <MenuItem key={1} value={1} primaryText="Alberta" />,
   <MenuItem key={2} value={2} primaryText="British Columbia" />,
@@ -100,6 +99,7 @@ export default class ScheduleInstallation extends React.Component {
       sqftErr: '',
       bathroomsErr: '',
       residentsErr: '',
+      validated: false,
 
       // table properties
       fixedHeader: true,
@@ -173,10 +173,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         fnameErr: '',
         fname: fname,
+        validated: true,
       });
     } else {
       this.setState({
-        fnameErr: '2 to 25 characters, spaces and hyphens only'
+        fnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -190,10 +192,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         lnameErr: '',
         lname: lname,
+        validated: true,
       });
     } else {
       this.setState({
-        lnameErr: '2 to 25 characters, spaces and hyphens only'
+        lnameErr: '2 to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -204,10 +208,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         addressErr: '',
         address: address,
+        validated: true,
       });
     } else {
       this.setState({
-        addressErr: 'Can contain characters, numbers, spaces and hyphens only'
+        addressErr: 'Can contain characters, numbers, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -218,10 +224,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
+        validated: true,
       });
     } else {
       this.setState({
-        unitNumErr: 'Has to be 1 word containing numbers/characters only'
+        unitNumErr: 'Has to be 1 word containing numbers/characters only',
+        validated: false,
       });
     }
   }
@@ -232,10 +240,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         cityErr: '',
         city: city,
+        validated: true,
       });
     } else {
       this.setState({
-        cityErr: 'Up to 25 characters, spaces and hyphens only'
+        cityErr: 'Up to 25 characters, spaces and hyphens only',
+        validated: false,
       });
     }
   }
@@ -246,10 +256,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         postalCodeErr: '',
         postalCode: postalCode.toUpperCase(),
+        validated: true,
       });
     } else {
       this.setState({
-        postalCodeErr: 'Not a valid postal code'
+        postalCodeErr: 'Not a valid postal code',
+        validated: false,
       });
     }
   }
@@ -260,10 +272,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         enbridgeErr: '',
         enbridge: enbridge,
+        validated: true,
       });
     } else {
       this.setState({
-        enbridgeErr: 'Must only consist of numbers'
+        enbridgeErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }
@@ -274,10 +288,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         emailErr: '',
         email: email,
+        validated: true,
       });
     } else {
       this.setState({
-        emailErr: 'Not a valid email'
+        emailErr: 'Not a valid email',
+        validated: false,
       });
     }
   }
@@ -288,10 +304,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
+        validated: true,
       });
     } else {
       this.setState({
-        homePhoneErr: 'Not a valid phone number'
+        homePhoneErr: 'Not a valid phone number',
+        validated: false,
       });
     }
   }
@@ -302,10 +320,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
+        validated: true,
       });
     } else {
       this.setState({
-        cellPhoneErr: 'Not a valid phone number'
+        cellPhoneErr: 'Not a valid phone number',
+        validated: false,
       });
     }
   }
@@ -316,10 +336,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         sqftErr: '',
         sqft: sqft,
+        validated: true,
       });
     } else {
       this.setState({
-        sqftErr: 'Must only consist of numbers'
+        sqftErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }
@@ -330,10 +352,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         bathroomsErr: '',
         bathrooms: bathrooms,
+        validated: true,
       });
     } else {
       this.setState({
-        bathroomsErr: 'Must only consist of numbers'
+        bathroomsErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }
@@ -344,10 +368,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         residentsErr: '',
         residents: residents,
+        validated: true,
       });
     } else {
       this.setState({
-        residentsErr: 'Must only consist of numbers'
+        residentsErr: 'Must only consist of numbers',
+        validated: false,
       });
     }
   }
@@ -357,364 +383,383 @@ export default class ScheduleInstallation extends React.Component {
     return (
       <div>
         <Tabs
-        value={this.state.tabValue}
-        onChange={this.handleTabChange}
+          value={this.state.tabValue}
+          onChange={this.handleTabChange}
+          inkBarStyle={{ backgroundColor: "yellow" }}
         >
-          <Tab label="Installation Completion Certificate" value="a" >
+          <Tab label="Installation Completion Certificate" value="a" className="tabs">
           </Tab>
-          <Tab label="Installation Pictures" value="b">
+          <Tab label="Installation Pictures" value="b" className="tabs">
           </Tab>
         </Tabs>
         { this.state.tabA ?
-        <div className="newEmployeeFormContainer">
-          <div className="newEmployeeForm">
-            <div className="newEmployeeFormBox">
-              <h2>Homeowner Information</h2><Divider />
-              <TextField
-                floatingLabelText="First Name"
-                hintText="John"
-                maxLength="25"
-                onChange={this.handleTextChange.bind(this, "fname")}
-                onBlur={this.validateFName.bind(this)}
-                errorText={this.state.fnameErr}
-              />
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Last Name"
-                hintText="Doe"
-                maxLength="25"
-                onChange={this.handleTextChange.bind(this, "lname")}
-                onBlur={this.validateLName.bind(this)}
-                errorText={this.state.lnameErr}
-              /><br />
-              <TextField
-                floatingLabelText="Address"
-                hintText="123 Fake Street"
-                maxLength="50"
-                onChange={this.handleTextChange.bind(this, "address")}
-                onBlur={this.validateAddress.bind(this)}
-                errorText={this.state.addressErr}
-              />
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Unit #"
-                hintText="77"
-                type="number"
-                maxLength="10"
-                onChange={this.handleTextChange.bind(this, "unitNum")}
-                onBlur={this.validateUnit.bind(this)}
-                errorText={this.state.unitNumErr}
-              /><br />
-              <TextField
-                floatingLabelText="City"
-                hintText="Toronto"
-                maxLength="25"
-                onChange={this.handleTextChange.bind(this, "city")}
-                onBlur={this.validateCity.bind(this)}
-                errorText={this.state.cityErr}
-              />
-              &nbsp;
-              &nbsp;
-              <SelectField
-                value={this.state.selectValue}
-                onChange={this.handleSelectChange}
-                floatingLabelText="Province"
-                floatingLabelFixed={false}
-                hintText="Select a Province"
-              >
-                {provinces}
-              </SelectField><br />
-              <TextField
-                floatingLabelText="Postal Code"
-                hintText="M4B 5V9"
-                maxLength="7"
-                onChange={this.handleTextChange.bind(this, "postalCode")}
-                onBlur={this.validatePostalCode.bind(this)}
-                errorText={this.state.postalCodeErr}
-              />
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Enbridge Gas #"
-                hintText="1234567890"
-                maxLength="15"
-                onChange={this.handleTextChange.bind(this, "enbridge")}
-                onBlur={this.validateEnbridge.bind(this)}
-                errorText={this.state.enbridgeErr}
-              /><br />
-              <TextField
-                floatingLabelText="Email"
-                hintText="name@domain.com"
-                type="email"
-                maxLength="50"
-                onChange={this.handleTextChange.bind(this, "email")}
-                onBlur={this.validateEmail.bind(this)}
-                errorText={this.state.emailErr}
-              />
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Home Phone"
-                hintText="(416) 123-4567"
-                type="tel"
-                maxLength="12"
-                onChange={this.handleTextChange.bind(this, "homePhone")}
-                onBlur={this.validateHomePhone.bind(this)}
-                errorText={this.state.homePhoneErr}
-              /><br />
-              <TextField
-                floatingLabelText="Cell Phone"
-                hintText="(416) 123-4567"
-                type="tel"
-                maxLength="12"
-                onChange={this.handleTextChange.bind(this, "cellPhone")}
-                onBlur={this.validateCellPhone.bind(this)}
-                errorText={this.state.cellPhoneErr}
-              />
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="SQ Footage"
-                hintText="3000"
-                type="number"
-                maxLength="6"
-                onChange={this.handleTextChange.bind(this, "sqft")}
-                onBlur={this.validateSqft.bind(this)}
-                errorText={this.state.sqftErr}
-              /><br />
-              <TextField
-                floatingLabelText="Bathrooms"
-                hintText="3"
-                type="number"
-                maxLength="3"
-                onChange={this.handleTextChange.bind(this, "bathrooms")}
-                onBlur={this.validateBathrooms.bind(this)}
-                errorText={this.state.bathroomsErr}
-              />
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Residents"
-                hintText="4"
-                type="number"
-                maxLength="3"
-                onChange={this.handleTextChange.bind(this, "residents")}
-                onBlur={this.validateResidents.bind(this)}
-                errorText={this.state.residentsErr}
-              /><br />
-              <div className="radioActionText">Pool
-                <RadioButtonGroup name="hasPool" className="radioGroup"
-                onChange={this.handleRadioChange}>
-                  <RadioButton
-                    className="radio"
-                    value="yes"
-                    label="Yes"
-                  />
-                  <RadioButton
-                    className="radio"
-                    value="no"
-                    label="No"
-                  />
-                </RadioButtonGroup>
-              </div><br />
+          <div className="newEmployeeFormContainer">
+            <div className="newEmployeeForm">
+              <div className="newEmployeeFormBox">
+                <h2 className="headings">Homeowner Information</h2>
+                <TextField
+                  floatingLabelText="First Name"
+                  hintText="John"
+                  maxLength="25"
+                  onChange={this.handleTextChange.bind(this, "fname")}
+                  onBlur={this.validateFName.bind(this)}
+                  errorText={this.state.fnameErr}
+                  errorStyle={{float: "left"}}
+                />
+                &nbsp;
+                &nbsp;
+                <TextField
+                  floatingLabelText="Last Name"
+                  hintText="Doe"
+                  maxLength="25"
+                  onChange={this.handleTextChange.bind(this, "lname")}
+                  onBlur={this.validateLName.bind(this)}
+                  errorText={this.state.lnameErr}
+                  errorStyle={{float: "left"}}
+                /><br />
+                <TextField
+                  floatingLabelText="Address"
+                  hintText="123 Fake Street"
+                  maxLength="50"
+                  onChange={this.handleTextChange.bind(this, "address")}
+                  onBlur={this.validateAddress.bind(this)}
+                  errorText={this.state.addressErr}
+                  errorStyle={{float: "left"}}
+                />
+                &nbsp;
+                &nbsp;
+                <TextField
+                  floatingLabelText="Unit #"
+                  hintText="77"
+                  type="number"
+                  maxLength="10"
+                  onChange={this.handleTextChange.bind(this, "unitNum")}
+                  onBlur={this.validateUnit.bind(this)}
+                  errorText={this.state.unitNumErr}
+                  errorStyle={{float: "left"}}
+                /><br />
+                <TextField
+                  floatingLabelText="City"
+                  hintText="Toronto"
+                  maxLength="25"
+                  onChange={this.handleTextChange.bind(this, "city")}
+                  onBlur={this.validateCity.bind(this)}
+                  errorText={this.state.cityErr}
+                  errorStyle={{float: "left"}}
+                />
+                &nbsp;
+                &nbsp;
+                <SelectField
+                  value={this.state.selectValue}
+                  onChange={this.handleSelectChange}
+                  floatingLabelText="Province"
+                  floatingLabelFixed={false}
+                  hintText="Select a Province"
+                >
+                  {provinces}
+                </SelectField><br />
+                <TextField
+                  floatingLabelText="Postal Code"
+                  hintText="M4B 5V9"
+                  maxLength="7"
+                  onChange={this.handleTextChange.bind(this, "postalCode")}
+                  onBlur={this.validatePostalCode.bind(this)}
+                  errorText={this.state.postalCodeErr}
+                  errorStyle={{float: "left"}}
+                />
+                &nbsp;
+                &nbsp;
+                <TextField
+                  floatingLabelText="Enbridge Gas #"
+                  hintText="1234567890"
+                  maxLength="15"
+                  onChange={this.handleTextChange.bind(this, "enbridge")}
+                  onBlur={this.validateEnbridge.bind(this)}
+                  errorText={this.state.enbridgeErr}
+                  errorStyle={{float: "left"}}
+                /><br />
+                <TextField
+                  floatingLabelText="Email"
+                  hintText="name@domain.com"
+                  type="email"
+                  maxLength="50"
+                  onChange={this.handleTextChange.bind(this, "email")}
+                  onBlur={this.validateEmail.bind(this)}
+                  errorText={this.state.emailErr}
+                  errorStyle={{float: "left"}}
+                />
+                &nbsp;
+                &nbsp;
+                <TextField
+                  floatingLabelText="Home Phone"
+                  hintText="(416) 123-4567"
+                  type="tel"
+                  maxLength="12"
+                  onChange={this.handleTextChange.bind(this, "homePhone")}
+                  onBlur={this.validateHomePhone.bind(this)}
+                  errorText={this.state.homePhoneErr}
+                  errorStyle={{float: "left"}}
+                /><br />
+                <TextField
+                  floatingLabelText="Cell Phone"
+                  hintText="(416) 123-4567"
+                  type="tel"
+                  maxLength="12"
+                  onChange={this.handleTextChange.bind(this, "cellPhone")}
+                  onBlur={this.validateCellPhone.bind(this)}
+                  errorText={this.state.cellPhoneErr}
+                  errorStyle={{float: "left"}}
+                />
+                &nbsp;
+                &nbsp;
+                <TextField
+                  floatingLabelText="SQ Footage"
+                  hintText="3000"
+                  type="number"
+                  maxLength="6"
+                  onChange={this.handleTextChange.bind(this, "sqft")}
+                  onBlur={this.validateSqft.bind(this)}
+                  errorText={this.state.sqftErr}
+                  errorStyle={{float: "left"}}
+                /><br />
+                <TextField
+                  floatingLabelText="Bathrooms"
+                  hintText="3"
+                  type="number"
+                  maxLength="3"
+                  onChange={this.handleTextChange.bind(this, "bathrooms")}
+                  onBlur={this.validateBathrooms.bind(this)}
+                  errorText={this.state.bathroomsErr}
+                  errorStyle={{float: "left"}}
+                />
+                &nbsp;
+                &nbsp;
+                <TextField
+                  floatingLabelText="Residents"
+                  hintText="4"
+                  type="number"
+                  maxLength="3"
+                  onChange={this.handleTextChange.bind(this, "residents")}
+                  onBlur={this.validateResidents.bind(this)}
+                  errorText={this.state.residentsErr}
+                  errorStyle={{float: "left"}}
+                /><br />
+                <div className="radioActionText">
+                  <p className="radioRow">Pool</p>
+                  <RadioButtonGroup name="hasPool" className="radioGroup"
+                  onChange={this.handleRadioChange}>
+                    <RadioButton
+                      className="radio"
+                      value="yes"
+                      label="Yes"
+                    />
+                    <RadioButton
+                      className="radio"
+                      value="no"
+                      label="No"
+                    />
+                  </RadioButtonGroup>
+                </div><br />
 
-              <h2>Program Installation</h2><Divider />
-              <Table
-                onRowSelection={this.handleSelection}
-                onCellClick={this.handleCellClick}
-                height={this.state.height}
-                fixedHeader={this.state.fixedHeader}
-                fixedFooter={this.state.fixedFooter}
-                selectable={this.state.selectable}
-                multiSelectable={this.state.multiSelectable}
-              >
-                <TableHeader
-                  displaySelectAll={this.state.showCheckboxes}
-                  adjustForCheckbox={this.state.showCheckboxes}
-                  enableSelectAll={this.state.enableSelectAll}
+                <h2 className="headings">Program Installation</h2>
+                <Table
+                  onRowSelection={this.handleSelection}
+                  onCellClick={this.handleCellClick}
+                  height={this.state.height}
+                  fixedHeader={this.state.fixedHeader}
+                  fixedFooter={this.state.fixedFooter}
+                  selectable={this.state.selectable}
+                  multiSelectable={this.state.multiSelectable}
                 >
-                  <TableRow>
-                    <TableHeaderColumn colSpan="3" tooltip="Products Used" style={{textAlign: 'center'}}>
-                      Products Used
-                    </TableHeaderColumn>
-                  </TableRow>
-                  <TableRow>
-                    <TableHeaderColumn tooltip="Product Name">Product</TableHeaderColumn>
-                    <TableHeaderColumn tooltip="Product Number">Number</TableHeaderColumn>
-                    <TableHeaderColumn tooltip="Product Details">Details</TableHeaderColumn>
-                  </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={this.state.showCheckboxes}
-                  deselectOnClickaway={this.state.deselectOnClickaway}
-                  showRowHover={this.state.showRowHover}
-                  stripedRows={this.state.stripedRows}
-                >
-                  {tableData.map( (row, index) => (
-                    <TableRow selected={index == this.state.selectedNum ? true : false}
-                    key={index}>
-                      <TableRowColumn>{row.name}</TableRowColumn>
-                      <TableRowColumn>{row.number}</TableRowColumn>
-                      <TableRowColumn>{row.details}</TableRowColumn>
+                  <TableHeader
+                    displaySelectAll={this.state.showCheckboxes}
+                    adjustForCheckbox={this.state.showCheckboxes}
+                    enableSelectAll={this.state.enableSelectAll}
+                  >
+                    <TableRow>
+                      <TableHeaderColumn tooltip="Product Name">Product</TableHeaderColumn>
+                      <TableHeaderColumn tooltip="Product Number">Number</TableHeaderColumn>
+                      <TableHeaderColumn tooltip="Product Details">Details</TableHeaderColumn>
                     </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody
+                    displayRowCheckbox={this.state.showCheckboxes}
+                    deselectOnClickaway={this.state.deselectOnClickaway}
+                    showRowHover={this.state.showRowHover}
+                    stripedRows={this.state.stripedRows}
+                  >
+                    {tableData.map( (row, index) => (
+                      <TableRow selected={index == this.state.selectedNum ? true : false}
+                      key={index}>
+                        <TableRowColumn>{row.name}</TableRowColumn>
+                        <TableRowColumn>{row.number}</TableRowColumn>
+                        <TableRowColumn>{row.details}</TableRowColumn>
+                      </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
 
-              <h2>Installation Checklist</h2><Divider />
-              <div className="radioActionText">Bypass Installed
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleRadioChange}>
-                  <RadioButton
-                    className="radio"
-                    value="yes"
-                    label="Yes"
-                  />
-                  <RadioButton
-                    className="radio"
-                    value="no"
-                    label="No"
-                  />
-                </RadioButtonGroup>
-              </div>
-              <div className="radioActionText">Leak Check Equipment
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleRadioChange}>
-                  <RadioButton
-                    className="radio"
-                    value="yes"
-                    label="Yes"
-                  />
-                  <RadioButton
-                    className="radio"
-                    value="no"
-                    label="No"
-                  />
-                </RadioButtonGroup>
-              </div>
-              <div className="radioActionText">System Flushed
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleRadioChange}>
-                  <RadioButton
-                    className="radio"
-                    value="yes"
-                    label="Yes"
-                  />
-                  <RadioButton
-                    className="radio"
-                    value="no"
-                    label="No"
-                  />
-                </RadioButtonGroup>
-              </div>
-              <div className="radioActionText">Conservation System Explanation
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleRadioChange}>
-                  <RadioButton
-                    className="radio"
-                    value="yes"
-                    label="Yes"
-                  />
-                  <RadioButton
-                    className="radio"
-                    value="no"
-                    label="No"
-                  />
-                </RadioButtonGroup>
-              </div>
-              <div className="radioActionText">Shut-off Valve Explanation
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleRadioChange}>
-                  <RadioButton
-                    className="radio"
-                    value="yes"
-                    label="Yes"
-                  />
-                  <RadioButton
-                    className="radio"
-                    value="no"
-                    label="No"
-                  />
-                </RadioButtonGroup>
-              </div>
-              <div className="radioActionText">Filter Replacement Explanation
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleRadioChange}>
-                  <RadioButton
-                    className="radio"
-                    value="yes"
-                    label="Yes"
-                  />
-                  <RadioButton
-                    className="radio"
-                    value="no"
-                    label="No"
-                  />
-                </RadioButtonGroup>
-              </div>
-              <TextField
-                hintText="Additional installation notes"
-                floatingLabelText="Notes"
-                multiLine={true}
-                rows={1}
-                rowsMax={10}
-              />
+                <h2 className="headings">Installation Checklist</h2>
+                <div className="radioActionText">
+                  <p className="radioRow">Bypass Installed</p>
+                  <RadioButtonGroup name="installationCheck" className="radioGroup"
+                  onChange={this.handleRadioChange}>
+                    <RadioButton
+                      className="radio"
+                      value="yes"
+                      label="Yes"
+                    />
+                    <RadioButton
+                      className="radio"
+                      value="no"
+                      label="No"
+                    />
+                  </RadioButtonGroup>
+                </div>
+                <div className="radioActionText">
+                  <p className="radioRow">Leak Check Equipment</p>
+                  <RadioButtonGroup name="installationCheck" className="radioGroup"
+                  onChange={this.handleRadioChange}>
+                    <RadioButton
+                      className="radio"
+                      value="yes"
+                      label="Yes"
+                    />
+                    <RadioButton
+                      className="radio"
+                      value="no"
+                      label="No"
+                    />
+                  </RadioButtonGroup>
+                </div>
+                <div className="radioActionText">
+                  <p className="radioRow">System Flushed</p>
+                  <RadioButtonGroup name="installationCheck" className="radioGroup"
+                  onChange={this.handleRadioChange}>
+                    <RadioButton
+                      className="radio"
+                      value="yes"
+                      label="Yes"
+                    />
+                    <RadioButton
+                      className="radio"
+                      value="no"
+                      label="No"
+                    />
+                  </RadioButtonGroup>
+                </div>
+                <div className="radioActionText">
+                  <p className="radioRow">Conservation System Explanation</p>
+                  <RadioButtonGroup name="installationCheck" className="radioGroup"
+                  onChange={this.handleRadioChange}>
+                    <RadioButton
+                      className="radio"
+                      value="yes"
+                      label="Yes"
+                    />
+                    <RadioButton
+                      className="radio"
+                      value="no"
+                      label="No"
+                    />
+                  </RadioButtonGroup>
+                </div>
+                <div className="radioActionText">
+                  <p className="radioRow">Shut-off Valve Explanation</p>
+                  <RadioButtonGroup name="installationCheck" className="radioGroup"
+                  onChange={this.handleRadioChange}>
+                    <RadioButton
+                      className="radio"
+                      value="yes"
+                      label="Yes"
+                    />
+                    <RadioButton
+                      className="radio"
+                      value="no"
+                      label="No"
+                    />
+                  </RadioButtonGroup>
+                </div>
+                <div className="radioActionText">
+                  <p className="radioRow">Filter Replacement Explanation</p>
+                  <RadioButtonGroup name="installationCheck" className="radioGroup"
+                  onChange={this.handleRadioChange}>
+                    <RadioButton
+                      className="radio"
+                      value="yes"
+                      label="Yes"
+                    />
+                    <RadioButton
+                      className="radio"
+                      value="no"
+                      label="No"
+                    />
+                  </RadioButtonGroup>
+                </div>
+                <TextField
+                  hintText="Additional Notes"
+                  floatingLabelText="Notes"
+                  multiLine={true}
+                  rows={1}
+                  rowsMax={10}
+                  className="full-width"
+                />
 
-              <h2>Customer Acknowledgement</h2><Divider />
-              <div>I hereby confirm the following statements:
-                <Checkbox
-                  label="Installation was completed to my satisfaction."
-                />
-                <Checkbox
-                  label="The technician explained how to by-pass the filter and change the pre-filter."
-                />
-                <Checkbox
-                  label="I recieved the bottling kit."
-                />
-                <Checkbox
-                  label="My savings are not guaranteed."
-                />
-              </div>
-              <TextField
-                floatingLabelText="Homeowner's Signature"
-                hintText="Tap to add signature"
-              />
-              <div>
-                <Divider />
+                <h2 className="headings">Customer Acknowledgement</h2>
+                <div>
+                  <p>I hereby confirm the following statements:</p>
+                  <Checkbox
+                    label="Installation was completed to my satisfaction."
+                  />
+                  <Checkbox
+                    label="The technician explained how to by-pass the filter and change the pre-filter."
+                  />
+                  <Checkbox
+                    label="I recieved the bottling kit."
+                  />
+                  <Checkbox
+                    label="My savings are not guaranteed."
+                  />
+                </div>
                 <TextField
-                  floatingLabelText="Contractor ID"
+                  floatingLabelText="Homeowner's Signature"
+                  hintText="Tap to add signature"
+                  className="full-width"
                 />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="Technician's Signature"
-                />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="Greenlife Water Rep. Name"
-                />
-                &nbsp;
-                &nbsp;
-                <DatePicker
-                  hintText="Date"
-                  container="inline"
-                />
-              </div>
-              <div>
-                <RaisedButton label="Cancel" />
-                &nbsp;
-                &nbsp;
-                <RaisedButton label="Save" />
-                &nbsp;
-                &nbsp;
-                <RaisedButton label="Submit" />
+                <div>
+                  <Divider />
+                  <TextField
+                    floatingLabelText="Contractor ID"
+                  />
+                  &nbsp;
+                  &nbsp;
+                  <TextField
+                    floatingLabelText="Technician's Signature"
+                  />
+                  &nbsp;
+                  &nbsp;
+                  <TextField
+                    floatingLabelText="Greenlife Water Rep. Name"
+                  />
+                  &nbsp;
+                  &nbsp;
+                  <DatePicker
+                    hintText="Date"
+                    container="inline"
+                  />
+                </div>
+                <div>
+                  <RaisedButton label="Cancel" />
+                  &nbsp;
+                  &nbsp;
+                  <RaisedButton label="Save" />
+                  &nbsp;
+                  &nbsp;
+                  <RaisedButton label="Submit" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
         : null }
         { this.state.tabB ?
           <div>
