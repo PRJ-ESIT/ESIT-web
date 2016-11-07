@@ -1,3 +1,4 @@
 node_modules/
 dist/
 ios/www/js/bundle.js
+ios/platforms/ios/www/js/
