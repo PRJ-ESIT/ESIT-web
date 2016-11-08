@@ -72,12 +72,12 @@ export default class App extends React.Component {
     return (
       <div className="navBarButtonsContainer">
         <FlatButton
-          labelStyle={{'color': 'white'}}
-          backgroundColor="#1a75ff"
-          hoverColor="#005ce6"
+          labelStyle={{ color: "#2f3c7d" }}
+          backgroundColor="white"
+          hoverColor="$light-gray"
           style={rightButtonsStyle}
           onTouchTap={this.handleLogin}
-          label="Login"
+          label="Logout"
         />
       </div>
     );

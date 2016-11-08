@@ -81,20 +81,7 @@ export default class AllSales extends React.Component {
       <div className="allCustomers">
         <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
-            <ToolbarTitle text="View All Sales" />
-            <Search
-              style={{
-                height: '100%',
-                paddingTop: '5px'
-              }}
-            />
-            <TextField
-              style={{
-                height: '100%',
-                width: '180px'
-              }}
-              hintText="search"
-            />
+            <ToolbarTitle text="View All Sales" className="mainFont" />
             <ToolbarSeparator />
             <DropDownMenu
               iconStyle={{fill: 'rgb(0, 0, 0)'}}
