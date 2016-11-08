@@ -5,22 +5,23 @@ import {Tabs, Tab, TextField, Divider, RadioButton,
   DatePicker, TimePicker, Toggle, Checkbox, SelectField,
   MenuItem} from 'material-ui';
 import { validations } from '../helpers/common.js';
+import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={1} primaryText="Alberta" />,
-  <MenuItem key={2} value={2} primaryText="British Columbia" />,
-  <MenuItem key={3} value={3} primaryText="Manitoba" />,
-  <MenuItem key={4} value={4} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={5} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={6} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={7} primaryText="Ontario" />,
-  <MenuItem key={8} value={8} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={9} primaryText="Quebec" />,
-  <MenuItem key={10} value={10} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={11} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={12} primaryText="Yukon" />,
-  <MenuItem key={13} value={13} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
 ];
 
 export default class NewSale extends React.Component {
@@ -37,14 +38,14 @@ export default class NewSale extends React.Component {
       address: '',
       unitNum: '',
       city: '',
-      province: -1,
+      province: '',
       postalCode: '',
       enbridge: '',
       email: '',
       homePhone: '',
       cellPhone: '',
-      installationDate: '',
-      installationTime: '',
+      installationDate: null,
+      installationTime: null,
       notes: '',
       salesRepId: '',
       applicationNumber: '',
@@ -97,6 +98,48 @@ export default class NewSale extends React.Component {
     this.handleProvinceChange = this.handleProvinceChange.bind(this);
   }
 
+  componentDidMount() {
+    if(this.props.status == "edit"){
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let sale = JSON.parse(httpRequest.responseText).sale;
+          // Format time
+          var tempDateTime = new Date(sale.installationDateTime);
+
+          _this.setState({
+            salesNumber: sale.salesNumber,
+            fname: sale.firstName ? sale.firstName : '',
+            lname: sale.lastName ? sale.lastName : '',
+            address: sale.address ? sale.address : '',
+            unitNum: sale.unit ? sale.unit : '',
+            city: sale.city ? sale.city : '',
+            province: sale.province ? sale.province : '',
+            postalCode: sale.postalCode ? sale.postalCode : '',
+            enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
+            email: sale.email ? sale.email : '',
+            programType: sale.programId ? sale.programId : '',
+            homePhone: sale.homePhone ? sale.homePhone : '',
+            cellPhone: sale.cellPhone ? sale.cellPhone : '',
+            installationDate: tempDateTime ? tempDateTime : '',
+            installationTime: tempDateTime ? tempDateTime : '',
+            notes: sale.notes ? sale.notes : '',
+            salesRepId: sale.salesRepId ? sale.salesRepId : '',
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/existingsale?id="
+        + this.props.id, true);
+      httpRequest.send(null);
+    }
+  }
+
+  formatDate(date){
+    return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+  }
+
   handleTabChange(value) {
     if (value == 'a') {
       this.setState({
@@ -126,19 +169,25 @@ export default class NewSale extends React.Component {
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
-
-    // Change the installationCharges and totalCharges
-    // depending on the Program chosen.
-    if (event.target.value == "3") {
-      this.state.installationCharges = 550;
-    } else {
-      this.state.installationCharges = 450;
-    }
-
-    this.state.totalCharges =
-    parseInt(this.state.deliveryCharges) +
-    parseInt(this.state.installationCharges);
   };
+
+  updateCharges() {
+    if (this.state.programType != ''){
+      if (this.state.programType == "3") {
+        var totalCharges = parseInt(this.state.deliveryCharges) + 550;
+        this.setState({
+          installationCharges : 550,
+          totalCharges : totalCharges
+        });
+      } else {
+        var totalCharges = parseInt(this.state.deliveryCharges) + 450;
+        this.setState({
+          installationCharges : 450,
+          totalCharges: totalCharges
+        });
+      }
+    }
+  }
 
   // Validation
 
@@ -230,7 +279,7 @@ export default class NewSale extends React.Component {
 
   validateProvince() {
     let province = this.state.province;
-    if(province < 0) {
+    if(province === '') {
       this.setState({
         provinceErr: 'Province not selected',
         provinceValidated: false,
@@ -374,6 +423,7 @@ export default class NewSale extends React.Component {
 
     if (prevState.programType !== this.state.programType) {
       this.validateProgramType();
+      this.updateCharges();
     }
 
     if (prevState.installationDate !== this.state.installationDate) {
@@ -389,7 +439,7 @@ export default class NewSale extends React.Component {
     let programType = this.state.programType;
     if(programType === '') {
       this.setState({
-        programTypeErr: 'Must select a program type',
+        programTypeErr: 'Program type not selected',
         programTypeValidated: false,
       });
     } else {
@@ -489,6 +539,7 @@ export default class NewSale extends React.Component {
               <TextField
                 floatingLabelText="Sale Number"
                 defaultValue="123-4567"
+                value={this.state.salesNumber}
                 disabled={true}
               />
               <h2 className="headings">Homeowner Information</h2>
@@ -583,7 +634,7 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="(416) 123-4567"
+                hintText="416-123-4567"
                 floatingLabelText="Home Phone"
                 value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, "homePhone")}
@@ -595,7 +646,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="(416) 123-4567"
+                hintText="416-123-4567"
                 floatingLabelText="Cell Phone"
                 value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
@@ -764,6 +815,7 @@ export default class NewSale extends React.Component {
                 disabled={true}
                 defaultValue="123-4567"
                 floatingLabelText="Sale Number"
+                value={this.state.salesNumber}
                 style={{ width: "200px" }}
               />
               &nbsp;
@@ -783,12 +835,12 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <DatePicker
-                hintText="2010-08-20"
+                hintText="2017-08-20"
                 container="inline"
-                floatingLabelText="Date"
+                floatingLabelText="installation Date"
                 style={{ display: "inline-block", width: "200px" }}
-                // value={this.state.installationDate}
-                // onChange={this.handleTextChange.bind(this, "installationDate")}
+                value={this.state.installationDate}
+                onChange={this.handleTextChange.bind(this, "installationDate")}
               />
               <h2 className="headings">Homeowner Information</h2>
               <TextField
@@ -882,7 +934,7 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="(416) 123-4567"
+                hintText="416-123-4567"
                 floatingLabelText="Home Phone"
                 value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, "homePhone")}
@@ -894,7 +946,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="(416) 123-4567"
+                hintText="416-123-4567"
                 floatingLabelText="Cell Phone"
                 value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
@@ -914,7 +966,7 @@ export default class NewSale extends React.Component {
               />
               <h2 className="headings">Void Cheque</h2>
               <Card>
-                <CardMedia style={{maxWidth:"550px"}}>
+                <CardMedia>
                   <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
                 </CardMedia>
                 <CardTitle title="Void Cheque" subtitle="Customer Number: 123-4567" />

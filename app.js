@@ -236,7 +236,42 @@ app.get('/allemployees', function(request, response) {
     req.end();
 });
 
+app.get('/existingsale', function(request, response) {
+console.log(request.query.id);
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/SaleService/getSaleById/' + request.query.id,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var object = undefined;
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+          var obj = JSON.parse(output);
+          return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
+
 
 app.listen(3000, function(err) {
   console.log('Listening at http://... 3000');
-}); 
+});
