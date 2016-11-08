@@ -20,6 +20,8 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 //***********************//
 
 body {
+  -webkit-tap-highlight-color: transparent;
+  
   background-color: #2DA9AE;
   margin: 0px;
   @media #{$desktop-landscape}, #{$desktop-portrait} {
@@ -77,6 +79,7 @@ h2 {
   min-width: 279px;
   background-color: $dark-blue;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mainContent {
@@ -84,6 +87,7 @@ h2 {
   flex-basis: 80%;
   background-color: $light-gray;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .full-width {
