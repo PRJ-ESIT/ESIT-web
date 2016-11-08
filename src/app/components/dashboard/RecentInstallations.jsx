@@ -90,7 +90,7 @@ export default class RecentInstallations extends React.Component {
     this.state = {
       fixedHeader: true,
       fixedFooter: true,
-      stripedRows: true,
+      stripedRows: false,
       showRowHover: false,
       selectable: true,
       multiSelectable: false,

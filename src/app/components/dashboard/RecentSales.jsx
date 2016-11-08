@@ -10,7 +10,7 @@ export default class RecentSales extends React.Component {
 
     this.state = {
       fixedHeader: true,
-      stripedRows: true,
+      stripedRows: false,
       showRowHover: false,
       selectable: true,
       multiSelectable: false,

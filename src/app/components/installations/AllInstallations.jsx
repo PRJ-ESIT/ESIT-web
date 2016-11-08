@@ -80,20 +80,7 @@ export default class AllInstallations extends React.Component {
       <div className="allCustomers">
         <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
-            <ToolbarTitle text="View All Installations" />
-            <Search
-              style={{
-                height: '100%',
-                paddingTop: '5px'
-              }}
-            />
-            <TextField
-              style={{
-                height: '100%',
-                width: '180px'
-              }}
-              hintText="search"
-            />
+            <ToolbarTitle text="View All Installations" className="mainFont" />
             <ToolbarSeparator />
             <DropDownMenu
               iconStyle={{fill: 'rgb(0, 0, 0)'}}

@@ -764,8 +764,11 @@ export default class NewSale extends React.Component {
                 disabled={true}
                 defaultValue="123-4567"
                 floatingLabelText="Sale Number"
+                style={{ width: "200px" }}
               />
-              <br />
+              &nbsp;
+              &nbsp;
+              &nbsp;
               <TextField
                 hintText="1234567"
                 floatingLabelText="Application Number"
@@ -773,7 +776,8 @@ export default class NewSale extends React.Component {
                 onChange={this.handleTextChange.bind(this, "applicationNumber")}
                 onBlur={this.validateApplicationNumber.bind(this)}
                 errorText={this.state.applicationNumberErr}
-                errorStyle={{float: "left"}}
+                errorStyle={{float: "left" }}
+                style={{ width: "200px" }}
               />
               &nbsp;
               &nbsp;
@@ -782,7 +786,7 @@ export default class NewSale extends React.Component {
                 hintText="2010-08-20"
                 container="inline"
                 floatingLabelText="Date"
-                style={{ display: "inline-block" }}
+                style={{ display: "inline-block", width: "200px" }}
                 // value={this.state.installationDate}
                 // onChange={this.handleTextChange.bind(this, "installationDate")}
               />

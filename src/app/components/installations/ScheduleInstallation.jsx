@@ -570,6 +570,7 @@ export default class ScheduleInstallation extends React.Component {
                   fixedFooter={this.state.fixedFooter}
                   selectable={this.state.selectable}
                   multiSelectable={this.state.multiSelectable}
+                  style={{ maxWidth: '532px' }}
                 >
                   <TableHeader
                     displaySelectAll={this.state.showCheckboxes}

@@ -83,20 +83,7 @@ export default class AllEmployees extends React.Component {
       <div className="allEmployees">
         <Toolbar className="allEmployeesToolbar">
           <ToolbarGroup>
-            <ToolbarTitle text="View All Employees" />
-            <Search
-              style={{
-                height: '100%',
-                paddingTop: '5px'
-              }}
-            />
-            <TextField
-              style={{
-                height: '100%',
-                width: '180px'
-              }}
-              hintText="search"
-            />
+            <ToolbarTitle text="View All Employees" className="mainFont" />
             <ToolbarSeparator />
             <DropDownMenu
               iconStyle={{fill: 'rgb(0, 0, 0)'}}

@@ -38,6 +38,10 @@ h2 {
   padding: 10px;
 }
 
+.mainFont {
+  font-family: $main-font;
+}
+
 .tableRowHeaderColumn {
   padding: 0px 5px 0px 5px !important;
   position: inherit !important;
@@ -78,7 +82,7 @@ h2 {
 .mainContent {
   flex: 2;
   flex-basis: 80%;
-  background-color: $light-blue;
+  background-color: $light-gray;
   overflow: auto;
 }
 
@@ -121,6 +125,7 @@ h2 {
     flex-basis: 150px;
     height: 150px;
     font-size: 50px;
+    font-family: $main-font;
     text-align: center;
     span {
       font-family: Damion;
@@ -151,9 +156,7 @@ h2 {
 
       }
       @media #{$tablet-landscape} {
-        padding-bottom: 25px;
-        margin-right: 25px;
-        margin-left: 25px;
+
       }
     }
 
@@ -165,13 +168,12 @@ h2 {
 
       }
       @media #{$tablet-landscape} {
-        padding-bottom: 25px;
-        margin-right: 25px;
-        margin-left: 25px;
+
       }
     }
 
     .salesAndInstallation {
+      font-family: $main-font;
       @media #{$desktop-landscape}, #{$desktop-portrait} {
         flex-basis: 50%;
         //half of the content window minus margin minus border
@@ -192,13 +194,20 @@ h2 {
         border-radius: 5px;
         background-color: white;
       }
-
+      @media #{$tablet-landscape} {
+        padding-bottom: 25px;
+        margin-right: 25px;
+        margin-left: 25px;
+      }
     }
 
     .salesInstallationToolBar {
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       height: 70px;
+      background-color: $main-blue !important;
+      color: white;
+      font-family: arial;
     }
   }
 }
@@ -270,6 +279,7 @@ h2 {
 
 .newEmployeeForm {
   height: 100%;
+  width: 700px;
   background-color: white;
   padding-left: 75px;
   padding-right: 75px;
