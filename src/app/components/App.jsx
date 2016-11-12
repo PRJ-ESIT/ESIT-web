@@ -16,15 +16,15 @@ import AllCustomers from './management/AllCustomers.jsx';
 import Documents from './management/Documents.jsx';
 
 const defaultProps = {
-  dashboard: <Dashboard />,
-  newSale: <NewSale />,
-  allSales: <AllSales />,
-  documents: <Documents />,
-  scheduleInstallation: <ScheduleInstallation />,
-  allInstallations: <AllInstallations />,
-  newEmployee: <NewEmployee />,
-  allEmployees: <AllEmployees />,
-  allCustomers: <AllCustomers />
+  dashboard: Dashboard,
+  newSale: NewSale,
+  allSales: AllSales,
+  documents: Documents,
+  scheduleInstallation: ScheduleInstallation,
+  allInstallations: AllInstallations,
+  newEmployee: NewEmployee,
+  allEmployees: AllEmployees,
+  allCustomers: AllCustomers
 };
 
 
@@ -35,13 +35,17 @@ export default class App extends React.Component {
     this.state = {
       loginDialog: false,
       leftMenuOpen: false,
-      currentContent: <Dashboard />,
+      currentContent: Dashboard,
+
+      status: "",
+      formId: undefined,
     }
 
     this.handleLogin = this.handleLogin.bind(this);
     this.closeHandler = this.closeHandler.bind(this);
     this.menuClickHandler = this.menuClickHandler.bind(this);
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
+    this.editClickHandler = this.editClickHandler.bind(this);
   }
 
   getChildContext() {
@@ -87,6 +91,7 @@ export default class App extends React.Component {
     this.setState({
       currentContent: this.props[contentName],
       leftMenuOpen: false,
+      status: "",
     });
   }
 
@@ -97,10 +102,20 @@ export default class App extends React.Component {
       this.setState({leftMenuOpen: true});
     }
   }
-
+  editClickHandler(status, id, contentName) {
+    console.log(status);
+    console.log(id);
+    console.log(contentName);
+    this.setState({
+      currentContent: this.props[contentName],
+      status: status,
+      id: id,
+    });
+  }
   render() {
     var leftMenuStyles = this.state.leftMenuOpen ? {'' : ''} : { 'display': 'none' };
     var appBarStyles = {'backgroundColor': '#2F3C7D'};
+    let CurrentContent = this.state.currentContent;
     return (
       <div style={{width: '100%', height: '100%'}}>
         <AppBar
@@ -115,7 +130,7 @@ export default class App extends React.Component {
             <LeftMenu clickHandler={this.menuClickHandler}/>
           </div>
           <div className="mainContent">
-            {this.state.currentContent}
+            <CurrentContent editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id}/>
           </div>
         </div>
         { this.state.loginDialog ?
