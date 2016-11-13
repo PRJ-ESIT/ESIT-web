@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+@import url('https://fonts.googleapis.com/css?family=Damion');
 
 /* standard landscape view: landscape browser window + landscape device screen  */
 $landscape: "all and (orientation: landscape) and (min-device-aspect-ratio: 1/1)";
@@ -23,3 +24,4 @@ $light-gray: #dadada;
 
 /* font variables */
 $main-font: "Source Sans Pro", sans-serif;
+$logo-font: "Damion", cursive;

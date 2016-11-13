@@ -21,19 +21,16 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 
 body {
   -webkit-tap-highlight-color: transparent;
-  
-  background-color: #2DA9AE;
   margin: 0px;
-  @media #{$desktop-landscape}, #{$desktop-portrait} {
-    background-color: black;
-  }
-  @media #{$tablet-portrait} {
-    background-color: red;
-  }
 }
 
-p, h2 {
-  font-family: sans-serif;
+p, h2, label {
+  font-family: $main-font !important;
+}
+
+h1 {
+  font-family: $logo-font !important;
+  font-size: 60px !important;
 }
 
 h2 {
@@ -44,6 +41,11 @@ h2 {
   font-family: $main-font;
 }
 
+.logoFont {
+  font-family: $logo-font;
+}
+
+/******** For the Allxxxxx tables & schedule installation *********/
 .tableRowHeaderColumn {
   padding: 0px 5px 0px 5px !important;
   position: inherit !important;
@@ -52,9 +54,10 @@ h2 {
 .trow {
   td:first-child, th:first-child {
     width: 10px !important;
-    padding: 0px 15px 0px 24px !important;
+    padding: 0px 15px 0px 15px !important;
   }
 }
+/******************************************************************/
 
 .headings {
   background: $main-blue;
@@ -302,15 +305,14 @@ h2 {
 //Schedule Installations page styles//
 //**********************************//
 .radioActionText {
-  display: flex;
-  flex-direction: row;
-  margin-top: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .radioGroup {
   display: flex;
   flex-direction: row;
-  padding-left: 40px;
+  float: right;
 }
 
 .radioGroup div.radio {
@@ -321,7 +323,15 @@ h2 {
 .radioRow {
   width: 300px;
   margin: 0px;
-  font-family: sans-serif;
+  font-family: $main-font;
+  float: left;
+}
+
+.programTableRow {
+  td:first-child, th:first-child {
+    width: 10px !important;
+    padding: 0px 15px 0px 0px !important;
+  }
 }
 
 .inst-table-header {

@@ -120,7 +120,6 @@ export default class App extends React.Component {
       <div style={{width: '100%', height: '100%'}}>
         <AppBar
           title='esit'
-          titleStyle={{'fontFamily': 'Damion', 'fontSize': '60px'}}
           iconElementRight={this.getRightButtons()}
           onLeftIconButtonTouchTap={this.appBarClickHandler}
           style={appBarStyles}
