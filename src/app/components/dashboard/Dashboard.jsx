@@ -38,7 +38,7 @@ export default class Dashboard extends React.Component {
     return (
       <div className="dashboard">
         <div className="dashboardWelcome">
-          Welcome to <span>esit</span>, %username%!
+          Welcome to <span style={{ fontFamily: '$logo-font' }}>esit</span>, %username%!
         </div>
         <div className="dashboardTables">
           <div className="recentSales salesAndInstallation">

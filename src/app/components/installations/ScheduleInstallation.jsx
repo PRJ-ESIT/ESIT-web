@@ -6,6 +6,7 @@ import {
 } from 'material-ui';
 import { validations } from '../helpers/common.js';
 
+// Provinces for SelectField
 const provinces = [
   <MenuItem key={1} value={1} primaryText="Alberta" />,
   <MenuItem key={2} value={2} primaryText="British Columbia" />,
@@ -570,17 +571,17 @@ export default class ScheduleInstallation extends React.Component {
                   fixedFooter={this.state.fixedFooter}
                   selectable={this.state.selectable}
                   multiSelectable={this.state.multiSelectable}
-                  style={{ maxWidth: '532px' }}
+                  style={{ maxWidth: '700px' }}
                 >
                   <TableHeader
                     displaySelectAll={this.state.showCheckboxes}
                     adjustForCheckbox={this.state.showCheckboxes}
                     enableSelectAll={this.state.enableSelectAll}
                   >
-                    <TableRow>
-                      <TableHeaderColumn tooltip="Product Name">Product</TableHeaderColumn>
-                      <TableHeaderColumn tooltip="Product Number">Number</TableHeaderColumn>
-                      <TableHeaderColumn tooltip="Product Details">Details</TableHeaderColumn>
+                    <TableRow className={'programTableRow'}>
+                      <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }} tooltip="Product Name">Product</TableHeaderColumn>
+                      <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }} tooltip="Product Number">Number</TableHeaderColumn>
+                      <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }} tooltip="Product Details">Details</TableHeaderColumn>
                     </TableRow>
                   </TableHeader>
                   <TableBody
@@ -590,11 +591,11 @@ export default class ScheduleInstallation extends React.Component {
                     stripedRows={this.state.stripedRows}
                   >
                     {tableData.map( (row, index) => (
-                      <TableRow selected={index == this.state.selectedNum ? true : false}
+                      <TableRow className={'programTableRow'} selected={index == this.state.selectedNum ? true : false}
                       key={index}>
-                        <TableRowColumn>{row.name}</TableRowColumn>
-                        <TableRowColumn>{row.number}</TableRowColumn>
-                        <TableRowColumn>{row.details}</TableRowColumn>
+                        <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }}>{row.name}</TableRowColumn>
+                        <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }}>{row.number}</TableRowColumn>
+                        <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }}>{row.details}</TableRowColumn>
                       </TableRow>
                       ))}
                   </TableBody>
@@ -728,7 +729,6 @@ export default class ScheduleInstallation extends React.Component {
                   className="full-width"
                 />
                 <div>
-                  <Divider />
                   <TextField
                     floatingLabelText="Contractor ID"
                   />
