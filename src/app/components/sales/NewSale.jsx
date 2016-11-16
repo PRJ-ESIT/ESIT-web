@@ -32,7 +32,7 @@ export default class NewSale extends React.Component {
       tabA: true,
       tabB: false,
       tabValue: 'a',
-      saleNumber: "",
+      salesNumber: "",
       fname: '',
       lname: '',
       address: '',
@@ -519,6 +519,7 @@ export default class NewSale extends React.Component {
     }
   }
 
+
   render() {
     return (
       <div>
@@ -538,7 +539,6 @@ export default class NewSale extends React.Component {
             <div className="newEmployeeFormBox">
               <TextField
                 floatingLabelText="Sale Number"
-                defaultValue="123-4567"
                 value={this.state.salesNumber}
                 disabled={true}
               />
@@ -813,7 +813,6 @@ export default class NewSale extends React.Component {
             <div className="newEmployeeFormBox">
               <TextField
                 disabled={true}
-                defaultValue="123-4567"
                 floatingLabelText="Sale Number"
                 value={this.state.salesNumber}
                 style={{ width: "200px" }}

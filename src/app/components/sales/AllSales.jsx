@@ -56,14 +56,10 @@ export default class AllSales extends React.Component {
   }
 
   handleDropdownChange(event, index, value) {
-    console.log(index);
-    console.log(value);
     this.setState({dropdownValue: value});
   }
 
   handleSelection(selectedRows) {
-    console.log(selectedRows);
-    console.log(this.state.allSales[selectedRows].salesNumber);
     if(selectedRows.length == 1) {
       this.setState({
         currentSelected: true,
