@@ -5,22 +5,23 @@ import {
   Checkbox, Divider, DatePicker, RaisedButton
 } from 'material-ui';
 import { validations } from '../helpers/common.js';
+import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={1} primaryText="Alberta" />,
-  <MenuItem key={2} value={2} primaryText="British Columbia" />,
-  <MenuItem key={3} value={3} primaryText="Manitoba" />,
-  <MenuItem key={4} value={4} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={5} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={6} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={7} primaryText="Ontario" />,
-  <MenuItem key={8} value={8} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={9} primaryText="Quebec" />,
-  <MenuItem key={10} value={10} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={11} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={12} primaryText="Yukon" />,
-  <MenuItem key={13} value={13} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
 ];
 
 const tableData = [
@@ -91,6 +92,8 @@ export default class ScheduleInstallation extends React.Component {
       checklist: '',
       acknowledgement: '',
       installedDate: {},
+      contractorId: '',
+      installerName: '',
 
       // Error messages for each input field
       fnameErr: '',
@@ -149,6 +152,46 @@ export default class ScheduleInstallation extends React.Component {
     };
       this.handleTabChange = this.handleTabChange.bind(this);
       this.handleSelection = this.handleSelection.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.status == "edit"){
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let installation = JSON.parse(httpRequest.responseText).installation;
+          // Format time
+          var tempDateTime = new Date(installation.installationDateTime);
+
+          _this.setState({
+            // salesNumber: sale.salesNumber,
+            fname: installation.customerFirstName ? installation.customerFirstName : '',
+            lname: installation.customerLastName ? installation.customerLastName : '',
+            address: installation.address ? installation.address : '',
+            unitNum: installation.unit ? installation.unit : '',
+            city: installation.city ? installation.city : '',
+            province: installation.province ? installation.province : '',
+            postalCode: installation.postalCode ? installation.postalCode : '',
+            enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
+            email: installation.email ? installation.email : '',
+            homePhone: installation.homePhone ? installation.homePhone : '',
+            cellPhone: installation.cellPhone ? installation.cellPhone : '',
+            sqft: installation.sqFootage ? installation.sqFootage : '',
+            residents: installation.residents ? installation.residents : '',
+            pool: installation.hasPool ? installation.hasPool : '',
+            bathrooms: installation.bathrooms ? installation.bathrooms : '',
+            installedDate: tempDateTime ? tempDateTime : '',
+            contractorId: installation.installerId ? installation.installerId : '',
+            installerName: installation.installerName ? installation.installerName : '',
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/getoneinstallation?id="
+        + this.props.id, true);
+      httpRequest.send(null);
+    }
   }
 
   handleTabChange(value) {
@@ -562,6 +605,7 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="First Name"
                   hintText="John"
                   maxLength="25"
+                  value={this.state.fname}
                   onChange={this.handleTextChange.bind(this, "fname")}
                   onBlur={this.validateFName.bind(this)}
                   errorText={this.state.fnameErr}
@@ -573,6 +617,7 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="Last Name"
                   hintText="Doe"
                   maxLength="25"
+                  value={this.state.lname}
                   onChange={this.handleTextChange.bind(this, "lname")}
                   onBlur={this.validateLName.bind(this)}
                   errorText={this.state.lnameErr}
@@ -581,6 +626,7 @@ export default class ScheduleInstallation extends React.Component {
                 <TextField
                   floatingLabelText="Address"
                   hintText="123 Fake Street"
+                  value={this.state.address}
                   maxLength="50"
                   onChange={this.handleTextChange.bind(this, "address")}
                   onBlur={this.validateAddress.bind(this)}
@@ -594,6 +640,7 @@ export default class ScheduleInstallation extends React.Component {
                   hintText="77"
                   type="number"
                   maxLength="10"
+                  value={this.state.unitNum}
                   onChange={this.handleTextChange.bind(this, "unitNum")}
                   onBlur={this.validateUnit.bind(this)}
                   errorText={this.state.unitNumErr}
@@ -603,6 +650,7 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="City"
                   hintText="Toronto"
                   maxLength="25"
+                  value={this.state.city}
                   onChange={this.handleTextChange.bind(this, "city")}
                   onBlur={this.validateCity.bind(this)}
                   errorText={this.state.cityErr}
@@ -625,6 +673,7 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="Postal Code"
                   hintText="M4B 5V9"
                   maxLength="7"
+                  value={this.state.postalCode}
                   onChange={this.handleTextChange.bind(this, "postalCode")}
                   onBlur={this.validatePostalCode.bind(this)}
                   errorText={this.state.postalCodeErr}
@@ -636,6 +685,7 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="Enbridge Gas #"
                   hintText="1234567890"
                   maxLength="15"
+                  value={this.state.enbridge}
                   onChange={this.handleTextChange.bind(this, "enbridge")}
                   onBlur={this.validateEnbridge.bind(this)}
                   errorText={this.state.enbridgeErr}
@@ -646,6 +696,7 @@ export default class ScheduleInstallation extends React.Component {
                   hintText="name@domain.com"
                   type="email"
                   maxLength="50"
+                  value={this.state.email}
                   onChange={this.handleTextChange.bind(this, "email")}
                   onBlur={this.validateEmail.bind(this)}
                   errorText={this.state.emailErr}
@@ -658,6 +709,7 @@ export default class ScheduleInstallation extends React.Component {
                   hintText="(416) 123-4567"
                   type="tel"
                   maxLength="12"
+                  value={this.state.homePhone}
                   onChange={this.handleTextChange.bind(this, "homePhone")}
                   onBlur={this.validateHomePhone.bind(this)}
                   errorText={this.state.homePhoneErr}
@@ -668,6 +720,7 @@ export default class ScheduleInstallation extends React.Component {
                   hintText="(416) 123-4567"
                   type="tel"
                   maxLength="12"
+                  value={this.state.cellPhone}
                   onChange={this.handleTextChange.bind(this, "cellPhone")}
                   onBlur={this.validateCellPhone.bind(this)}
                   errorText={this.state.cellPhoneErr}
@@ -680,6 +733,7 @@ export default class ScheduleInstallation extends React.Component {
                   hintText="3000"
                   type="number"
                   maxLength="6"
+                  value={this.state.sqft}
                   onChange={this.handleTextChange.bind(this, "sqft")}
                   onBlur={this.validateSqft.bind(this)}
                   errorText={this.state.sqftErr}
@@ -690,6 +744,7 @@ export default class ScheduleInstallation extends React.Component {
                   hintText="3"
                   type="number"
                   maxLength="3"
+                  value={this.state.bathrooms}
                   onChange={this.handleTextChange.bind(this, "bathrooms")}
                   onBlur={this.validateBathrooms.bind(this)}
                   errorText={this.state.bathroomsErr}
@@ -702,6 +757,7 @@ export default class ScheduleInstallation extends React.Component {
                   hintText="4"
                   type="number"
                   maxLength="3"
+                  value={this.state.residents}
                   onChange={this.handleTextChange.bind(this, "residents")}
                   onBlur={this.validateResidents.bind(this)}
                   errorText={this.state.residentsErr}
@@ -710,15 +766,16 @@ export default class ScheduleInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Pool</p>
                   <RadioButtonGroup name="pool" className="radioGroup"
+                  valueSelected={this.state.pool}
                   onChange={this.handleRadioChange.bind(this, "pool")}>
                     <RadioButton
                       className="radio"
-                      value="yes"
+                      value="1"
                       label="Yes"
                     />
                     <RadioButton
                       className="radio"
-                      value="no"
+                      value="0"
                       label="No"
                     />
                   </RadioButtonGroup><br />
@@ -896,6 +953,7 @@ export default class ScheduleInstallation extends React.Component {
                 <div>
                   <TextField
                     floatingLabelText="Contractor ID"
+                    value={this.state.contractorId}
                   />
                   &nbsp;
                   &nbsp;
@@ -906,11 +964,13 @@ export default class ScheduleInstallation extends React.Component {
                   &nbsp;
                   <TextField
                     floatingLabelText="Greenlife Water Rep. Name"
+                    value={this.state.installerName}
                   />
                   &nbsp;
                   &nbsp;
                   <DatePicker
-                    hintText="Date"
+                    floatingLabelText="Installation Date"
+                    hintText="2017-08-20"
                     container="inline"
                     value={this.state.installedDate}
                     onChange={this.handleDateChange.bind(this, "installedDate")}
