@@ -550,9 +550,9 @@ export default class NewSale extends React.Component {
       //Installation & Delivery
       installationDate: this.state.installationDate, //sale table
       installationTime: this.state.installationTime, //sale table
-      notes: 'Nothing to say', //sale table
+      notes: this.state.notes, //sale table
       //the rest
-      salesRepId: '1',
+      salesRepId: this.state.salesRepId
     };
 
     var request = new XMLHttpRequest();
@@ -849,7 +849,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} onClick="" />
+              <RaisedButton label="Submit" primary={true} />
               : null }
               <br />
             </div>
