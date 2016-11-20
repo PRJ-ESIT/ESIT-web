@@ -849,7 +849,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} onClick={this.createNewSale.bind(this)} />
+              <RaisedButton label="Submit" primary={true} onClick="" />
               : null }
               <br />
             </div>
