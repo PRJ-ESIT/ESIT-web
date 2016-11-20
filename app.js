@@ -5,6 +5,7 @@ var app = express();
 var path = require('path');
 var http = require("http");
 
+
 //webpack hot load
 var webpack = require('webpack');
 var webpackConfig = require('./config/webpack.config');
@@ -270,6 +271,8 @@ console.log(request.query.id);
 
     req.end();
 });
+
+
 
 
 app.listen(3000, function(err) {

@@ -32,7 +32,9 @@ export default class NewSale extends React.Component {
       tabA: true,
       tabB: false,
       tabValue: 'a',
-      salesNumber: "",
+
+      //form data
+      saleNumber: '',
       fname: '',
       lname: '',
       address: '',
@@ -49,8 +51,11 @@ export default class NewSale extends React.Component {
       notes: '',
       salesRepId: '',
       applicationNumber: '',
-      homeownerSignature: '',
       programType: '',
+      dateSigned: new Date(),
+
+      //unknown data
+      homeownerSignature: '',
       salesRepSignature: '',
       deliveryCharges: '150',
       installationCharges: '',
@@ -761,7 +766,11 @@ export default class NewSale extends React.Component {
               &nbsp;
               <TextField
                 floatingLabelText="Date Signed"
-                defaultValue="10/13/2016"
+                value={
+                  this.state.dateSigned.getMonth() + '/' +
+                  this.state.dateSigned.getDate() + '/' +
+                  this.state.dateSigned.getFullYear()
+                }
                 disabled={true}
               />
               <br />
@@ -795,12 +804,12 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
+              <RaisedButton label="Save" onClick={this.createNewSale.bind(this)} />
               &nbsp;
               &nbsp;
               &nbsp;
               { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} />
+              <RaisedButton label="Submit" primary={true} onClick={this.createNewSale.bind(this)} />
               : null }
               <br />
             </div>
