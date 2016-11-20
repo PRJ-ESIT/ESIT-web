@@ -4,7 +4,13 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var http = require("http");
-
+//we need this to build our POST request
+var querystring = require('querystring');
+//added body-parser to grab information from the POST request
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+//end of body-parser
 
 //webpack hot load
 var webpack = require('webpack');
@@ -270,6 +276,69 @@ console.log(request.query.id);
     });
 
     req.end();
+});
+
+//POST http://localhost:3000/newsale
+app.post('/newsale', function(request, response) {
+  var jsonObj = querystring.stringify({
+    //homeowner's info
+    fname: request.body.fname,
+    lname: request.body.lname,
+    address: request.body.address,
+    unitNum: request.body.unitNum,
+    city: request.body.city,
+    province: request.body.province,
+    postalCode: request.body.postalCode,
+    enbridge: request.body.enbridge,
+    email: request.body.email,
+    homePhone: request.body.homePhone,
+    cellPhone: request.body.cellPhone,
+    //program type
+    programType: request.body.programType,
+    //Installation & Delivery
+    installationDate: request.body.installationDate,
+    installationTime: request.body.installationTime,
+    notes: request.body.notes,
+
+    //the rest
+    dateSigned: request.body.dateSigned,
+    salesRepId: request.body.salesRepId
+  });
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'POST',
+    path: '/crud/SaleService/createNewSale',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+
+      //#TODO remove tempObj and forward the SaleNumber from crud instead
+      var tempObj = {'a': 'b'};
+      return response.status(200).json(tempObj);
+    });
+
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
 });
 
 

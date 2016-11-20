@@ -46,8 +46,8 @@ export default class NewSale extends React.Component {
       email: '',
       homePhone: '',
       cellPhone: '',
-      installationDate: null,
-      installationTime: null,
+      installationDate: {},
+      installationTime: {},
       notes: '',
       salesRepId: '',
       applicationNumber: '',
@@ -421,7 +421,7 @@ export default class NewSale extends React.Component {
     this.setState({installationTime: time});
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentWillUpdate(prevProps, prevState) {
     if (prevState.province !== this.state.province) {
       this.validateProvince();
     }
@@ -437,6 +437,12 @@ export default class NewSale extends React.Component {
 
     if (prevState.installationTime !== this.state.installationTime) {
       this.validateInstallationTime();
+    }
+  }
+
+  componentDidUpdate() {
+    if(this.state.allValidated) {
+      this.createNewSale();
     }
   }
 
@@ -524,6 +530,40 @@ export default class NewSale extends React.Component {
     }
   }
 
+  createNewSale() {
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname, //customer table
+      address: this.state.address, //address table
+      unitNum: this.state.unitNum,//address table
+      city: this.state.city,//address table
+      province: this.state.province,//address table
+      postalCode: this.state.postalCode.replace(/\s/g,''),//address table
+      enbridge: this.state.enbridge, //customer table
+      email: this.state.email, //customer table
+      homePhone: this.state.homePhone, //customer table
+      cellPhone: this.state.cellPhone, //customer table
+      dateSigned: this.state.dateSigned,
+      //program type
+      programType: this.state.programType, //sale table
+
+      //Installation & Delivery
+      installationDate: this.state.installationDate, //sale table
+      installationTime: this.state.installationTime, //sale table
+      notes: 'Nothing to say', //sale table
+      //the rest
+      salesRepId: '1',
+    };
+
+    var request = new XMLHttpRequest();
+    request.open('POST', "http://" + IP + '/newsale', true);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.onreadystatechange = function() {
+      //#TODO receive Sale number and add it to the state
+    };
+
+    request.send(JSON.stringify(data));
+  }
 
   render() {
     return (
@@ -804,7 +844,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Save" onClick={this.createNewSale.bind(this)} />
+              <RaisedButton label="Next" onClick={this.validateAllFields.bind(this)} />
               &nbsp;
               &nbsp;
               &nbsp;
