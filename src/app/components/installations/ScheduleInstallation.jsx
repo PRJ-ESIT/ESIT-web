@@ -76,6 +76,7 @@ export default class ScheduleInstallation extends React.Component {
       address: '',
       unitNum: '',
       city: '',
+      province: '',
       postalCode: '',
       enbridge: '',
       email: '',
@@ -84,8 +85,11 @@ export default class ScheduleInstallation extends React.Component {
       sqft: '',
       bathrooms: '',
       residents: '',
+      pool: '',
+      checklist: '',
+      acknowledgement: '',
 
-      //error messages for each input field
+      // Error messages for each input field
       fnameErr: '',
       lnameErr: '',
       addressErr: '',
@@ -100,7 +104,29 @@ export default class ScheduleInstallation extends React.Component {
       sqftErr: '',
       bathroomsErr: '',
       residentsErr: '',
-      validated: false,
+      poolErr: '',
+      checklistErr: '',
+      acknowledgementErr: '',
+
+      // Validation fields
+      fnameValidated: false,
+      lnameValidated: false,
+      addressValidated: false,
+      unitValidated: false,
+      cityValidated: false,
+      proviceValidated: false,
+      postalCodeValidated: false,
+      enbridgeValidated: false,
+      emailValidated: false,
+      homePhoneValidated: false,
+      cellPhoneValidated: false,
+      sqftValidated: false,
+      bathroomsValidated: false,
+      residentsValidated: false,
+      poolValidated: false,
+      checklistValidated: false,
+      acknowledgementValidated: false,
+      allValidated: false,
 
       // table properties
       fixedHeader: true,
@@ -113,7 +139,7 @@ export default class ScheduleInstallation extends React.Component {
       showCheckboxes: true,
       height: 'calc(40%)',
 
-      //this variable keeps the state of a current selected row
+      // This variable keeps the state of a current selected row
       selectedNum: -1,
     };
       this.handleTabChange = this.handleTabChange.bind(this);
@@ -174,12 +200,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         fnameErr: '',
         fname: fname,
-        validated: true,
+        fnameValidated: true,
       });
     } else {
       this.setState({
         fnameErr: '2 to 25 characters, spaces and hyphens only',
-        validated: false,
+        fnameValidated: false,
       });
     }
   }
@@ -193,12 +219,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         lnameErr: '',
         lname: lname,
-        validated: true,
+        lnameValidated: true,
       });
     } else {
       this.setState({
         lnameErr: '2 to 25 characters, spaces and hyphens only',
-        validated: false,
+        lnameValidated: false,
       });
     }
   }
@@ -209,12 +235,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         addressErr: '',
         address: address,
-        validated: true,
+        addressValidated: true,
       });
     } else {
       this.setState({
         addressErr: 'Can contain characters, numbers, spaces and hyphens only',
-        validated: false,
+        addressValidated: false,
       });
     }
   }
@@ -225,12 +251,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
-        validated: true,
+        unitValidated: true,
       });
     } else {
       this.setState({
         unitNumErr: 'Has to be 1 word containing numbers/characters only',
-        validated: false,
+        unitValidated: false,
       });
     }
   }
@@ -241,12 +267,27 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         cityErr: '',
         city: city,
-        validated: true,
+        cityValidated: true,
       });
     } else {
       this.setState({
         cityErr: 'Up to 25 characters, spaces and hyphens only',
-        validated: false,
+        cityValidated: false,
+      });
+    }
+  }
+
+  validateProvince() {
+    let province = this.state.province;
+    if (province === '') {
+      this.setState({
+        provinceErr: 'Province not selected',
+        provinceValidated: false,
+      });
+    } else {
+      this.setState({
+        provinceErr: '',
+        provinceValidated: true,
       });
     }
   }
@@ -257,12 +298,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         postalCodeErr: '',
         postalCode: postalCode.toUpperCase(),
-        validated: true,
+        postalCodeValidated: true,
       });
     } else {
       this.setState({
         postalCodeErr: 'Not a valid postal code',
-        validated: false,
+        postalCodeValidated: false,
       });
     }
   }
@@ -273,12 +314,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         enbridgeErr: '',
         enbridge: enbridge,
-        validated: true,
+        enbridgeValidated: true,
       });
     } else {
       this.setState({
         enbridgeErr: 'Must only consist of numbers',
-        validated: false,
+        enbridgeValidated: false,
       });
     }
   }
@@ -289,12 +330,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         emailErr: '',
         email: email,
-        validated: true,
+        emailValidated: true,
       });
     } else {
       this.setState({
         emailErr: 'Not a valid email',
-        validated: false,
+        emailValidated: false,
       });
     }
   }
@@ -305,12 +346,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
-        validated: true,
+        homePhoneValidated: true,
       });
     } else {
       this.setState({
         homePhoneErr: 'Not a valid phone number',
-        validated: false,
+        homePhoneValidated: false,
       });
     }
   }
@@ -321,12 +362,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
-        validated: true,
+        cellPhoneValidated: true,
       });
     } else {
       this.setState({
         cellPhoneErr: 'Not a valid phone number',
-        validated: false,
+        cellPhoneValidated: false,
       });
     }
   }
@@ -337,12 +378,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         sqftErr: '',
         sqft: sqft,
-        validated: true,
+        sqftValidated: true,
       });
     } else {
       this.setState({
         sqftErr: 'Must only consist of numbers',
-        validated: false,
+        sqftValidated: false,
       });
     }
   }
@@ -353,12 +394,12 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         bathroomsErr: '',
         bathrooms: bathrooms,
-        validated: true,
+        bathroomsValidated: true,
       });
     } else {
       this.setState({
         bathroomsErr: 'Must only consist of numbers',
-        validated: false,
+        bathroomsValidated: false,
       });
     }
   }
@@ -369,13 +410,101 @@ export default class ScheduleInstallation extends React.Component {
       this.setState({
         residentsErr: '',
         residents: residents,
-        validated: true,
+        residentsValidated: true,
       });
     } else {
       this.setState({
         residentsErr: 'Must only consist of numbers',
-        validated: false,
+        residentsValidated: false,
       });
+    }
+  }
+
+  validatePool() {
+    let pool = this.state.pool;
+    if (pool === '') {
+      this.setstate({
+        poolErr: 'Pool option must be selected',
+        poolValidated: false,
+      });
+    } else {
+      this.setState({
+        poolErr: '',
+        poolValidated: true,
+      });
+    }
+  }
+
+  validateChecklist() {
+    let checklist = this.state.checklist;
+    if (checklist === '') {
+      this.setState({
+        checklistErr: 'All options must be selected',
+        checklistValidated: false,
+      });
+    } else {
+      this.setState({
+        checklistErr: '',
+        checklistValidated: true,
+      });
+    }
+  }
+
+  validateAcknowledgement() {
+    let acknowledgement = this.state.acknowledgement;
+    if (acknowledgement === '') {
+      this.setState({
+        acknowledgementErr: 'Customer must acknowledge all fields',
+        acknowledgementValidated: false,
+      });
+    } else {
+      this.setState({
+        acknowledgementErr: '',
+        acknowledgementValidated: true,
+      });
+    }
+  }
+
+  validateAllFields() {
+    this.validateFName();
+    this.validateLName();
+    this.validateAddress();
+    this.validateUnit();
+    this.validateCity();
+    this.validateProvince();
+    this.validatePostalCode();
+    this.validateEnbridge();
+    this.validateEmail();
+    this.validateHomePhone();
+    this.validateCellPhone();
+    this.validateSqft();
+    this.validateBathrooms();
+    this.validateResidents();
+    //to be added
+    this.validatePool();
+    this.validateChecklist();
+    this.validateAcknowledgement();
+
+    if (this.state.fnameValidated &&
+        this.state.lnameValidated &&
+        this.state.addressValidated &&
+        this.state.unitValidated &&
+        this.state.cityValidated &&
+        this.state.provinceValidated &&
+        this.state.postalCodeValidated &&
+        this.state.enbridgeValidated &&
+        this.state.emailValidated &&
+        this.state.homePhoneValidated &&
+        this.state.cellPhoneValidated &&
+        this.state.sqftValidated &&
+        this.state.bathroomsValidated &&
+        this.state.residentsValidated &&
+        this.state.poolValidated &&
+        this.state.checklistValidated &&
+        this.state.acknowledgementValidated) {
+      this.setState({allValidated: true});
+    } else {
+      this.setState({allValidated: false});
     }
   }
 
@@ -456,6 +585,8 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="Province"
                   floatingLabelFixed={false}
                   hintText="Select a Province"
+                  errorText={this.state.provinceErr}
+                  errorStyle={{float: "left"}}
                 >
                   {provinces}
                 </SelectField><br />
@@ -750,13 +881,13 @@ export default class ScheduleInstallation extends React.Component {
                   />
                 </div>
                 <div>
-                  <RaisedButton label="Cancel" />
+                  <RaisedButton label="Cancel" secondary={true} />
                   &nbsp;
                   &nbsp;
-                  <RaisedButton label="Save" />
+                  <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
                   &nbsp;
                   &nbsp;
-                  <RaisedButton label="Submit" />
+                  <RaisedButton label="Proceed" primary={true} />
                 </div>
               </div>
             </div>
