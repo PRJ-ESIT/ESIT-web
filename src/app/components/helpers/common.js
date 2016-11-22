@@ -87,6 +87,134 @@ var validations = {
     }
   },
 
+  validateFName(fname) {
+    if(this.isAlphaSpacesHyphens(fname) && this.minLength(fname, 2) && this.maxLength(fname, 25)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateLName(lname) {
+    if(this.isAlphaSpacesHyphens(lname) && this.minLength(lname, 2) && this.maxLength(lname, 25)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateAddress(address) {
+    if(this.isAlphanumericSpacesHyphens(address) && this.maxLength(address, 50)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateUnit(unitNum) {
+    if(unitNum === '' || (this.isAlphanumeric(unitNum) && this.maxLength(unitNum, 10))) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateCity(city) {
+    if(this.isAlphaSpacesHyphens(city) && this.maxLength(city, 60)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateProvince(province) {
+    if(province != '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validatePostalCode(postalCode) {
+    if(this.isPostalCode(postalCode)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateEnbridge(enbridge) {
+    if(this.isNumeric(enbridge)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateHomePhone(homePhone) {
+    if(this.isPhoneNumber(homePhone) && this.maxLength(homePhone, 12)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateCellPhone(cellPhone) {
+    if(this.isPhoneNumber(cellPhone) && this.maxLength(cellPhone, 12)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateEmail(email) {
+    if(this.isEmail(email) && this.maxLength(email, 50)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateProgramType(programType) {
+    if(programType != '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateInstallationDate(installationDate) {
+    if (installationDate instanceof Date) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateInstallationTime(installationTime) {
+    if (installationTime instanceof Date) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateSalesRepId(salesRepId) {
+    if(this.isNumeric(salesRepId)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateApplicationNumber(applicationNumber) {
+    if(this.isNumeric(applicationNumber)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   isPostalCode(value) {
     if (matchRegexp(value, /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/)) {
       return true;

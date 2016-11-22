@@ -91,7 +91,7 @@ export default class NewSale extends React.Component {
       emailValidated: false,
       homePhoneValidated: false,
       cellPhoneValidated: false,
-      salesRepIdValidatd: false,
+      salesRepIdValidated: false,
       applicationNumberValidated: false,
       programTypeValidated: false,
       installationDateValidated: false,
@@ -100,7 +100,6 @@ export default class NewSale extends React.Component {
       allValidated: false,
     };
     this.handleTabChange = this.handleTabChange.bind(this);
-    this.handleProvinceChange = this.handleProvinceChange.bind(this);
   }
 
   componentDidMount() {
@@ -160,21 +159,45 @@ export default class NewSale extends React.Component {
         tabB: true,
       });
     }
-  };
+  }
 
   handleTextChange(fieldname, event) {
-    event.stopPropagation();
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
-  };
+  }
 
-  handleRadioChange(fieldname, event) {
-    event.stopPropagation();
+  handleSelectChange(fieldname, event, index, value) {
     var obj = {};
-    obj[fieldname] = event.target.value;
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = value;
     this.setState(obj);
-  };
+  }
+
+  handleRadioChange(fieldname, event, value) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = value;
+    this.setState(obj);
+  }
+
+  handleDateChange(fieldname, event, date) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = date;
+    this.setState(obj);
+  }
+
+  handleTimeChange(fieldname, event, time) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = time;
+    this.setState(obj);
+  }
 
   updateCharges() {
     if (this.state.programType != ''){
@@ -198,10 +221,7 @@ export default class NewSale extends React.Component {
 
   validateFName() {
     let fname = this.state.fname.trim();
-    if(validations.isAlphaSpacesHyphens(fname) &&
-      validations.minLength(fname, 2) &&
-      validations.maxLength(fname, 25)) {
-
+    if(validations.validateFName(fname)) {
       this.setState({
         fnameErr: '',
         fname: fname,
@@ -217,10 +237,7 @@ export default class NewSale extends React.Component {
 
   validateLName() {
     let lname = this.state.lname.trim();
-    if(validations.isAlphaSpacesHyphens(lname) &&
-      validations.minLength(lname, 2) &&
-      validations.maxLength(lname, 25)) {
-
+    if(validations.validateLName(lname)) {
       this.setState({
         lnameErr: '',
         lname: lname,
@@ -236,7 +253,7 @@ export default class NewSale extends React.Component {
 
   validateAddress() {
     let address = this.state.address.trim();
-    if(validations.isAlphanumericSpacesHyphens(address) && validations.maxLength(address, 50)) {
+    if(validations.validateAddress(address)) {
       this.setState({
         addressErr: '',
         address: address,
@@ -252,7 +269,7 @@ export default class NewSale extends React.Component {
 
   validateUnit() {
     let unitNum = this.state.unitNum.trim();
-    if(unitNum === '' || (validations.isAlphanumeric(unitNum) && validations.maxLength(unitNum, 10))) {
+    if(validations.validateUnit(unitNum)) {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
@@ -260,7 +277,7 @@ export default class NewSale extends React.Component {
       });
     } else {
       this.setState({
-        unitNumErr: 'Can contain numbers/characters only',
+        unitNumErr: 'Can contain 2-10 numbers/characters only.',
         unitValidated: false,
       });
     }
@@ -268,7 +285,7 @@ export default class NewSale extends React.Component {
 
   validateCity() {
     let city = this.state.city.trim();
-    if(validations.isAlphaSpacesHyphens(city) && validations.maxLength(city, 60)) {
+    if(validations.validateCity(city)) {
       this.setState({
         cityErr: '',
         city: city,
@@ -284,25 +301,26 @@ export default class NewSale extends React.Component {
 
   validateProvince() {
     let province = this.state.province;
-    if(province === '') {
-      this.setState({
-        provinceErr: 'Province not selected',
-        provinceValidated: false,
-      });
-    } else {
+    if(validations.validateProvince(province)) {
       this.setState({
         provinceErr: '',
         provinceValidated: true,
+      });
+    } else {
+      this.setState({
+        provinceErr: 'Province not selected',
+        provinceValidated: false,
       });
     }
   }
 
   validatePostalCode() {
     let postalCode = this.state.postalCode.trim();
-    if(validations.isPostalCode(postalCode)) {
+    postalCode = postalCode.toUpperCase();
+    if(validations.validatePostalCode(postalCode)) {
       this.setState({
         postalCodeErr: '',
-        postalCode: postalCode.toUpperCase(),
+        postalCode: postalCode,
         postalCodeValidated: true,
       });
     } else {
@@ -315,7 +333,7 @@ export default class NewSale extends React.Component {
 
   validateEnbridge() {
     let enbridge = this.state.enbridge.trim();
-    if(validations.isNumeric(enbridge)) {
+    if(validations.validateEnbridge(enbridge)) {
       this.setState({
         enbridgeErr: '',
         enbridge: enbridge,
@@ -329,57 +347,9 @@ export default class NewSale extends React.Component {
     }
   }
 
-  validateSalesRepId() {
-    let salesRepId = this.state.salesRepId.trim();
-    if(validations.isNumeric(salesRepId)) {
-      this.setState({
-        salesRepIdErr: '',
-        salesRepId: salesRepId,
-        salesRepIdValidatd: true,
-      });
-    } else {
-      this.setState({
-        salesRepIdErr: 'Must only consist of numbers',
-        salesRepIdValidatd: false,
-      });
-    }
-  }
-
-  validateApplicationNumber() {
-    let applicationNumber = this.state.applicationNumber.trim();
-    if(validations.isNumeric(applicationNumber)) {
-      this.setState({
-        applicationNumberErr: '',
-        applicationNumber: applicationNumber,
-        applicationNumberValidated: true,
-      });
-    } else {
-      this.setState({
-        applicationNumberErr: 'Must only consist of numbers',
-        applicationNumberValidated: false,
-      });
-    }
-  }
-
-  validateEmail() {
-    let email = this.state.email.trim();
-    if(validations.isEmail(email) && validations.maxLength(email, 50)) {
-      this.setState({
-        emailErr: '',
-        email: email,
-        emailValidated: true,
-      });
-    } else {
-      this.setState({
-        emailErr: 'Not a valid email',
-        emailValidated: false,
-      });
-    }
-  }
-
   validateHomePhone() {
     let homePhone = this.state.homePhone.trim();
-    if(validations.isPhoneNumber(homePhone) && validations.maxLength(homePhone, 12)) {
+    if(validations.validateHomePhone(homePhone)) {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
@@ -395,7 +365,7 @@ export default class NewSale extends React.Component {
 
   validateCellPhone() {
     let cellPhone = this.state.cellPhone.trim();
-    if(validations.isPhoneNumber(cellPhone) && validations.maxLength(cellPhone, 12)) {
+    if(validations.validateCellPhone(cellPhone)) {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
@@ -409,107 +379,100 @@ export default class NewSale extends React.Component {
     }
   }
 
-  handleProvinceChange(event, index, value) {
-    this.setState({province: value});
-  };
-
-  handleDateChange(event, date) {
-    this.setState({installationDate: date});
-  }
-
-  handleTimeChange(event, time) {
-    this.setState({installationTime: time});
-  }
-
-  componentWillUpdate(prevProps, prevState) {
-    if (prevState.province !== this.state.province) {
-      this.validateProvince();
-    }
-
-    if (prevState.programType !== this.state.programType) {
-      this.validateProgramType();
-      this.updateCharges();
-    }
-
-    if (prevState.installationDate !== this.state.installationDate) {
-      this.validateInstallationDate();
-    }
-
-    if (prevState.installationTime !== this.state.installationTime) {
-      this.validateInstallationTime();
-    }
-  }
-
-  componentDidUpdate() {
-    if(this.state.allValidated) {
-      this.createNewSale();
+  validateEmail() {
+    let email = this.state.email.trim();
+    if(validations.validateEmail(email)) {
+      this.setState({
+        emailErr: '',
+        email: email,
+        emailValidated: true,
+      });
+    } else {
+      this.setState({
+        emailErr: 'Not a valid email',
+        emailValidated: false,
+      });
     }
   }
 
   validateProgramType() {
     let programType = this.state.programType;
-    if(programType === '') {
-      this.setState({
-        programTypeErr: 'Program type not selected',
-        programTypeValidated: false,
-      });
-    } else {
+    if(validations.validateProgramType(programType)) {
       this.setState({
         programTypeErr: '',
         programTypeValidated: true,
+      });
+    } else {
+      this.setState({
+        programTypeErr: 'Program type not selected',
+        programTypeValidated: false,
       });
     }
   }
 
   validateInstallationDate() {
     let installationDate = this.state.installationDate;
-
-    if (installationDate === '') {
-      this.setState({
-        installationDateErr: 'Must select an installation date',
-        installationDateValidated: false,
-      });
-    } else {
+    if (validations.validateInstallationDate(installationDate)) {
       this.setState({
         installationDateErr: '',
         installationDateValidated: true,
+      });
+    } else {
+      this.setState({
+        installationDateErr: 'Must select an installation date',
+        installationDateValidated: false,
       });
     }
   }
 
   validateInstallationTime() {
     let installationTime = this.state.installationTime;
-
-    if (installationTime === '') {
-      this.setState({
-        installationTimeErr: 'Must select an installation time',
-        installationTimeValidated: false,
-      });
-    } else {
+    if (validations.validateInstallationTime(installationTime)) {
       this.setState({
         installationTimeErr: '',
         installationTimeValidated: true,
       });
+    } else {
+      this.setState({
+        installationTimeErr: 'Must select an installation time',
+        installationTimeValidated: false,
+      });
     }
   }
 
-  validateAllFields() {
-    console.log("validateAllFields");
-    this.validateFName();
-    this.validateLName();
-    this.validateAddress();
-    this.validateUnit();
-    this.validateCity();
-    this.validateProvince();
-    this.validatePostalCode();
-    this.validateEnbridge();
-    this.validateHomePhone();
-    this.validateCellPhone();
-    this.validateEmail();
-    this.validateProgramType();
-    this.validateInstallationDate();
-    this.validateInstallationTime();
+  validateSalesRepId() {
+    let salesRepId = this.state.salesRepId.trim();
+    if(validations.validateSalesRepId(salesRepId)) {
+      this.setState({
+        salesRepIdErr: '',
+        salesRepId: salesRepId,
+        salesRepIdValidated: true,
+      });
+    } else {
+      this.setState({
+        salesRepIdErr: 'Must only consist of numbers',
+        salesRepIdValidated: false,
+      });
+    }
+  }
 
+  validateApplicationNumber() {
+    let applicationNumber = this.state.applicationNumber.trim();
+    if(validations.validateApplicationNumber(applicationNumber)) {
+      this.setState({
+        applicationNumberErr: '',
+        applicationNumber: applicationNumber,
+        applicationNumberValidated: true,
+      });
+    } else {
+      this.setState({
+        applicationNumberErr: 'Must only consist of numbers',
+        applicationNumberValidated: false,
+      });
+    }
+  }
+
+  validateRentalAgreement() {
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
@@ -523,10 +486,32 @@ export default class NewSale extends React.Component {
         this.state.emailValidated &&
         this.state.programTypeValidated &&
         this.state.installationDateValidated &&
-        this.state.installationTimeValidated) {
+        this.state.installationTimeValidated &&
+        this.state.salesRepIdValidated) {
       this.setState({allValidated: true});
     } else {
-      this.setState({allValidated: false});
+      this.validateAddress();
+      this.validateFName();
+      this.validateLName();
+      this.validateUnit();
+      this.validateCity();
+      this.validateProvince();
+      this.validatePostalCode();
+      this.validateEnbridge();
+      this.validateHomePhone();
+      this.validateCellPhone();
+      this.validateEmail();
+      this.validateProgramType();
+      this.validateInstallationDate();
+      this.validateInstallationTime();
+      this.validateSalesRepId();
+    }
+  }
+
+  componentDidUpdate() {
+    console.log('componentDidUpdate');
+    if(this.state.allValidated) {
+      this.createNewSale();
     }
   }
 
@@ -646,9 +631,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               <SelectField
                 value={this.state.province}
-                onChange={this.handleProvinceChange}
+                onChange={this.handleSelectChange.bind(this, "province")}
                 floatingLabelText="Province"
-                floatingLabelFixed={true}
+                floatingLabelFixed={false}
                 hintText="Select a Province"
                 errorText={this.state.provinceErr}
                 errorStyle={{float: "left"}}
@@ -712,7 +697,6 @@ export default class NewSale extends React.Component {
               <h2 className="headings">Program Type</h2>
               <div>
                 <RadioButtonGroup name="programType"
-                  valueSelected={this.state.programType}
                   onChange={this.handleRadioChange.bind(this, "programType")}>
                   <RadioButton
                     value="1"
@@ -759,7 +743,7 @@ export default class NewSale extends React.Component {
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
                   value={this.state.installationDate}
-                  onChange={this.handleDateChange.bind(this)}
+                  onChange={this.handleDateChange.bind(this, "installationDate")}
                 />
                 <div style={{color:"red", float: "left"}}>
                   {this.state.installationDateErr}
@@ -773,7 +757,7 @@ export default class NewSale extends React.Component {
                   hintText="Installation Time"
                   floatingLabelText="Installation Time"
                   value={this.state.installationTime}
-                  onChange={this.handleTimeChange.bind(this)}
+                  onChange={this.handleTimeChange.bind(this, "installationTime")}
                 />
                 <div style={{color:"red", float: "left"}}>
                   {this.state.installationTimeErr}
@@ -829,6 +813,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               <TextField
                 hintText="1234567"
+                type="number"
                 floatingLabelText="Sales Rep ID"
                 value={this.state.salesRepId}
                 onChange={this.handleTextChange.bind(this, "salesRepId")}
@@ -844,7 +829,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Next" onClick={this.validateAllFields.bind(this)} />
+              <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
               &nbsp;
               &nbsp;
               &nbsp;
@@ -885,7 +870,7 @@ export default class NewSale extends React.Component {
               <DatePicker
                 hintText="2017-08-20"
                 container="inline"
-                floatingLabelText="installation Date"
+                floatingLabelText="Installation Date"
                 style={{ display: "inline-block", width: "200px" }}
                 value={this.state.installationDate}
                 onChange={this.handleTextChange.bind(this, "installationDate")}
@@ -949,9 +934,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               <SelectField
                 value={this.state.province}
-                onChange={this.handleProvinceChange}
+                onChange={this.handleSelectChange.bind(this, "province")}
                 floatingLabelText="Province"
-                floatingLabelFixed={true}
+                floatingLabelFixed={false}
                 hintText="Select a Province"
                 errorText={this.state.provinceErr}
                 errorStyle={{float: "left"}}
@@ -1044,7 +1029,7 @@ export default class NewSale extends React.Component {
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
                   value={this.state.installationDate}
-                  onChange={this.handleDateChange.bind(this)}
+                  onChange={this.handleDateChange.bind(this, "installationDate")}
                 />
                 <div style={{color:"red", float: "left"}}>
                   {this.state.installationDateErr}
@@ -1058,7 +1043,8 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
+              <RaisedButton label="Save" onClick={this.validateRentalAgreement.bind(this)} />
+              // Change validateRentalAgreement here to validatePAD; make new function
               &nbsp;
               &nbsp;
               &nbsp;
