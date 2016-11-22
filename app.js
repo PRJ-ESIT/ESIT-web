@@ -244,7 +244,6 @@ app.get('/allemployees', function(request, response) {
 });
 
 app.get('/existingsale', function(request, response) {
-console.log(request.query.id);
   var options = {
     host: config.crudIP,
     port: 8080,
