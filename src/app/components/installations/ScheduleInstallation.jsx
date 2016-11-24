@@ -68,6 +68,10 @@ export default class ScheduleInstallation extends React.Component {
   constructor(props) {
     super(props);
 
+    const minDate = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
     this.state = {
       tabA: true,
       tabB: false,
@@ -94,6 +98,8 @@ export default class ScheduleInstallation extends React.Component {
       installedDate: {},
       contractorId: '',
       installerName: '',
+      minDate: minDate,
+      maxDate: maxDate,
 
       // Error messages for each input field
       fnameErr: '',
@@ -163,6 +169,7 @@ export default class ScheduleInstallation extends React.Component {
           let installation = JSON.parse(httpRequest.responseText).installation;
           // Format time
           var tempDateTime = new Date(installation.installationDateTime);
+          var minDate = new Date(2000, 0, 1);
 
           _this.setState({
             // salesNumber: sale.salesNumber,
@@ -184,6 +191,7 @@ export default class ScheduleInstallation extends React.Component {
             installedDate: tempDateTime ? tempDateTime : '',
             contractorId: installation.installerId ? installation.installerId : '',
             installerName: installation.installerName ? installation.installerName : '',
+            minDate: minDate,
           });
         }
       };
@@ -974,6 +982,8 @@ export default class ScheduleInstallation extends React.Component {
                     container="inline"
                     value={this.state.installedDate}
                     onChange={this.handleDateChange.bind(this, "installedDate")}
+                    minDate={this.state.minDate}
+                    maxDate={this.state.maxDate}
                   />
                   <div style={{color:"red", float: "left"}}>{this.state.installedDateErr}</div>
                 </div>
