@@ -71,6 +71,8 @@ export default class ScheduleInstallation extends React.Component {
       tabA: true,
       tabB: false,
       tabValue: 'a',
+
+      // form data
       fname: '',
       lname: '',
       address: '',
@@ -88,6 +90,7 @@ export default class ScheduleInstallation extends React.Component {
       pool: '',
       checklist: '',
       acknowledgement: '',
+      installedDate: {},
 
       // Error messages for each input field
       fnameErr: '',
@@ -107,6 +110,7 @@ export default class ScheduleInstallation extends React.Component {
       poolErr: '',
       checklistErr: '',
       acknowledgementErr: '',
+      installedDateErr: '',
 
       // Validation fields
       fnameValidated: false,
@@ -126,6 +130,7 @@ export default class ScheduleInstallation extends React.Component {
       poolValidated: false,
       checklistValidated: false,
       acknowledgementValidated: false,
+      installedDateValidated: false,
       allValidated: false,
 
       // table properties
@@ -143,8 +148,6 @@ export default class ScheduleInstallation extends React.Component {
       selectedNum: -1,
     };
       this.handleTabChange = this.handleTabChange.bind(this);
-      this.handleSelectChange = this.handleSelectChange.bind(this);
-      this.handleRadioChange = this.handleRadioChange.bind(this);
       this.handleSelection = this.handleSelection.bind(this);
   }
 
@@ -171,13 +174,29 @@ export default class ScheduleInstallation extends React.Component {
     this.setState(obj);
   };
 
-  handleSelectChange(event, index, value) {
-    this.setState({selectValue: value});
+  handleSelectChange(fieldname, event, index, value) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = value;
+    this.setState(obj);
   }
 
-  handleRadioChange(event, value) {
-    this.setState({radioValue: value});
-  };
+  handleRadioChange(fieldname, event, value) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = value;
+    this.setState(obj);
+  }
+
+  handleDateChange(fieldname, event, date) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = date;
+    this.setState(obj);
+  }
 
   handleSelection(selectedRows) {
     if(selectedRows.length == 1) {
@@ -193,10 +212,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateFName() {
     let fname = this.state.fname.trim();
-    if(validations.isAlphaSpacesHyphens(fname) &&
-      validations.minLength(fname, 2) &&
-      validations.maxLength(fname, 25)) {
-
+    if(validations.validateFName(fname)) {
       this.setState({
         fnameErr: '',
         fname: fname,
@@ -212,10 +228,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateLName() {
     let lname = this.state.lname.trim();
-    if(validations.isAlphaSpacesHyphens(lname) &&
-      validations.minLength(lname, 2) &&
-      validations.maxLength(lname, 25)) {
-
+    if(validations.validateLName(lname)) {
       this.setState({
         lnameErr: '',
         lname: lname,
@@ -231,7 +244,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateAddress() {
     let address = this.state.address.trim();
-    if(validations.isAlphanumericSpacesHyphens(address) && validations.maxLength(address, 50)) {
+    if(validations.validateAddress(address)) {
       this.setState({
         addressErr: '',
         address: address,
@@ -247,7 +260,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateUnit() {
     let unitNum = this.state.unitNum.trim();
-    if(validations.isAlphanumeric(unitNum) && validations.maxLength(unitNum, 10)) {
+    if(validations.validateUnit(unitNum)) {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
@@ -263,7 +276,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateCity() {
     let city = this.state.city.trim();
-    if(validations.isAlphaSpacesHyphens(city) && validations.maxLength(city, 25)) {
+    if(validations.validateCity(city)) {
       this.setState({
         cityErr: '',
         city: city,
@@ -279,25 +292,26 @@ export default class ScheduleInstallation extends React.Component {
 
   validateProvince() {
     let province = this.state.province;
-    if (province === '') {
-      this.setState({
-        provinceErr: 'Province not selected',
-        provinceValidated: false,
-      });
-    } else {
+    if (validations.validateProvince(province)) {
       this.setState({
         provinceErr: '',
         provinceValidated: true,
+      });
+    } else {
+      this.setState({
+        provinceErr: 'Province not selected',
+        provinceValidated: false,
       });
     }
   }
 
   validatePostalCode() {
     let postalCode = this.state.postalCode.trim();
-    if(validations.isPostalCode(postalCode)) {
+    postalCode = postalCode.toUpperCase();
+    if(validations.validatePostalCode(postalCode)) {
       this.setState({
         postalCodeErr: '',
-        postalCode: postalCode.toUpperCase(),
+        postalCode: postalCode,
         postalCodeValidated: true,
       });
     } else {
@@ -310,7 +324,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateEnbridge() {
     let enbridge = this.state.enbridge.trim();
-    if(validations.isNumeric(enbridge)) {
+    if(validations.validateEnbridge(enbridge)) {
       this.setState({
         enbridgeErr: '',
         enbridge: enbridge,
@@ -326,7 +340,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateEmail() {
     let email = this.state.email.trim();
-    if(validations.isEmail(email) && validations.maxLength(email, 50)) {
+    if(validations.validateEmail(email)) {
       this.setState({
         emailErr: '',
         email: email,
@@ -342,7 +356,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateHomePhone() {
     let homePhone = this.state.homePhone.trim();
-    if(validations.isPhoneNumber(homePhone) && validations.maxLength(homePhone, 12)) {
+    if(validations.validateHomePhone(homePhone)) {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
@@ -358,7 +372,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateCellPhone() {
     let cellPhone = this.state.cellPhone.trim();
-    if(validations.isPhoneNumber(cellPhone) && validations.maxLength(cellPhone, 12)) {
+    if(validations.validateCellPhone(cellPhone)) {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
@@ -374,7 +388,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateSqft() {
     let sqft = this.state.sqft.trim();
-    if(validations.isNumeric(sqft) && validations.maxLength(sqft, 6)) {
+    if(validations.validateSqft(sqft)) {
       this.setState({
         sqftErr: '',
         sqft: sqft,
@@ -390,7 +404,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateBathrooms() {
     let bathrooms = this.state.bathrooms.trim();
-    if(validations.isNumeric(bathrooms) && validations.maxLength(bathrooms, 3)) {
+    if(validations.validateBathrooms(bathrooms)) {
       this.setState({
         bathroomsErr: '',
         bathrooms: bathrooms,
@@ -406,7 +420,7 @@ export default class ScheduleInstallation extends React.Component {
 
   validateResidents() {
     let residents = this.state.residents.trim();
-    if(validations.isNumeric(residents) && validations.maxLength(residents, 3)) {
+    if(validations.validateResidents(residents)) {
       this.setState({
         residentsErr: '',
         residents: residents,
@@ -422,48 +436,64 @@ export default class ScheduleInstallation extends React.Component {
 
   validatePool() {
     let pool = this.state.pool;
-    if (pool === '') {
-      this.setstate({
-        poolErr: 'Pool option must be selected',
-        poolValidated: false,
-      });
-    } else {
+    if (validations.validatePool(pool)) {
       this.setState({
         poolErr: '',
         poolValidated: true,
+      });
+    } else {
+      this.setState({
+        poolErr: 'Pool option must be selected',
+        poolValidated: false,
       });
     }
   }
 
   validateChecklist() {
     let checklist = this.state.checklist;
-    if (checklist === '') {
-      this.setState({
-        checklistErr: 'All options must be selected',
-        checklistValidated: false,
-      });
-    } else {
+    if (validations.validateChecklist(checklist)) {
       this.setState({
         checklistErr: '',
         checklistValidated: true,
+      });
+    } else {
+      this.setState({
+        checklistErr: 'All options must be selected',
+        checklistValidated: false,
       });
     }
   }
 
   validateAcknowledgement() {
     let acknowledgement = this.state.acknowledgement;
-    if (acknowledgement === '') {
-      this.setState({
-        acknowledgementErr: 'Customer must acknowledge all fields',
-        acknowledgementValidated: false,
-      });
-    } else {
+    if (validations.validateAcknowledgement(acknowledgement)) {
       this.setState({
         acknowledgementErr: '',
         acknowledgementValidated: true,
       });
+    } else {
+      this.setState({
+        acknowledgementErr: 'Customer must acknowledge all fields',
+        acknowledgementValidated: false,
+      });
     }
   }
+
+  validateInstalledDate() {
+    let installedDate = this.state.installedDate;
+    if (validations.validateInstallationDate(installedDate)) {
+      this.setState({
+        installedDateErr: '',
+        installedDateValidated: true,
+      });
+    } else {
+      this.setState({
+        installedDateErr: 'Must select an installation date',
+        installedDateValidated: false,
+      });
+    }
+  }
+
 
   validateAllFields() {
     this.validateFName();
@@ -480,10 +510,10 @@ export default class ScheduleInstallation extends React.Component {
     this.validateSqft();
     this.validateBathrooms();
     this.validateResidents();
-    //to be added
     this.validatePool();
     this.validateChecklist();
     this.validateAcknowledgement();
+    this.validateInstalledDate();
 
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
@@ -501,7 +531,8 @@ export default class ScheduleInstallation extends React.Component {
         this.state.residentsValidated &&
         this.state.poolValidated &&
         this.state.checklistValidated &&
-        this.state.acknowledgementValidated) {
+        this.state.acknowledgementValidated &&
+        this.state.installedDateValidated) {
       this.setState({allValidated: true});
     } else {
       this.setState({allValidated: false});
@@ -580,8 +611,8 @@ export default class ScheduleInstallation extends React.Component {
                 &nbsp;
                 &nbsp;
                 <SelectField
-                  value={this.state.selectValue}
-                  onChange={this.handleSelectChange}
+                  value={this.state.province}
+                  onChange={this.handleSelectChange.bind(this, "province")}
                   floatingLabelText="Province"
                   floatingLabelFixed={false}
                   hintText="Select a Province"
@@ -678,8 +709,8 @@ export default class ScheduleInstallation extends React.Component {
                 /><br />
                 <div className="radioActionText">
                   <p className="radioRow">Pool</p>
-                  <RadioButtonGroup name="hasPool" className="radioGroup"
-                  onChange={this.handleRadioChange}>
+                  <RadioButtonGroup name="pool" className="radioGroup"
+                  onChange={this.handleRadioChange.bind(this, "pool")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -690,7 +721,8 @@ export default class ScheduleInstallation extends React.Component {
                       value="no"
                       label="No"
                     />
-                  </RadioButtonGroup>
+                  </RadioButtonGroup><br />
+                  <div style={{color:"red", float: "left"}}>{this.state.poolErr}</div>
                 </div><br />
 
                 <h2 className="headings">Program Installation</h2>
@@ -735,8 +767,8 @@ export default class ScheduleInstallation extends React.Component {
                 <h2 className="headings">Installation Checklist</h2>
                 <div className="radioActionText">
                   <p className="radioRow">Bypass Installed</p>
-                  <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange}>
+                  <RadioButtonGroup name="checklist" className="radioGroup"
+                  onChange={this.handleRadioChange.bind(this, "checklist")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -752,7 +784,7 @@ export default class ScheduleInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Leak Check Equipment</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange}>
+                  onChange={this.handleRadioChange.bind(this, "checklist")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -768,7 +800,7 @@ export default class ScheduleInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">System Flushed</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange}>
+                  onChange={this.handleRadioChange.bind(this, "checklist")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -784,7 +816,7 @@ export default class ScheduleInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Conservation System Explanation</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange}>
+                  onChange={this.handleRadioChange.bind(this, "checklist")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -800,7 +832,7 @@ export default class ScheduleInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Shut-off Valve Explanation</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange}>
+                  onChange={this.handleRadioChange.bind(this, "checklist")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -816,7 +848,7 @@ export default class ScheduleInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Filter Replacement Explanation</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange}>
+                  onChange={this.handleRadioChange.bind(this, "checklist")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -837,6 +869,7 @@ export default class ScheduleInstallation extends React.Component {
                   rowsMax={10}
                   className="full-width"
                 />
+                <div style={{color:"red", float: "left"}}>{this.state.checklistErr}</div>
 
                 <h2 className="headings">Customer Acknowledgement</h2>
                 <div>
@@ -854,6 +887,7 @@ export default class ScheduleInstallation extends React.Component {
                     label="My savings are not guaranteed."
                   />
                 </div>
+                <div style={{color:"red"}}>{this.state.acknowledgementErr}</div>
                 <TextField
                   floatingLabelText="Homeowner's Signature"
                   hintText="Tap to add signature"
@@ -878,7 +912,10 @@ export default class ScheduleInstallation extends React.Component {
                   <DatePicker
                     hintText="Date"
                     container="inline"
+                    value={this.state.installedDate}
+                    onChange={this.handleDateChange.bind(this, "installedDate")}
                   />
+                  <div style={{color:"red", float: "left"}}>{this.state.installedDateErr}</div>
                 </div>
                 <div>
                   <RaisedButton label="Cancel" secondary={true} />

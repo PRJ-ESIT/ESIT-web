@@ -33,7 +33,7 @@ export default class NewSale extends React.Component {
       tabB: false,
       tabValue: 'a',
 
-      //form data
+      // Form data
       saleNumber: '',
       fname: '',
       lname: '',
@@ -54,7 +54,7 @@ export default class NewSale extends React.Component {
       programType: '',
       dateSigned: new Date(),
 
-      //unknown data
+      // Unknown data
       homeownerSignature: '',
       salesRepSignature: '',
       deliveryCharges: '150',
@@ -96,7 +96,6 @@ export default class NewSale extends React.Component {
       programTypeValidated: false,
       installationDateValidated: false,
       installationTimeValidated: false,
-
       allValidated: false,
     };
     this.handleTabChange = this.handleTabChange.bind(this);
@@ -218,7 +217,6 @@ export default class NewSale extends React.Component {
   }
 
   // Validation
-
   validateFName() {
     let fname = this.state.fname.trim();
     if(validations.validateFName(fname)) {
@@ -509,7 +507,6 @@ export default class NewSale extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('componentDidUpdate');
     if(this.state.allValidated) {
       this.createNewSale();
     }

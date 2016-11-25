@@ -215,6 +215,54 @@ var validations = {
     }
   },
 
+  validateSqft(sqft) {
+    if(this.isNumeric(sqft) && this.maxLength(sqft, 6)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateBathrooms(bathrooms) {
+    if(this.isNumeric(bathrooms) && this.maxLength(bathrooms, 3)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateResidents(residents) {
+    if(this.isNumeric(residents) && this.maxLength(residents, 3)) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validatePool(pool) {
+    if(pool != '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateChecklist(checklist) {
+    if(checklist != '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  validateAcknowledgement(acknowledgement) {
+    if(acknowledgement != '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   isPostalCode(value) {
     if (matchRegexp(value, /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/)) {
       return true;
