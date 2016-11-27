@@ -1,6 +1,7 @@
 import React from 'react';
 import { Toolbar, ToolbarTitle, TextField, DropDownMenu, MenuItem, RaisedButton, SelectField } from 'material-ui';
 import { validations } from '../helpers/common.js';
+import { IP } from '../../../../config/config.js';
 
 const styles = {
   customWidth: {
@@ -32,6 +33,7 @@ export default class NewEmployee extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      employeeId: '',
       employeeType: '',
       //state variables below keep the values of each input field
       fname: '',
@@ -66,6 +68,32 @@ export default class NewEmployee extends React.Component {
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.validateAndSubmit = this.validateAndSubmit.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.status == "edit"){
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let employee = JSON.parse(httpRequest.responseText).employee;
+
+          _this.setState({
+            employeeId: employee.employeeId ? employee.employeeId : '',
+            employeeType: employee.role ? employee.role : '',
+            fname: employee.firstName ? employee.firstName : '',
+            lname: employee.lastName ? employee.lastName : '',
+            email: employee.email ? employee.email : '',
+            homePhone: employee.homePhone ? employee.homePhone : '',
+            cellPhone: employee.cellPhone ? employee.cellPhone : '',
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/getoneemployee?id="
+        + this.props.id, true);
+      httpRequest.send(null);
+    }
   }
 
   handleDropDownChange(event, index, value){
@@ -357,21 +385,22 @@ export default class NewEmployee extends React.Component {
                 hintText="Select Employee Type"
                 maxHeight={150}
               >
-                <MenuItem value={"Sales Agent" } primaryText="Sales Agent" />
-                <MenuItem value={"Installation Agent"} primaryText="Installation Agent" />
-                <MenuItem value={"Administrator"} primaryText="Administrator" />
+                <MenuItem value={"salesperson" } primaryText="Sales Agent" />
+                <MenuItem value={"installer"} primaryText="Installation Agent" />
+                <MenuItem value={"admin"} primaryText="Administrator" />
               </SelectField>
               &nbsp;
               &nbsp;
               <TextField
                 disabled={true}
-                defaultValue="555-555-555"
+                value={this.state.employeeId}
                 floatingLabelText="Employee ID"
               /><br />
               <TextField
                 hintText="John"
                 floatingLabelText="First Name"
                 maxLength="25"
+                value={this.state.fname}
                 onChange={this.handleTextChange.bind(this, 'fname')}
                 onBlur={this.validateFName.bind(this)}
                 errorText={this.state.fnameErr}
@@ -383,6 +412,7 @@ export default class NewEmployee extends React.Component {
                 hintText="Smith"
                 floatingLabelText="Last Name"
                 maxLength="25"
+                value={this.state.lname}
                 onChange={this.handleTextChange.bind(this, 'lname')}
                 onBlur={this.validateLName.bind(this)}
                 errorText={this.state.lnameErr}
@@ -446,6 +476,7 @@ export default class NewEmployee extends React.Component {
                 floatingLabelText="Email"
                 type="email"
                 maxLength="50"
+                value={this.state.email}
                 onChange={this.handleTextChange.bind(this, 'email')}
                 onBlur={this.validateEmail.bind(this)}
                 errorText={this.state.emailErr}
@@ -456,6 +487,7 @@ export default class NewEmployee extends React.Component {
                 floatingLabelText="Home Phone"
                 type="tel"
                 maxLength="12"
+                value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, 'homePhone')}
                 onBlur={this.validateHomePhone.bind(this)}
                 errorText={this.state.homePhoneErr}
@@ -468,6 +500,7 @@ export default class NewEmployee extends React.Component {
                 floatingLabelText="Cell Phone"
                 type="tel"
                 maxLength="12"
+                value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, 'cellPhone')}
                 onBlur={this.validateCellPhone.bind(this)}
                 errorText={this.state.cellPhoneErr}
