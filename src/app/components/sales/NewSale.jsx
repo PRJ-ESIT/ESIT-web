@@ -34,7 +34,7 @@ export default class NewSale extends React.Component {
       tabValue: 'a',
 
       // Form data
-      saleNumber: '',
+      salesNumber: '',
       fname: '',
       lname: '',
       address: '',
@@ -198,21 +198,19 @@ export default class NewSale extends React.Component {
     this.setState(obj);
   }
 
-  updateCharges() {
-    if (this.state.programType != ''){
-      if (this.state.programType == "3") {
-        var totalCharges = parseInt(this.state.deliveryCharges) + 550;
-        this.setState({
-          installationCharges : 550,
-          totalCharges : totalCharges
-        });
-      } else {
-        var totalCharges = parseInt(this.state.deliveryCharges) + 450;
-        this.setState({
-          installationCharges : 450,
-          totalCharges: totalCharges
-        });
-      }
+  updateCharges(programType) {
+    if (programType == "3") {
+      var totalCharges = parseInt(this.state.deliveryCharges) + 550;
+      this.setState({
+        installationCharges : 550,
+        totalCharges : totalCharges
+      });
+    } else if (programType == "1" || programType == "2") {
+      var totalCharges = parseInt(this.state.deliveryCharges) + 450;
+      this.setState({
+        installationCharges : 450,
+        totalCharges: totalCharges
+      });
     }
   }
 
@@ -512,6 +510,12 @@ export default class NewSale extends React.Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.programType !== this.state.programType) {
+       this.updateCharges(nextState.programType);
+    }
+  }
+
   createNewSale() {
     let data = {
       fname: this.state.fname,
@@ -694,6 +698,7 @@ export default class NewSale extends React.Component {
               <h2 className="headings">Program Type</h2>
               <div>
                 <RadioButtonGroup name="programType"
+                  valueSelected={this.state.programType}
                   onChange={this.handleRadioChange.bind(this, "programType")}>
                   <RadioButton
                     value="1"
