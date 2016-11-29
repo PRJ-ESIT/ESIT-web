@@ -28,6 +28,11 @@ export default class NewSale extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const minDate = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
     this.state = {
       tabA: true,
       tabB: false,
@@ -53,6 +58,8 @@ export default class NewSale extends React.Component {
       applicationNumber: '',
       programType: '',
       dateSigned: new Date(),
+      minDate: minDate,
+      maxDate: maxDate,
 
       // Unknown data
       homeownerSignature: '',
@@ -110,6 +117,7 @@ export default class NewSale extends React.Component {
           let sale = JSON.parse(httpRequest.responseText).sale;
           // Format time
           var tempDateTime = new Date(sale.installationDateTime);
+          var minDate = new Date(2000, 0, 1);
 
           _this.setState({
             salesNumber: sale.salesNumber,
@@ -129,6 +137,7 @@ export default class NewSale extends React.Component {
             installationTime: tempDateTime ? tempDateTime : '',
             notes: sale.notes ? sale.notes : '',
             salesRepId: sale.salesRepId ? sale.salesRepId : '',
+            minDate: minDate,
           });
         }
       };
@@ -744,6 +753,8 @@ export default class NewSale extends React.Component {
                 <DatePicker
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
                   value={this.state.installationDate}
                   onChange={this.handleDateChange.bind(this, "installationDate")}
                 />
@@ -873,6 +884,8 @@ export default class NewSale extends React.Component {
                 hintText="2017-08-20"
                 container="inline"
                 floatingLabelText="Installation Date"
+                minDate={this.state.minDate}
+                maxDate={this.state.maxDate}
                 style={{ display: "inline-block", width: "200px" }}
                 value={this.state.installationDate}
                 onChange={this.handleTextChange.bind(this, "installationDate")}
@@ -1030,6 +1043,8 @@ export default class NewSale extends React.Component {
                 <DatePicker
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
                   value={this.state.installationDate}
                   onChange={this.handleDateChange.bind(this, "installationDate")}
                 />
