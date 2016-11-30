@@ -5,22 +5,23 @@ import {
   Checkbox, Divider, DatePicker, RaisedButton
 } from 'material-ui';
 import { validations } from '../helpers/common.js';
+import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={1} primaryText="Alberta" />,
-  <MenuItem key={2} value={2} primaryText="British Columbia" />,
-  <MenuItem key={3} value={3} primaryText="Manitoba" />,
-  <MenuItem key={4} value={4} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={5} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={6} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={7} primaryText="Ontario" />,
-  <MenuItem key={8} value={8} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={9} primaryText="Quebec" />,
-  <MenuItem key={10} value={10} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={11} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={12} primaryText="Yukon" />,
-  <MenuItem key={13} value={13} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
 ];
 
 const tableData = [
@@ -67,6 +68,10 @@ export default class ScheduleInstallation extends React.Component {
   constructor(props) {
     super(props);
 
+    const minDate = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
     this.state = {
       tabA: true,
       tabB: false,
@@ -92,6 +97,10 @@ export default class ScheduleInstallation extends React.Component {
       notes: '',
       acknowledgement: '',
       installedDate: {},
+      contractorId: '',
+      installerName: '',
+      minDate: minDate,
+      maxDate: maxDate,
 
       // Error messages for each input field
       fnameErr: '',
@@ -150,6 +159,48 @@ export default class ScheduleInstallation extends React.Component {
     };
       this.handleTabChange = this.handleTabChange.bind(this);
       this.handleSelection = this.handleSelection.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.status == "edit"){
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let installation = JSON.parse(httpRequest.responseText).installation;
+          // Format time
+          var tempDateTime = new Date(installation.installationDateTime);
+          var minDate = new Date(2000, 0, 1);
+
+          _this.setState({
+            // salesNumber: sale.salesNumber,
+            fname: installation.customerFirstName ? installation.customerFirstName : '',
+            lname: installation.customerLastName ? installation.customerLastName : '',
+            address: installation.address ? installation.address : '',
+            unitNum: installation.unit ? installation.unit : '',
+            city: installation.city ? installation.city : '',
+            province: installation.province ? installation.province : '',
+            postalCode: installation.postalCode ? installation.postalCode : '',
+            enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
+            email: installation.email ? installation.email : '',
+            homePhone: installation.homePhone ? installation.homePhone : '',
+            cellPhone: installation.cellPhone ? installation.cellPhone : '',
+            sqft: installation.sqFootage ? installation.sqFootage : '',
+            residents: installation.residents ? installation.residents : '',
+            pool: installation.hasPool ? installation.hasPool : '',
+            bathrooms: installation.bathrooms ? installation.bathrooms : '',
+            installedDate: tempDateTime ? tempDateTime : '',
+            contractorId: installation.installerId ? installation.installerId : '',
+            installerName: installation.installerName ? installation.installerName : '',
+            minDate: minDate,
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/getoneinstallation?id="
+        + this.props.id, true);
+      httpRequest.send(null);
+    }
   }
 
   handleTabChange(value) {
@@ -585,6 +636,7 @@ export default class ScheduleInstallation extends React.Component {
                 <TextField
                   floatingLabelText="Address"
                   hintText="123 Fake Street"
+                  value={this.state.address}
                   maxLength="50"
                   value={this.state.address}
                   onChange={this.handleTextChange.bind(this, "address")}
@@ -736,15 +788,16 @@ export default class ScheduleInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Pool</p>
                   <RadioButtonGroup name="pool" className="radioGroup"
+                  valueSelected={this.state.pool}
                   onChange={this.handleRadioChange.bind(this, "pool")}>
                     <RadioButton
                       className="radio"
-                      value="yes"
+                      value="1"
                       label="Yes"
                     />
                     <RadioButton
                       className="radio"
-                      value="no"
+                      value="0"
                       label="No"
                     />
                   </RadioButtonGroup>
@@ -929,6 +982,7 @@ export default class ScheduleInstallation extends React.Component {
                     floatingLabelText="Contractor ID"
                     type="number"
                     min="1"
+                    value={this.state.contractorId}
                     style={{ width: '32%' }}
                   />
                   &nbsp;
@@ -941,15 +995,19 @@ export default class ScheduleInstallation extends React.Component {
                   &nbsp;
                   <TextField
                     floatingLabelText="Greenlife Water Rep. Name"
+                    value={this.state.installerName}
                     style={{ width: '32%' }}
                   />
                   &nbsp;
                   &nbsp;
                   <DatePicker
-                    hintText="Date"
+                    floatingLabelText="Installation Date"
+                    hintText="2017-08-20"
                     container="inline"
                     value={this.state.installedDate}
                     onChange={this.handleDateChange.bind(this, "installedDate")}
+                    minDate={this.state.minDate}
+                    maxDate={this.state.maxDate}
                   />
                   <div style={{color:"red", float: "left"}}>{this.state.installedDateErr}</div>
                 </div>

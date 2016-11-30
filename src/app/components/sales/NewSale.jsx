@@ -28,6 +28,11 @@ export default class NewSale extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const minDate = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
     this.state = {
       tabA: true,
       tabB: false,
@@ -53,6 +58,8 @@ export default class NewSale extends React.Component {
       applicationNumber: '',
       programType: '',
       dateSigned: new Date(),
+      minDate: minDate,
+      maxDate: maxDate,
 
       // Unknown data
       homeownerSignature: '',
@@ -110,6 +117,7 @@ export default class NewSale extends React.Component {
           let sale = JSON.parse(httpRequest.responseText).sale;
           // Format time
           var tempDateTime = new Date(sale.installationDateTime);
+          var minDate = new Date(2000, 0, 1);
 
           _this.setState({
             fname: sale.firstName ? sale.firstName : '',
@@ -128,6 +136,7 @@ export default class NewSale extends React.Component {
             installationTime: tempDateTime ? tempDateTime : '',
             notes: sale.notes ? sale.notes : '',
             salesRepId: sale.salesRepId ? sale.salesRepId : '',
+            minDate: minDate,
           });
         }
       };
@@ -197,21 +206,19 @@ export default class NewSale extends React.Component {
     this.setState(obj);
   }
 
-  updateCharges() {
-    if (this.state.programType != ''){
-      if (this.state.programType == "3") {
-        var totalCharges = parseInt(this.state.deliveryCharges) + 550;
-        this.setState({
-          installationCharges : 550,
-          totalCharges : totalCharges
-        });
-      } else {
-        var totalCharges = parseInt(this.state.deliveryCharges) + 450;
-        this.setState({
-          installationCharges : 450,
-          totalCharges: totalCharges
-        });
-      }
+  updateCharges(programType) {
+    if (programType == "3") {
+      var totalCharges = parseInt(this.state.deliveryCharges) + 550;
+      this.setState({
+        installationCharges : 550,
+        totalCharges : totalCharges
+      });
+    } else if (programType == "1" || programType == "2") {
+      var totalCharges = parseInt(this.state.deliveryCharges) + 450;
+      this.setState({
+        installationCharges : 450,
+        totalCharges: totalCharges
+      });
     }
   }
 
@@ -511,6 +518,12 @@ export default class NewSale extends React.Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.programType !== this.state.programType) {
+       this.updateCharges(nextState.programType);
+    }
+  }
+
   createNewSale() {
     let data = {
       fname: this.state.fname,
@@ -701,6 +714,7 @@ export default class NewSale extends React.Component {
               <h2 className="headings">Program Type</h2>
               <div>
                 <RadioButtonGroup name="programType"
+                  valueSelected={this.state.programType}
                   onChange={this.handleRadioChange.bind(this, "programType")}>
                   <RadioButton
                     value="1"
@@ -746,6 +760,8 @@ export default class NewSale extends React.Component {
                 <DatePicker
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
                   value={this.state.installationDate}
                   onChange={this.handleDateChange.bind(this, "installationDate")}
                 />
@@ -869,9 +885,11 @@ export default class NewSale extends React.Component {
                 hintText="2017-08-20"
                 container="inline"
                 floatingLabelText="Installation Date"
-                style={{ display: "inline-block" }}
+                minDate={this.state.minDate}
+                maxDate={this.state.maxDate}
                 value={this.state.installationDate}
                 onChange={this.handleTextChange.bind(this, "installationDate")}
+                style={{ display: "inline-block" }}
               />
               <h2 className="headings">Homeowner Information</h2>
               <TextField
@@ -1036,6 +1054,8 @@ export default class NewSale extends React.Component {
                 <DatePicker
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
                   value={this.state.installationDate}
                   onChange={this.handleDateChange.bind(this, "installationDate")}
                 />

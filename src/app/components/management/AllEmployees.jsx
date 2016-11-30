@@ -23,8 +23,8 @@ export default class AllEmployees extends React.Component {
       selectable: true,
       multiSelectable: false,
       enableSelectAll: false,
-      deselectOnClickaway: true,
       showCheckboxes: true,
+      selectedId: '',
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
       //end of table state variables
@@ -68,11 +68,13 @@ export default class AllEmployees extends React.Component {
       this.setState({
         currentSelected: true,
         selectedNum: selectedRows[0],
+        selectedId: this.state.allEmployees[selectedRows].employeeNumber,
       });
     } else {
       this.setState({
         currentSelected: false,
         selectedNum: -1,
+        selectedId: '',
       });
     }
   }
@@ -98,7 +100,9 @@ export default class AllEmployees extends React.Component {
             {this.state.currentSelected ?
               <ToolbarGroup>
                 <ToolbarSeparator />
-                <RaisedButton label="Edit" primary={true} />
+                <RaisedButton label="Edit" primary={true}
+                onClick={this.props.editClickHandler.bind(null,
+                  "edit", this.state.selectedId, "newEmployee")} />
                 <RaisedButton label="Details" primary={true} />
                 <RaisedButton label="Delete" primary={true} />
               </ToolbarGroup>
@@ -129,7 +133,7 @@ export default class AllEmployees extends React.Component {
           </TableHeader>
           <TableBody
             displayRowCheckbox={this.state.showCheckboxes}
-            deselectOnClickaway={this.state.deselectOnClickaway}
+            deselectOnClickaway={false}
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
