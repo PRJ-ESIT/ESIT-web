@@ -89,6 +89,7 @@ export default class ScheduleInstallation extends React.Component {
       residents: '',
       pool: '',
       checklist: '',
+      notes: '',
       acknowledgement: '',
       installedDate: {},
 
@@ -561,7 +562,8 @@ export default class ScheduleInstallation extends React.Component {
                 <TextField
                   floatingLabelText="First Name"
                   hintText="John"
-                  maxLength="25"
+                  maxLength="50"
+                  value={this.state.fname}
                   onChange={this.handleTextChange.bind(this, "fname")}
                   onBlur={this.validateFName.bind(this)}
                   errorText={this.state.fnameErr}
@@ -572,16 +574,19 @@ export default class ScheduleInstallation extends React.Component {
                 <TextField
                   floatingLabelText="Last Name"
                   hintText="Doe"
-                  maxLength="25"
+                  maxLength="50"
+                  value={this.state.lname}
                   onChange={this.handleTextChange.bind(this, "lname")}
                   onBlur={this.validateLName.bind(this)}
                   errorText={this.state.lnameErr}
                   errorStyle={{float: "left"}}
-                /><br />
+                />
+                <br />
                 <TextField
                   floatingLabelText="Address"
                   hintText="123 Fake Street"
                   maxLength="50"
+                  value={this.state.address}
                   onChange={this.handleTextChange.bind(this, "address")}
                   onBlur={this.validateAddress.bind(this)}
                   errorText={this.state.addressErr}
@@ -591,18 +596,20 @@ export default class ScheduleInstallation extends React.Component {
                 &nbsp;
                 <TextField
                   floatingLabelText="Unit #"
-                  hintText="77"
-                  type="number"
+                  hintText="7e"
                   maxLength="10"
+                  value={this.state.unitNum}
                   onChange={this.handleTextChange.bind(this, "unitNum")}
                   onBlur={this.validateUnit.bind(this)}
                   errorText={this.state.unitNumErr}
                   errorStyle={{float: "left"}}
-                /><br />
+                />
+                <br />
                 <TextField
                   floatingLabelText="City"
                   hintText="Toronto"
-                  maxLength="25"
+                  maxLength="80"
+                  value={this.state.city}
                   onChange={this.handleTextChange.bind(this, "city")}
                   onBlur={this.validateCity.bind(this)}
                   errorText={this.state.cityErr}
@@ -620,11 +627,13 @@ export default class ScheduleInstallation extends React.Component {
                   errorStyle={{float: "left"}}
                 >
                   {provinces}
-                </SelectField><br />
+                </SelectField>
+                <br />
                 <TextField
                   floatingLabelText="Postal Code"
                   hintText="M4B 5V9"
                   maxLength="7"
+                  value={this.state.postalCode}
                   onChange={this.handleTextChange.bind(this, "postalCode")}
                   onBlur={this.validatePostalCode.bind(this)}
                   errorText={this.state.postalCodeErr}
@@ -635,17 +644,20 @@ export default class ScheduleInstallation extends React.Component {
                 <TextField
                   floatingLabelText="Enbridge Gas #"
                   hintText="1234567890"
-                  maxLength="15"
+                  maxLength="20"
+                  value={this.state.enbridge}
                   onChange={this.handleTextChange.bind(this, "enbridge")}
                   onBlur={this.validateEnbridge.bind(this)}
                   errorText={this.state.enbridgeErr}
                   errorStyle={{float: "left"}}
-                /><br />
+                />
+                <br />
                 <TextField
                   floatingLabelText="Email"
                   hintText="name@domain.com"
                   type="email"
                   maxLength="50"
+                  value={this.state.email}
                   onChange={this.handleTextChange.bind(this, "email")}
                   onBlur={this.validateEmail.bind(this)}
                   errorText={this.state.emailErr}
@@ -657,17 +669,20 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="Home Phone"
                   hintText="(416) 123-4567"
                   type="tel"
-                  maxLength="12"
+                  maxLength="14"
+                  value={this.state.homePhone}
                   onChange={this.handleTextChange.bind(this, "homePhone")}
                   onBlur={this.validateHomePhone.bind(this)}
                   errorText={this.state.homePhoneErr}
                   errorStyle={{float: "left"}}
-                /><br />
+                />
+                <br />
                 <TextField
                   floatingLabelText="Cell Phone"
                   hintText="(416) 123-4567"
                   type="tel"
-                  maxLength="12"
+                  maxLength="14"
+                  value={this.state.cellPhone}
                   onChange={this.handleTextChange.bind(this, "cellPhone")}
                   onBlur={this.validateCellPhone.bind(this)}
                   errorText={this.state.cellPhoneErr}
@@ -679,17 +694,24 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="SQ Footage"
                   hintText="3000"
                   type="number"
-                  maxLength="6"
+                  maxLength="5"
+                  min="0"
+                  max="99999"
+                  value={this.state.sqft}
                   onChange={this.handleTextChange.bind(this, "sqft")}
                   onBlur={this.validateSqft.bind(this)}
                   errorText={this.state.sqftErr}
                   errorStyle={{float: "left"}}
-                /><br />
+                />
+                <br />
                 <TextField
                   floatingLabelText="Bathrooms"
                   hintText="3"
                   type="number"
-                  maxLength="3"
+                  maxLength="2"
+                  min="0"
+                  max="99"
+                  value={this.state.bathrooms}
                   onChange={this.handleTextChange.bind(this, "bathrooms")}
                   onBlur={this.validateBathrooms.bind(this)}
                   errorText={this.state.bathroomsErr}
@@ -701,12 +723,16 @@ export default class ScheduleInstallation extends React.Component {
                   floatingLabelText="Residents"
                   hintText="4"
                   type="number"
-                  maxLength="3"
+                  maxLength="2"
+                  min="0"
+                  max="99"
+                  value={this.state.residents}
                   onChange={this.handleTextChange.bind(this, "residents")}
                   onBlur={this.validateResidents.bind(this)}
                   errorText={this.state.residentsErr}
                   errorStyle={{float: "left"}}
-                /><br />
+                />
+                <br />
                 <div className="radioActionText">
                   <p className="radioRow">Pool</p>
                   <RadioButtonGroup name="pool" className="radioGroup"
@@ -721,9 +747,11 @@ export default class ScheduleInstallation extends React.Component {
                       value="no"
                       label="No"
                     />
-                  </RadioButtonGroup><br />
+                  </RadioButtonGroup>
+                  <br />
                   <div style={{color:"red", float: "left"}}>{this.state.poolErr}</div>
-                </div><br />
+                </div>
+                <br />
 
                 <h2 className="headings">Program Installation</h2>
                 <Table
@@ -864,9 +892,12 @@ export default class ScheduleInstallation extends React.Component {
                 <TextField
                   hintText="Additional Notes"
                   floatingLabelText="Notes"
+                  maxLength="300"
                   multiLine={true}
                   rows={1}
                   rowsMax={10}
+                  value={this.state.notes}
+                  onChange={this.handleTextChange.bind(this, "notes")}
                   className="full-width"
                 />
                 <div style={{color:"red", float: "left"}}>{this.state.checklistErr}</div>
@@ -896,16 +927,21 @@ export default class ScheduleInstallation extends React.Component {
                 <div>
                   <TextField
                     floatingLabelText="Contractor ID"
+                    type="number"
+                    min="1"
+                    style={{ width: '32%' }}
                   />
                   &nbsp;
                   &nbsp;
                   <TextField
                     floatingLabelText="Technician's Signature"
+                    style={{ width: '32%' }}
                   />
                   &nbsp;
                   &nbsp;
                   <TextField
                     floatingLabelText="Greenlife Water Rep. Name"
+                    style={{ width: '32%' }}
                   />
                   &nbsp;
                   &nbsp;

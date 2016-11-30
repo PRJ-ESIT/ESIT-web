@@ -88,7 +88,7 @@ var validations = {
   },
 
   validateFName(fname) {
-    if(this.isAlphaSpacesHyphens(fname) && this.minLength(fname, 2) && this.maxLength(fname, 25)) {
+    if(this.isAlphaSpacesHyphens(fname) && this.minLength(fname, 2) && this.maxLength(fname, 50)) {
       return true;
     } else {
       return false;
@@ -96,7 +96,7 @@ var validations = {
   },
 
   validateLName(lname) {
-    if(this.isAlphaSpacesHyphens(lname) && this.minLength(lname, 2) && this.maxLength(lname, 25)) {
+    if(this.isAlphaSpacesHyphens(lname) && this.minLength(lname, 2) && this.maxLength(lname, 50)) {
       return true;
     } else {
       return false;
@@ -120,7 +120,7 @@ var validations = {
   },
 
   validateCity(city) {
-    if(this.isAlphaSpacesHyphens(city) && this.maxLength(city, 60)) {
+    if(this.isAlphaSpacesHyphens(city) && this.maxLength(city, 80)) {
       return true;
     } else {
       return false;
@@ -136,7 +136,7 @@ var validations = {
   },
 
   validatePostalCode(postalCode) {
-    if(this.isPostalCode(postalCode)) {
+    if(this.isPostalCode(postalCode) && this.maxLength(postalCode, 7)) {
       return true;
     } else {
       return false;
@@ -144,7 +144,7 @@ var validations = {
   },
 
   validateEnbridge(enbridge) {
-    if(this.isNumeric(enbridge)) {
+    if(this.isNumeric(enbridge) && this.maxLength(enbridge, 20)) {
       return true;
     } else {
       return false;
@@ -152,7 +152,7 @@ var validations = {
   },
 
   validateHomePhone(homePhone) {
-    if(this.isPhoneNumber(homePhone) && this.maxLength(homePhone, 12)) {
+    if(this.isPhoneNumber(homePhone) && this.maxLength(homePhone, 14)) {
       return true;
     } else {
       return false;
@@ -160,7 +160,7 @@ var validations = {
   },
 
   validateCellPhone(cellPhone) {
-    if(this.isPhoneNumber(cellPhone) && this.maxLength(cellPhone, 12)) {
+    if(this.isPhoneNumber(cellPhone) && this.maxLength(cellPhone, 14)) {
       return true;
     } else {
       return false;
@@ -216,7 +216,7 @@ var validations = {
   },
 
   validateSqft(sqft) {
-    if(this.isNumeric(sqft) && this.maxLength(sqft, 6)) {
+    if(this.isNumeric(sqft) && this.maxLength(sqft, 5)) {
       return true;
     } else {
       return false;
@@ -224,7 +224,7 @@ var validations = {
   },
 
   validateBathrooms(bathrooms) {
-    if(this.isNumeric(bathrooms) && this.maxLength(bathrooms, 3)) {
+    if(this.isNumeric(bathrooms) && this.maxLength(bathrooms, 2)) {
       return true;
     } else {
       return false;
@@ -232,7 +232,7 @@ var validations = {
   },
 
   validateResidents(residents) {
-    if(this.isNumeric(residents) && this.maxLength(residents, 3)) {
+    if(this.isNumeric(residents) && this.maxLength(residents, 2)) {
       return true;
     } else {
       return false;

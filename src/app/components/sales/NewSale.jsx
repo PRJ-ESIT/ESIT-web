@@ -112,7 +112,6 @@ export default class NewSale extends React.Component {
           var tempDateTime = new Date(sale.installationDateTime);
 
           _this.setState({
-            salesNumber: sale.salesNumber,
             fname: sale.firstName ? sale.firstName : '',
             lname: sale.lastName ? sale.lastName : '',
             address: sale.address ? sale.address : '',
@@ -564,15 +563,11 @@ export default class NewSale extends React.Component {
         <div className="newEmployeeFormContainer">
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
-              <TextField
-                floatingLabelText="Sale Number"
-                value={this.state.salesNumber}
-                disabled={true}
-              />
               <h2 className="headings">Homeowner Information</h2>
               <TextField
-                hintText="John"
                 floatingLabelText="First Name"
+                hintText="John"
+                maxLength="50"
                 value={this.state.fname}
                 onChange={this.handleTextChange.bind(this, "fname")}
                 onBlur={this.validateFName.bind(this)}
@@ -583,8 +578,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="Doe"
                 floatingLabelText="Last Name"
+                hintText="Doe"
+                maxLength="50"
                 value={this.state.lname}
                 onChange={this.handleTextChange.bind(this, "lname")}
                 onBlur={this.validateLName.bind(this)}
@@ -593,8 +589,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="123 Fake Street"
                 floatingLabelText="Address"
+                hintText="123 Fake Street"
+                maxLength="50"
                 value={this.state.address}
                 onChange={this.handleTextChange.bind(this, "address")}
                 onBlur={this.validateAddress.bind(this)}
@@ -605,8 +602,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="77"
                 floatingLabelText="Unit #"
+                hintText="7e"
+                maxLength="10"
                 value={this.state.unitNum}
                 onChange={this.handleTextChange.bind(this, "unitNum")}
                 onBlur={this.validateUnit.bind(this)}
@@ -615,8 +613,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="Toronto"
                 floatingLabelText="City"
+                hintText="Toronto"
+                maxLength="80"
                 value={this.state.city}
                 onChange={this.handleTextChange.bind(this, "city")}
                 onBlur={this.validateCity.bind(this)}
@@ -639,8 +638,9 @@ export default class NewSale extends React.Component {
               </SelectField>
               <br />
               <TextField
-                hintText="M4B 5V9"
                 floatingLabelText="Postal Code"
+                hintText="M4B 5V9"
+                maxLength="7"
                 value={this.state.postalCode}
                 onChange={this.handleTextChange.bind(this, "postalCode")}
                 onBlur={this.validatePostalCode.bind(this)}
@@ -651,8 +651,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                floatingLabelText="Enbridge Gas #"
                 hintText="1234567890"
-                floatingLabelText="Enbridge Gas Number"
+                maxLength="20"
                 value={this.state.enbridge}
                 onChange={this.handleTextChange.bind(this, "enbridge")}
                 onBlur={this.validateEnbridge.bind(this)}
@@ -661,8 +662,10 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="416-123-4567"
                 floatingLabelText="Home Phone"
+                hintText="416-123-4567"
+                type="tel"
+                maxLength="14"
                 value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, "homePhone")}
                 onBlur={this.validateHomePhone.bind(this)}
@@ -673,8 +676,10 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="416-123-4567"
                 floatingLabelText="Cell Phone"
+                hintText="416-123-4567"
+                type="tel"
+                maxLength="14"
                 value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
                 onBlur={this.validateCellPhone.bind(this)}
@@ -683,8 +688,10 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="name@domain.com"
                 floatingLabelText="Email"
+                hintText="name@domain.com"
+                type="email"
+                maxLength="50"
                 value={this.state.email}
                 onChange={this.handleTextChange.bind(this, "email")}
                 onBlur={this.validateEmail.bind(this)}
@@ -764,6 +771,7 @@ export default class NewSale extends React.Component {
               <TextField
                 hintText="Additional Notes"
                 floatingLabelText="Notes"
+                maxLength="300"
                 multiLine={true}
                 rows={1}
                 rowsMax={10}
@@ -809,9 +817,10 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                floatingLabelText="Sales Rep ID"
                 hintText="1234567"
                 type="number"
-                floatingLabelText="Sales Rep ID"
+                min="1"
                 value={this.state.salesRepId}
                 onChange={this.handleTextChange.bind(this, "salesRepId")}
                 onBlur={this.validateSalesRepId.bind(this)}
@@ -843,23 +852,15 @@ export default class NewSale extends React.Component {
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
               <TextField
-                disabled={true}
-                floatingLabelText="Sale Number"
-                value={this.state.salesNumber}
-                style={{ width: "200px" }}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <TextField
-                hintText="1234567"
                 floatingLabelText="Application Number"
+                hintText="1234567"
+                type="number"
+                min="1"
                 value={this.state.applicationNumber}
                 onChange={this.handleTextChange.bind(this, "applicationNumber")}
                 onBlur={this.validateApplicationNumber.bind(this)}
                 errorText={this.state.applicationNumberErr}
                 errorStyle={{float: "left" }}
-                style={{ width: "200px" }}
               />
               &nbsp;
               &nbsp;
@@ -868,14 +869,15 @@ export default class NewSale extends React.Component {
                 hintText="2017-08-20"
                 container="inline"
                 floatingLabelText="Installation Date"
-                style={{ display: "inline-block", width: "200px" }}
+                style={{ display: "inline-block" }}
                 value={this.state.installationDate}
                 onChange={this.handleTextChange.bind(this, "installationDate")}
               />
               <h2 className="headings">Homeowner Information</h2>
               <TextField
-                hintText="John"
                 floatingLabelText="First Name"
+                hintText="John"
+                maxLength="50"
                 value={this.state.fname}
                 onChange={this.handleTextChange.bind(this, "fname")}
                 onBlur={this.validateFName.bind(this)}
@@ -886,8 +888,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="Doe"
                 floatingLabelText="Last Name"
+                hintText="Doe"
+                maxLength="50"
                 value={this.state.lname}
                 onChange={this.handleTextChange.bind(this, "lname")}
                 onBlur={this.validateLName.bind(this)}
@@ -896,8 +899,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="123 Fake Street"
                 floatingLabelText="Address"
+                hintText="123 Fake Street"
+                maxLength="50"
                 value={this.state.address}
                 onChange={this.handleTextChange.bind(this, "address")}
                 onBlur={this.validateAddress.bind(this)}
@@ -908,9 +912,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="77"
                 floatingLabelText="Unit #"
-                value={this.state.unitNum}
+                hintText="7e"
+                maxLength="10"
                 onChange={this.handleTextChange.bind(this, "unitNum")}
                 onBlur={this.validateUnit.bind(this)}
                 errorText={this.state.unitNumErr}
@@ -918,8 +922,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="Toronto"
                 floatingLabelText="City"
+                hintText="Toronto"
+                maxLength="80"
                 value={this.state.city}
                 onChange={this.handleTextChange.bind(this, "city")}
                 onBlur={this.validateCity.bind(this)}
@@ -942,8 +947,9 @@ export default class NewSale extends React.Component {
               </SelectField>
               <br />
               <TextField
-                hintText="M4B 5V9"
                 floatingLabelText="Postal Code"
+                hintText="M4B 5V9"
+                maxLength="7"
                 value={this.state.postalCode}
                 onChange={this.handleTextChange.bind(this, "postalCode")}
                 onBlur={this.validatePostalCode.bind(this)}
@@ -954,8 +960,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                floatingLabelText="Enbridge Gas #"
                 hintText="1234567890"
-                floatingLabelText="Enbridge Gas Number"
+                maxLength="20"
                 value={this.state.enbridge}
                 onChange={this.handleTextChange.bind(this, "enbridge")}
                 onBlur={this.validateEnbridge.bind(this)}
@@ -964,8 +971,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="416-123-4567"
                 floatingLabelText="Home Phone"
+                hintText="416-123-4567"
+                maxLength="14"
                 value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, "homePhone")}
                 onBlur={this.validateHomePhone.bind(this)}
@@ -976,8 +984,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="416-123-4567"
                 floatingLabelText="Cell Phone"
+                hintText="416-123-4567"
+                maxLength="14"
                 value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
                 onBlur={this.validateCellPhone.bind(this)}
@@ -986,8 +995,10 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="name@domain.com"
                 floatingLabelText="Email"
+                hintText="name@domain.com"
+                type="email"
+                maxLength="50"
                 value={this.state.email}
                 onChange={this.handleTextChange.bind(this, "email")}
                 onBlur={this.validateEmail.bind(this)}
