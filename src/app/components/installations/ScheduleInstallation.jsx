@@ -347,6 +347,7 @@ export default class ScheduleInstallation extends React.Component {
     if (validations.validateProvince(province)) {
       this.setState({
         provinceErr: '',
+        province: province,
         provinceValidated: true,
       });
     } else {
@@ -635,8 +636,7 @@ export default class ScheduleInstallation extends React.Component {
                 <br />
                 <TextField
                   floatingLabelText="Address"
-                  hintText="123 Fake Street"
-                  value={this.state.address}
+                  hintText="123 Main Street"
                   maxLength="50"
                   value={this.state.address}
                   onChange={this.handleTextChange.bind(this, "address")}
@@ -670,11 +670,11 @@ export default class ScheduleInstallation extends React.Component {
                 &nbsp;
                 &nbsp;
                 <SelectField
-                  value={this.state.province}
-                  onChange={this.handleSelectChange.bind(this, "province")}
                   floatingLabelText="Province"
                   floatingLabelFixed={false}
                   hintText="Select a Province"
+                  value={this.state.province}
+                  onChange={this.handleSelectChange.bind(this, "province")}
                   errorText={this.state.provinceErr}
                   errorStyle={{float: "left"}}
                 >

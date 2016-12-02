@@ -308,6 +308,7 @@ export default class NewSale extends React.Component {
     if(validations.validateProvince(province)) {
       this.setState({
         provinceErr: '',
+        province: province,
         provinceValidated: true,
       });
     } else {
