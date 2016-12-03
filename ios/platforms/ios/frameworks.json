@@ -1,0 +1,13 @@
+{
+    "ImageIO.framework": 2,
+    "CoreLocation.framework": 2,
+    "AVFoundation.framework": 2,
+    "CoreBluetooth.framework": 2,
+    "CoreMotion.framework": 2,
+    "Photos.framework": 2,
+    "AddressBook.framework": 2,
+    "EventKit.framework": 2,
+    "Contacts.framework": 2,
+    "UserNotifications.framework": 2,
+    "AudioToolbox.framework": 1
+}
