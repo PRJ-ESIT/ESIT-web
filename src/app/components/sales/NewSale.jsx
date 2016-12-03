@@ -5,51 +5,64 @@ import {Tabs, Tab, TextField, Divider, RadioButton,
   DatePicker, TimePicker, Toggle, Checkbox, SelectField,
   MenuItem} from 'material-ui';
 import { validations } from '../helpers/common.js';
+import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={1} primaryText="Alberta" />,
-  <MenuItem key={2} value={2} primaryText="British Columbia" />,
-  <MenuItem key={3} value={3} primaryText="Manitoba" />,
-  <MenuItem key={4} value={4} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={5} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={6} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={7} primaryText="Ontario" />,
-  <MenuItem key={8} value={8} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={9} primaryText="Quebec" />,
-  <MenuItem key={10} value={10} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={11} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={12} primaryText="Yukon" />,
-  <MenuItem key={13} value={13} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
 ];
 
 export default class NewSale extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const minDate = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
     this.state = {
       tabA: true,
       tabB: false,
       tabValue: 'a',
-      saleNumber: "",
+
+      // Form data
+      saleNumber: '',
       fname: '',
       lname: '',
       address: '',
       unitNum: '',
       city: '',
-      province: -1,
+      province: '',
       postalCode: '',
       enbridge: '',
       email: '',
       homePhone: '',
       cellPhone: '',
-      installationDate: '',
-      installationTime: '',
+      installationDate: {},
+      installationTime: {},
       notes: '',
       salesRepId: '',
       applicationNumber: '',
-      homeownerSignature: '',
       programType: '',
+      dateSigned: new Date(),
+      minDate: minDate,
+      maxDate: maxDate,
+
+      // Unknown data
+      homeownerSignature: '',
       salesRepSignature: '',
       deliveryCharges: '150',
       installationCharges: '',
@@ -85,16 +98,57 @@ export default class NewSale extends React.Component {
       emailValidated: false,
       homePhoneValidated: false,
       cellPhoneValidated: false,
-      salesRepIdValidatd: false,
+      salesRepIdValidated: false,
       applicationNumberValidated: false,
       programTypeValidated: false,
       installationDateValidated: false,
       installationTimeValidated: false,
-
       allValidated: false,
     };
     this.handleTabChange = this.handleTabChange.bind(this);
-    this.handleProvinceChange = this.handleProvinceChange.bind(this);
+  }
+
+  componentDidMount() {
+    if(this.props.status == "edit"){
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let sale = JSON.parse(httpRequest.responseText).sale;
+          // Format time
+          var tempDateTime = new Date(sale.installationDateTime);
+          var minDate = new Date(2000, 0, 1);
+
+          _this.setState({
+            fname: sale.firstName ? sale.firstName : '',
+            lname: sale.lastName ? sale.lastName : '',
+            address: sale.address ? sale.address : '',
+            unitNum: sale.unit ? sale.unit : '',
+            city: sale.city ? sale.city : '',
+            province: sale.province ? sale.province : '',
+            postalCode: sale.postalCode ? sale.postalCode : '',
+            enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
+            email: sale.email ? sale.email : '',
+            programType: sale.programId ? sale.programId : '',
+            homePhone: sale.homePhone ? sale.homePhone : '',
+            cellPhone: sale.cellPhone ? sale.cellPhone : '',
+            installationDate: tempDateTime ? tempDateTime : '',
+            installationTime: tempDateTime ? tempDateTime : '',
+            notes: sale.notes ? sale.notes : '',
+            salesRepId: sale.salesRepId ? sale.salesRepId : '',
+            minDate: minDate,
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/existingsale?id="
+        + this.props.id, true);
+      httpRequest.send(null);
+    }
+  }
+
+  formatDate(date){
+    return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
   }
 
   handleTabChange(value) {
@@ -112,42 +166,66 @@ export default class NewSale extends React.Component {
         tabB: true,
       });
     }
-  };
+  }
 
   handleTextChange(fieldname, event) {
-    event.stopPropagation();
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
-  };
+  }
 
-  handleRadioChange(fieldname, event) {
-    event.stopPropagation();
+  handleSelectChange(fieldname, event, index, value) {
     var obj = {};
-    obj[fieldname] = event.target.value;
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = value;
     this.setState(obj);
+  }
 
-    // Change the installationCharges and totalCharges
-    // depending on the Program chosen.
-    if (event.target.value == "3") {
-      this.state.installationCharges = 550;
-    } else {
-      this.state.installationCharges = 450;
+  handleRadioChange(fieldname, event, value) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = value;
+    this.setState(obj);
+  }
+
+  handleDateChange(fieldname, event, date) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = date;
+    this.setState(obj);
+  }
+
+  handleTimeChange(fieldname, event, time) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = time;
+    this.setState(obj);
+  }
+
+  updateCharges(programType) {
+    if (programType == "3") {
+      var totalCharges = parseInt(this.state.deliveryCharges) + 550;
+      this.setState({
+        installationCharges : 550,
+        totalCharges : totalCharges
+      });
+    } else if (programType == "1" || programType == "2") {
+      var totalCharges = parseInt(this.state.deliveryCharges) + 450;
+      this.setState({
+        installationCharges : 450,
+        totalCharges: totalCharges
+      });
     }
-
-    this.state.totalCharges =
-    parseInt(this.state.deliveryCharges) +
-    parseInt(this.state.installationCharges);
-  };
+  }
 
   // Validation
-
   validateFName() {
     let fname = this.state.fname.trim();
-    if(validations.isAlphaSpacesHyphens(fname) &&
-      validations.minLength(fname, 2) &&
-      validations.maxLength(fname, 25)) {
-
+    if(validations.validateFName(fname)) {
       this.setState({
         fnameErr: '',
         fname: fname,
@@ -163,10 +241,7 @@ export default class NewSale extends React.Component {
 
   validateLName() {
     let lname = this.state.lname.trim();
-    if(validations.isAlphaSpacesHyphens(lname) &&
-      validations.minLength(lname, 2) &&
-      validations.maxLength(lname, 25)) {
-
+    if(validations.validateLName(lname)) {
       this.setState({
         lnameErr: '',
         lname: lname,
@@ -182,7 +257,7 @@ export default class NewSale extends React.Component {
 
   validateAddress() {
     let address = this.state.address.trim();
-    if(validations.isAlphanumericSpacesHyphens(address) && validations.maxLength(address, 50)) {
+    if(validations.validateAddress(address)) {
       this.setState({
         addressErr: '',
         address: address,
@@ -198,7 +273,7 @@ export default class NewSale extends React.Component {
 
   validateUnit() {
     let unitNum = this.state.unitNum.trim();
-    if(unitNum === '' || (validations.isAlphanumeric(unitNum) && validations.maxLength(unitNum, 10))) {
+    if(validations.validateUnit(unitNum)) {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
@@ -206,7 +281,7 @@ export default class NewSale extends React.Component {
       });
     } else {
       this.setState({
-        unitNumErr: 'Can contain numbers/characters only',
+        unitNumErr: 'Can contain 2-10 numbers/characters only.',
         unitValidated: false,
       });
     }
@@ -214,7 +289,7 @@ export default class NewSale extends React.Component {
 
   validateCity() {
     let city = this.state.city.trim();
-    if(validations.isAlphaSpacesHyphens(city) && validations.maxLength(city, 60)) {
+    if(validations.validateCity(city)) {
       this.setState({
         cityErr: '',
         city: city,
@@ -230,25 +305,27 @@ export default class NewSale extends React.Component {
 
   validateProvince() {
     let province = this.state.province;
-    if(province < 0) {
+    if(validations.validateProvince(province)) {
       this.setState({
-        provinceErr: 'Province not selected',
-        provinceValidated: false,
+        provinceErr: '',
+        province: province,
+        provinceValidated: true,
       });
     } else {
       this.setState({
-        provinceErr: '',
-        provinceValidated: true,
+        provinceErr: 'Province not selected',
+        provinceValidated: false,
       });
     }
   }
 
   validatePostalCode() {
     let postalCode = this.state.postalCode.trim();
-    if(validations.isPostalCode(postalCode)) {
+    postalCode = postalCode.toUpperCase();
+    if(validations.validatePostalCode(postalCode)) {
       this.setState({
         postalCodeErr: '',
-        postalCode: postalCode.toUpperCase(),
+        postalCode: postalCode,
         postalCodeValidated: true,
       });
     } else {
@@ -261,7 +338,7 @@ export default class NewSale extends React.Component {
 
   validateEnbridge() {
     let enbridge = this.state.enbridge.trim();
-    if(validations.isNumeric(enbridge)) {
+    if(validations.validateEnbridge(enbridge)) {
       this.setState({
         enbridgeErr: '',
         enbridge: enbridge,
@@ -275,57 +352,9 @@ export default class NewSale extends React.Component {
     }
   }
 
-  validateSalesRepId() {
-    let salesRepId = this.state.salesRepId.trim();
-    if(validations.isNumeric(salesRepId)) {
-      this.setState({
-        salesRepIdErr: '',
-        salesRepId: salesRepId,
-        salesRepIdValidatd: true,
-      });
-    } else {
-      this.setState({
-        salesRepIdErr: 'Must only consist of numbers',
-        salesRepIdValidatd: false,
-      });
-    }
-  }
-
-  validateApplicationNumber() {
-    let applicationNumber = this.state.applicationNumber.trim();
-    if(validations.isNumeric(applicationNumber)) {
-      this.setState({
-        applicationNumberErr: '',
-        applicationNumber: applicationNumber,
-        applicationNumberValidated: true,
-      });
-    } else {
-      this.setState({
-        applicationNumberErr: 'Must only consist of numbers',
-        applicationNumberValidated: false,
-      });
-    }
-  }
-
-  validateEmail() {
-    let email = this.state.email.trim();
-    if(validations.isEmail(email) && validations.maxLength(email, 50)) {
-      this.setState({
-        emailErr: '',
-        email: email,
-        emailValidated: true,
-      });
-    } else {
-      this.setState({
-        emailErr: 'Not a valid email',
-        emailValidated: false,
-      });
-    }
-  }
-
   validateHomePhone() {
     let homePhone = this.state.homePhone.trim();
-    if(validations.isPhoneNumber(homePhone) && validations.maxLength(homePhone, 12)) {
+    if(validations.validateHomePhone(homePhone)) {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
@@ -341,7 +370,7 @@ export default class NewSale extends React.Component {
 
   validateCellPhone() {
     let cellPhone = this.state.cellPhone.trim();
-    if(validations.isPhoneNumber(cellPhone) && validations.maxLength(cellPhone, 12)) {
+    if(validations.validateCellPhone(cellPhone)) {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
@@ -355,100 +384,100 @@ export default class NewSale extends React.Component {
     }
   }
 
-  handleProvinceChange(event, index, value) {
-    this.setState({province: value});
-  };
-
-  handleDateChange(event, date) {
-    this.setState({installationDate: date});
-  }
-
-  handleTimeChange(event, time) {
-    this.setState({installationTime: time});
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.province !== this.state.province) {
-      this.validateProvince();
-    }
-
-    if (prevState.programType !== this.state.programType) {
-      this.validateProgramType();
-    }
-
-    if (prevState.installationDate !== this.state.installationDate) {
-      this.validateInstallationDate();
-    }
-
-    if (prevState.installationTime !== this.state.installationTime) {
-      this.validateInstallationTime();
+  validateEmail() {
+    let email = this.state.email.trim();
+    if(validations.validateEmail(email)) {
+      this.setState({
+        emailErr: '',
+        email: email,
+        emailValidated: true,
+      });
+    } else {
+      this.setState({
+        emailErr: 'Not a valid email',
+        emailValidated: false,
+      });
     }
   }
 
   validateProgramType() {
     let programType = this.state.programType;
-    if(programType === '') {
-      this.setState({
-        programTypeErr: 'Must select a program type',
-        programTypeValidated: false,
-      });
-    } else {
+    if(validations.validateProgramType(programType)) {
       this.setState({
         programTypeErr: '',
         programTypeValidated: true,
+      });
+    } else {
+      this.setState({
+        programTypeErr: 'Program type not selected',
+        programTypeValidated: false,
       });
     }
   }
 
   validateInstallationDate() {
     let installationDate = this.state.installationDate;
-
-    if (installationDate === '') {
-      this.setState({
-        installationDateErr: 'Must select an installation date',
-        installationDateValidated: false,
-      });
-    } else {
+    if (validations.validateInstallationDate(installationDate)) {
       this.setState({
         installationDateErr: '',
         installationDateValidated: true,
+      });
+    } else {
+      this.setState({
+        installationDateErr: 'Must select an installation date',
+        installationDateValidated: false,
       });
     }
   }
 
   validateInstallationTime() {
     let installationTime = this.state.installationTime;
-
-    if (installationTime === '') {
-      this.setState({
-        installationTimeErr: 'Must select an installation time',
-        installationTimeValidated: false,
-      });
-    } else {
+    if (validations.validateInstallationTime(installationTime)) {
       this.setState({
         installationTimeErr: '',
         installationTimeValidated: true,
       });
+    } else {
+      this.setState({
+        installationTimeErr: 'Must select an installation time',
+        installationTimeValidated: false,
+      });
     }
   }
 
-  validateAllFields() {
-    console.log("validateAllFields");
-    this.validateFName();
-    this.validateLName();
-    this.validateAddress();
-    this.validateUnit();
-    this.validateCity();
-    this.validateProvince();
-    this.validatePostalCode();
-    this.validateEnbridge();
-    this.validateHomePhone();
-    this.validateCellPhone();
-    this.validateEmail();
-    this.validateProgramType();
-    this.validateInstallationDate();
-    this.validateInstallationTime();
+  validateSalesRepId() {
+    let salesRepId = this.state.salesRepId.trim();
+    if(validations.validateSalesRepId(salesRepId)) {
+      this.setState({
+        salesRepIdErr: '',
+        salesRepId: salesRepId,
+        salesRepIdValidated: true,
+      });
+    } else {
+      this.setState({
+        salesRepIdErr: 'Must only consist of numbers',
+        salesRepIdValidated: false,
+      });
+    }
+  }
 
+  validateApplicationNumber() {
+    let applicationNumber = this.state.applicationNumber.trim();
+    if(validations.validateApplicationNumber(applicationNumber)) {
+      this.setState({
+        applicationNumberErr: '',
+        applicationNumber: applicationNumber,
+        applicationNumberValidated: true,
+      });
+    } else {
+      this.setState({
+        applicationNumberErr: 'Must only consist of numbers',
+        applicationNumberValidated: false,
+      });
+    }
+  }
+
+  validateRentalAgreement() {
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
@@ -462,11 +491,73 @@ export default class NewSale extends React.Component {
         this.state.emailValidated &&
         this.state.programTypeValidated &&
         this.state.installationDateValidated &&
-        this.state.installationTimeValidated) {
+        this.state.installationTimeValidated &&
+        this.state.salesRepIdValidated) {
       this.setState({allValidated: true});
     } else {
-      this.setState({allValidated: false});
+      this.validateAddress();
+      this.validateFName();
+      this.validateLName();
+      this.validateUnit();
+      this.validateCity();
+      this.validateProvince();
+      this.validatePostalCode();
+      this.validateEnbridge();
+      this.validateHomePhone();
+      this.validateCellPhone();
+      this.validateEmail();
+      this.validateProgramType();
+      this.validateInstallationDate();
+      this.validateInstallationTime();
+      this.validateSalesRepId();
     }
+  }
+
+  componentDidUpdate() {
+    if(this.state.allValidated) {
+      this.createNewSale();
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.programType !== this.state.programType) {
+       this.updateCharges(nextState.programType);
+    }
+  }
+
+  createNewSale() {
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname, //customer table
+      address: this.state.address, //address table
+      unitNum: this.state.unitNum,//address table
+      city: this.state.city,//address table
+      province: this.state.province,//address table
+      postalCode: this.state.postalCode.replace(/\s/g,''),//address table
+      enbridge: this.state.enbridge, //customer table
+      email: this.state.email, //customer table
+      homePhone: this.state.homePhone, //customer table
+      cellPhone: this.state.cellPhone, //customer table
+      dateSigned: this.state.dateSigned,
+      //program type
+      programType: this.state.programType, //sale table
+
+      //Installation & Delivery
+      installationDate: this.state.installationDate, //sale table
+      installationTime: this.state.installationTime, //sale table
+      notes: this.state.notes, //sale table
+      //the rest
+      salesRepId: this.state.salesRepId
+    };
+
+    var request = new XMLHttpRequest();
+    request.open('POST', "http://" + IP + '/newsale', true);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.onreadystatechange = function() {
+      //#TODO receive Sale number and add it to the state
+    };
+
+    request.send(JSON.stringify(data));
   }
 
   render() {
@@ -486,15 +577,11 @@ export default class NewSale extends React.Component {
         <div className="newEmployeeFormContainer">
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
-              <TextField
-                floatingLabelText="Sale Number"
-                defaultValue="123-4567"
-                disabled={true}
-              />
               <h2 className="headings">Homeowner Information</h2>
               <TextField
-                hintText="John"
                 floatingLabelText="First Name"
+                hintText="John"
+                maxLength="50"
                 value={this.state.fname}
                 onChange={this.handleTextChange.bind(this, "fname")}
                 onBlur={this.validateFName.bind(this)}
@@ -505,8 +592,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="Doe"
                 floatingLabelText="Last Name"
+                hintText="Doe"
+                maxLength="50"
                 value={this.state.lname}
                 onChange={this.handleTextChange.bind(this, "lname")}
                 onBlur={this.validateLName.bind(this)}
@@ -515,8 +603,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="123 Fake Street"
                 floatingLabelText="Address"
+                hintText="123 Fake Street"
+                maxLength="50"
                 value={this.state.address}
                 onChange={this.handleTextChange.bind(this, "address")}
                 onBlur={this.validateAddress.bind(this)}
@@ -527,8 +616,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="77"
                 floatingLabelText="Unit #"
+                hintText="7e"
+                maxLength="10"
                 value={this.state.unitNum}
                 onChange={this.handleTextChange.bind(this, "unitNum")}
                 onBlur={this.validateUnit.bind(this)}
@@ -537,8 +627,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="Toronto"
                 floatingLabelText="City"
+                hintText="Toronto"
+                maxLength="80"
                 value={this.state.city}
                 onChange={this.handleTextChange.bind(this, "city")}
                 onBlur={this.validateCity.bind(this)}
@@ -550,9 +641,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               <SelectField
                 value={this.state.province}
-                onChange={this.handleProvinceChange}
+                onChange={this.handleSelectChange.bind(this, "province")}
                 floatingLabelText="Province"
-                floatingLabelFixed={true}
+                floatingLabelFixed={false}
                 hintText="Select a Province"
                 errorText={this.state.provinceErr}
                 errorStyle={{float: "left"}}
@@ -561,8 +652,9 @@ export default class NewSale extends React.Component {
               </SelectField>
               <br />
               <TextField
-                hintText="M4B 5V9"
                 floatingLabelText="Postal Code"
+                hintText="M4B 5V9"
+                maxLength="7"
                 value={this.state.postalCode}
                 onChange={this.handleTextChange.bind(this, "postalCode")}
                 onBlur={this.validatePostalCode.bind(this)}
@@ -573,8 +665,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                floatingLabelText="Enbridge Gas #"
                 hintText="1234567890"
-                floatingLabelText="Enbridge Gas Number"
+                maxLength="20"
                 value={this.state.enbridge}
                 onChange={this.handleTextChange.bind(this, "enbridge")}
                 onBlur={this.validateEnbridge.bind(this)}
@@ -583,8 +676,10 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="(416) 123-4567"
                 floatingLabelText="Home Phone"
+                hintText="416-123-4567"
+                type="tel"
+                maxLength="14"
                 value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, "homePhone")}
                 onBlur={this.validateHomePhone.bind(this)}
@@ -595,8 +690,10 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="(416) 123-4567"
                 floatingLabelText="Cell Phone"
+                hintText="416-123-4567"
+                type="tel"
+                maxLength="14"
                 value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
                 onBlur={this.validateCellPhone.bind(this)}
@@ -605,8 +702,10 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="name@domain.com"
                 floatingLabelText="Email"
+                hintText="name@domain.com"
+                type="email"
+                maxLength="50"
                 value={this.state.email}
                 onChange={this.handleTextChange.bind(this, "email")}
                 onBlur={this.validateEmail.bind(this)}
@@ -662,8 +761,10 @@ export default class NewSale extends React.Component {
                 <DatePicker
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
                   value={this.state.installationDate}
-                  onChange={this.handleDateChange.bind(this)}
+                  onChange={this.handleDateChange.bind(this, "installationDate")}
                 />
                 <div style={{color:"red", float: "left"}}>
                   {this.state.installationDateErr}
@@ -677,7 +778,7 @@ export default class NewSale extends React.Component {
                   hintText="Installation Time"
                   floatingLabelText="Installation Time"
                   value={this.state.installationTime}
-                  onChange={this.handleTimeChange.bind(this)}
+                  onChange={this.handleTimeChange.bind(this, "installationTime")}
                 />
                 <div style={{color:"red", float: "left"}}>
                   {this.state.installationTimeErr}
@@ -687,6 +788,7 @@ export default class NewSale extends React.Component {
               <TextField
                 hintText="Additional Notes"
                 floatingLabelText="Notes"
+                maxLength="300"
                 multiLine={true}
                 rows={1}
                 rowsMax={10}
@@ -710,7 +812,11 @@ export default class NewSale extends React.Component {
               &nbsp;
               <TextField
                 floatingLabelText="Date Signed"
-                defaultValue="10/13/2016"
+                value={
+                  this.state.dateSigned.getMonth() + '/' +
+                  this.state.dateSigned.getDate() + '/' +
+                  this.state.dateSigned.getFullYear()
+                }
                 disabled={true}
               />
               <br />
@@ -728,8 +834,10 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="1234567"
                 floatingLabelText="Sales Rep ID"
+                hintText="1234567"
+                type="number"
+                min="1"
                 value={this.state.salesRepId}
                 onChange={this.handleTextChange.bind(this, "salesRepId")}
                 onBlur={this.validateSalesRepId.bind(this)}
@@ -744,7 +852,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
+              <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
               &nbsp;
               &nbsp;
               &nbsp;
@@ -761,39 +869,34 @@ export default class NewSale extends React.Component {
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
               <TextField
-                disabled={true}
-                defaultValue="123-4567"
-                floatingLabelText="Sale Number"
-                style={{ width: "200px" }}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <TextField
-                hintText="1234567"
                 floatingLabelText="Application Number"
+                hintText="1234567"
+                type="number"
+                min="1"
                 value={this.state.applicationNumber}
                 onChange={this.handleTextChange.bind(this, "applicationNumber")}
                 onBlur={this.validateApplicationNumber.bind(this)}
                 errorText={this.state.applicationNumberErr}
                 errorStyle={{float: "left" }}
-                style={{ width: "200px" }}
               />
               &nbsp;
               &nbsp;
               &nbsp;
               <DatePicker
-                hintText="2010-08-20"
+                hintText="2017-08-20"
                 container="inline"
-                floatingLabelText="Date"
-                style={{ display: "inline-block", width: "200px" }}
-                // value={this.state.installationDate}
-                // onChange={this.handleTextChange.bind(this, "installationDate")}
+                floatingLabelText="Installation Date"
+                minDate={this.state.minDate}
+                maxDate={this.state.maxDate}
+                value={this.state.installationDate}
+                onChange={this.handleTextChange.bind(this, "installationDate")}
+                style={{ display: "inline-block" }}
               />
               <h2 className="headings">Homeowner Information</h2>
               <TextField
-                hintText="John"
                 floatingLabelText="First Name"
+                hintText="John"
+                maxLength="50"
                 value={this.state.fname}
                 onChange={this.handleTextChange.bind(this, "fname")}
                 onBlur={this.validateFName.bind(this)}
@@ -804,8 +907,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="Doe"
                 floatingLabelText="Last Name"
+                hintText="Doe"
+                maxLength="50"
                 value={this.state.lname}
                 onChange={this.handleTextChange.bind(this, "lname")}
                 onBlur={this.validateLName.bind(this)}
@@ -814,8 +918,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="123 Fake Street"
                 floatingLabelText="Address"
+                hintText="123 Fake Street"
+                maxLength="50"
                 value={this.state.address}
                 onChange={this.handleTextChange.bind(this, "address")}
                 onBlur={this.validateAddress.bind(this)}
@@ -826,9 +931,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="77"
                 floatingLabelText="Unit #"
-                value={this.state.unitNum}
+                hintText="7e"
+                maxLength="10"
                 onChange={this.handleTextChange.bind(this, "unitNum")}
                 onBlur={this.validateUnit.bind(this)}
                 errorText={this.state.unitNumErr}
@@ -836,8 +941,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="Toronto"
                 floatingLabelText="City"
+                hintText="Toronto"
+                maxLength="80"
                 value={this.state.city}
                 onChange={this.handleTextChange.bind(this, "city")}
                 onBlur={this.validateCity.bind(this)}
@@ -849,9 +955,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               <SelectField
                 value={this.state.province}
-                onChange={this.handleProvinceChange}
+                onChange={this.handleSelectChange.bind(this, "province")}
                 floatingLabelText="Province"
-                floatingLabelFixed={true}
+                floatingLabelFixed={false}
                 hintText="Select a Province"
                 errorText={this.state.provinceErr}
                 errorStyle={{float: "left"}}
@@ -860,8 +966,9 @@ export default class NewSale extends React.Component {
               </SelectField>
               <br />
               <TextField
-                hintText="M4B 5V9"
                 floatingLabelText="Postal Code"
+                hintText="M4B 5V9"
+                maxLength="7"
                 value={this.state.postalCode}
                 onChange={this.handleTextChange.bind(this, "postalCode")}
                 onBlur={this.validatePostalCode.bind(this)}
@@ -872,8 +979,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                floatingLabelText="Enbridge Gas #"
                 hintText="1234567890"
-                floatingLabelText="Enbridge Gas Number"
+                maxLength="20"
                 value={this.state.enbridge}
                 onChange={this.handleTextChange.bind(this, "enbridge")}
                 onBlur={this.validateEnbridge.bind(this)}
@@ -882,8 +990,9 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="(416) 123-4567"
                 floatingLabelText="Home Phone"
+                hintText="416-123-4567"
+                maxLength="14"
                 value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, "homePhone")}
                 onBlur={this.validateHomePhone.bind(this)}
@@ -894,8 +1003,9 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="(416) 123-4567"
                 floatingLabelText="Cell Phone"
+                hintText="416-123-4567"
+                maxLength="14"
                 value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, "cellPhone")}
                 onBlur={this.validateCellPhone.bind(this)}
@@ -904,8 +1014,10 @@ export default class NewSale extends React.Component {
               />
               <br />
               <TextField
-                hintText="name@domain.com"
                 floatingLabelText="Email"
+                hintText="name@domain.com"
+                type="email"
+                maxLength="50"
                 value={this.state.email}
                 onChange={this.handleTextChange.bind(this, "email")}
                 onBlur={this.validateEmail.bind(this)}
@@ -914,7 +1026,7 @@ export default class NewSale extends React.Component {
               />
               <h2 className="headings">Void Cheque</h2>
               <Card>
-                <CardMedia style={{maxWidth:"550px"}}>
+                <CardMedia>
                   <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
                 </CardMedia>
                 <CardTitle title="Void Cheque" subtitle="Customer Number: 123-4567" />
@@ -943,8 +1055,10 @@ export default class NewSale extends React.Component {
                 <DatePicker
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
                   value={this.state.installationDate}
-                  onChange={this.handleDateChange.bind(this)}
+                  onChange={this.handleDateChange.bind(this, "installationDate")}
                 />
                 <div style={{color:"red", float: "left"}}>
                   {this.state.installationDateErr}
@@ -958,7 +1072,8 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
+              <RaisedButton label="Save" onClick={this.validateRentalAgreement.bind(this)} />
+              // Change validateRentalAgreement here to validatePAD; make new function
               &nbsp;
               &nbsp;
               &nbsp;

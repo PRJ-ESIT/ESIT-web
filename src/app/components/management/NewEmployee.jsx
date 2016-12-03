@@ -1,16 +1,9 @@
 import React from 'react';
-import { Toolbar, ToolbarTitle, TextField, DropDownMenu, MenuItem, RaisedButton, SelectField } from 'material-ui';
+import { Toolbar, ToolbarTitle, TextField, MenuItem, RaisedButton, SelectField } from 'material-ui';
 import { validations } from '../helpers/common.js';
+import { IP } from '../../../../config/config.js';
 
-const styles = {
-  customWidth: {
-    width: 280,
-  },
-  menuStyle: {
-    width: '200px'
-  }
-};
-
+// Provinces for SelectField
 const provinces = [
   <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
   <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
@@ -32,8 +25,8 @@ export default class NewEmployee extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      //state variables below keep the values of each field
       employeeType: '',
-      //state variables below keep the values of each input field
       fname: '',
       lname: '',
       address: '',
@@ -61,211 +54,237 @@ export default class NewEmployee extends React.Component {
       cellPhoneErr: '',
       passwordErr: '',
       repeatPasswordErr: '',
-      validated: false,
+
+      // Validation fields
+      employeeTypeValidated: false,
+      fnameValidated: false,
+      lnameValidated: false,
+      addressValidated: false,
+      unitValidated: false,
+      cityValidated: false,
+      proviceValidated: false,
+      postalCodeValidated: false,
+      emailValidated: false,
+      homePhoneValidated: false,
+      cellPhoneValidated: false,
+      passwordValidated: false,
+      passwordRepeatValidated: false,
+      allvalidated: false,
     };
-    this.handleDropDownChange = this.handleDropDownChange.bind(this);
-    this.validateAndSubmit = this.validateAndSubmit.bind(this);
-    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
-  handleDropDownChange(event, index, value){
-    console.log(value);
-    this.setState({employeeType: value});
+  componentDidMount() {
+    if(this.props.status == "edit"){
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let employee = JSON.parse(httpRequest.responseText).employee;
+
+          _this.setState({
+            employeeType: employee.role ? employee.role : '',
+            fname: employee.firstName ? employee.firstName : '',
+            lname: employee.lastName ? employee.lastName : '',
+            email: employee.email ? employee.email : '',
+            homePhone: employee.homePhone ? employee.homePhone : '',
+            cellPhone: employee.cellPhone ? employee.cellPhone : '',
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/getoneemployee?id="
+        + this.props.id, true);
+      httpRequest.send(null);
+    }
   }
 
-  handleSelectChange(event, index, value) {
-    console.log(value);
-    this.setState({province: value});
+  handleSelectChange(fieldname, event, index, value) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = value;
+    this.setState(obj);
   }
 
   handleTextChange(fieldname, event) {
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
-  };
+  }
+
+  validateEmployeeType() {
+    let employeeType = this.state.employeeType;
+    if(validations.validateEmployeeType(employeeType)) {
+      this.setState({
+        employeeTypeErr: '',
+        employeeType: employeeType,
+        employeeTypeValidated: true,
+      });
+    } else {
+      this.setState({
+        employeeTypeErr: 'Must select Employee Type',
+        employeeTypeValidated: false,
+      });
+    }
+  }
 
   validateFName() {
     let fname = this.state.fname.trim();
-    if(validations.isAlphaSpacesHyphens(fname) &&
-      validations.minLength(fname, 2) &&
-      validations.maxLength(fname, 25)) {
-
+    if(validations.validateFName(fname)) {
       this.setState({
         fnameErr: '',
         fname: fname,
-        validated: true,
+        fnameValidated: true,
       });
     } else {
       this.setState({
         fnameErr: '2 to 25 characters, spaces and hyphens only',
-        validated: false,
+        fnameValidated: false,
       });
     }
   }
 
   validateLName() {
     let lname = this.state.lname.trim();
-    if(validations.isAlphaSpacesHyphens(lname) &&
-      validations.minLength(lname, 2) &&
-      validations.maxLength(lname, 25)) {
-
+    if(validations.validateLName(lname)) {
       this.setState({
         lnameErr: '',
         lname: lname,
-        validated: true,
+        lnameValidated: true,
       });
     } else {
       this.setState({
         lnameErr: '2 to 25 characters, spaces and hyphens only',
-        validated: false,
+        lnameValidated: false,
       });
     }
   }
 
   validateAddress() {
     let address = this.state.address.trim();
-    if(validations.isAlphanumericSpacesHyphens(address) && validations.maxLength(address, 50)) {
+    if(validations.validateAddress(address)) {
       this.setState({
         addressErr: '',
         address: address,
-        validated: true,
+        addressValidated: true,
       });
     } else {
       this.setState({
         addressErr: 'Can contain characters, numbers, spaces and hyphens only',
-        validated: false,
+        addressValidated: false,
       });
     }
   }
 
   validateUnit() {
     let unitNum = this.state.unitNum.trim();
-    if(validations.isAlphanumeric(unitNum) && validations.maxLength(unitNum, 10)) {
+    if(validations.validateUnit(unitNum)) {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
-        validated: true,
+        unitValidated: true,
       });
     } else {
       this.setState({
         unitNumErr: 'Has to be 1 word containing numbers/characters only',
-        validated: false,
+        unitValidated: false,
       });
     }
   }
 
   validateCity() {
     let city = this.state.city.trim();
-    if(validations.isAlphaSpacesHyphens(city) && validations.maxLength(city, 60)) {
+    if(validations.validateCity(city)) {
       this.setState({
         cityErr: '',
         city: city,
-        validated: true,
+        cityValidated: true,
       });
     } else {
       this.setState({
         cityErr: 'Up to 60 characters, spaces and hyphens only',
-        validated: false,
+        cityValidated: false,
       });
     }
   }
 
   validateProvince() {
-    let province = this.state.province.trim();
-    if(validations.isWords(province) && validations.maxLength(province, 30)) {
+    let province = this.state.province;
+    if(validations.validateProvince(province)) {
       this.setState({
         provinceErr: '',
         province: province,
-        validated: true,
+        provinceValidated: true,
       });
-      return true;
     } else {
       this.setState({
         provinceErr: 'Not a valid province name',
-        validated: false,
+        provinceValidated: false,
       });
-      return false;
-    }
-  }
-
-  validateEmployeeType() {
-    let empType = this.state.employeeType.trim();
-    if(validations.isWords(empType) && validations.maxLength(empType, 30)) {
-      this.setState({
-        employeeTypeErr: '',
-        employeeType: empType,
-        validated: true,
-      });
-      return true;
-    } else {
-      this.setState({
-        employeeTypeErr: 'Not a valid province name',
-        validated: false,
-      });
-      return false;
     }
   }
 
   validatePostalCode() {
     let postalCode = this.state.postalCode.trim();
-    if(validations.isPostalCode(postalCode)) {
+    postalCode = postalCode.toUpperCase();
+    if(validations.validatePostalCode(postalCode)) {
       this.setState({
         postalCodeErr: '',
-        postalCode: postalCode.toUpperCase(),
-        validated: true,
+        postalCode: postalCode,
+        postalCodeValidated: true,
       });
     } else {
       this.setState({
         postalCodeErr: 'Not a valid postal code',
-        validated: false,
+        postalCodeValidated: false,
       });
     }
   }
 
   validateEmail() {
     let email = this.state.email.trim();
-    if(validations.isEmail(email) && validations.maxLength(email, 50)) {
+    if(validations.validateEmail(email)) {
       this.setState({
         emailErr: '',
         email: email,
-        validated: true,
+        emailValidated: true,
       });
     } else {
       this.setState({
         emailErr: 'Not a valid email',
-        validated: false,
+        emailValidated: false,
       });
     }
   }
 
   validateHomePhone() {
     let homePhone = this.state.homePhone.trim();
-    if(validations.isPhoneNumber(homePhone) && validations.maxLength(homePhone, 12)) {
+    if(validations.validateHomePhone(homePhone)) {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
-        validated: true,
+        homePhoneValidated: true,
       });
     } else {
       this.setState({
         homePhoneErr: 'Not a valid phone number',
-        validated: false,
+        homePhoneValidated: false,
       });
     }
   }
 
   validateCellPhone() {
     let cellPhone = this.state.cellPhone.trim();
-    if(validations.isPhoneNumber(cellPhone) && validations.maxLength(cellPhone, 12)) {
+    if(validations.validateCellPhone(cellPhone)) {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
-        validated: true,
+        cellPhoneValidated: true,
       });
     } else {
       this.setState({
         cellPhoneErr: 'Not a valid phone number',
-        validated: false,
+        cellPhoneValidated: false,
       });
     }
   }
@@ -289,12 +308,12 @@ export default class NewEmployee extends React.Component {
       this.setState({
         passwordErr: '',
         repeatPasswordErr: repeatPasswordErr,
-        validated: validated,
+        passwordValidated: validated,
       });
     } else {
       this.setState({
         passwordErr: 'At least 1 character, 1 number, one of the special characters !@#$%^&* and have at least 8 characters',
-        validated: false,
+        passwordValidated: false,
       });
     }
   }
@@ -307,34 +326,47 @@ export default class NewEmployee extends React.Component {
 
       this.setState({
         repeatPasswordErr: '',
-        validated: true,
+        passwordRepeatValidated: true,
       });
     } else {
       this.setState({
         repeatPasswordErr: 'Doesn\'t match the password entered',
-        validated: false,
+        passwordRepeatValidated: false,
       });
     }
   }
 
-  validateAndSubmit() {
-    if(!validations.isEmpty(this.state.fname) &&
-      !validations.isEmpty(this.state.lname) &&
-      !validations.isEmpty(this.state.address) &&
-      !validations.isEmpty(this.state.unitNum) &&
-      !validations.isEmpty(this.state.city) &&
-      !validations.isEmpty(this.state.province) &&
-      !validations.isEmpty(this.state.postalCode) &&
-      !validations.isEmpty(this.state.email) &&
-      !validations.isEmpty(this.state.homePhone) &&
-      !validations.isEmpty(this.state.cellPhone) &&
-      !validations.isEmpty(this.state.password) &&
-      !validations.isEmpty(this.state.repeatPassword) &&
-      this.state.validated) {
+  validateAllFields() {
+    this.validateEmployeeType();
+    this.validateFName();
+    this.validateLName();
+    this.validateAddress();
+    this.validateUnit();
+    this.validateCity();
+    this.validateProvince();
+    this.validatePostalCode();
+    this.validateEmail();
+    this.validateHomePhone();
+    this.validateCellPhone();
+    this.validatePassword();
+    this.validatePasswordRepeat();
 
-      console.log('everything is fine, we will be sending an http post request here');
+    if (this.state.employeeTypeValidated &&
+        this.state.fnameValidated &&
+        this.state.lnameValidated &&
+        this.state.addressValidated &&
+        this.state.unitValidated &&
+        this.state.cityValidated &&
+        this.state.provinceValidated &&
+        this.state.postalCodeValidated &&
+        this.state.emailValidated &&
+        this.state.homePhoneValidated &&
+        this.state.cellPhoneValidated &&
+        this.state.passwordValidated &&
+        this.state.passwordRepeatValidated) {
+      this.setState({allvalidated: true});
     } else {
-      console.log('it didn\'t work');
+      this.setState({allvalidated: false});
     }
   }
 
@@ -348,30 +380,24 @@ export default class NewEmployee extends React.Component {
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
               <SelectField
-                errorText={this.state.provinceErr}
-                errorStyle={{float: "left"}}
-                value={this.state.employeeType}
-                onChange={this.handleDropDownChange}
-                floatingLabelText="Employee"
+                floatingLabelText="Employee Type"
                 floatingLabelFixed={false}
                 hintText="Select Employee Type"
-                maxHeight={150}
+                value={this.state.employeeType}
+                onChange={this.handleSelectChange.bind(this, "employeeType")}
+                errorText={this.state.employeeTypeErr}
+                errorStyle={{float: "left"}}
               >
-                <MenuItem value={"Sales Agent" } primaryText="Sales Agent" />
-                <MenuItem value={"Installation Agent"} primaryText="Installation Agent" />
-                <MenuItem value={"Administrator"} primaryText="Administrator" />
+                <MenuItem key={1} value={"salesperson"} primaryText="Sales Agent" />
+                <MenuItem key={2} value={"installer"} primaryText="Installer" />
+                <MenuItem key={3} value={"admin"} primaryText="Administrator" />
               </SelectField>
-              &nbsp;
-              &nbsp;
+              <br />
               <TextField
-                disabled={true}
-                defaultValue="555-555-555"
-                floatingLabelText="Employee ID"
-              /><br />
-              <TextField
-                hintText="John"
                 floatingLabelText="First Name"
-                maxLength="25"
+                hintText="John"
+                maxLength="50"
+                value={this.state.fname}
                 onChange={this.handleTextChange.bind(this, 'fname')}
                 onBlur={this.validateFName.bind(this)}
                 errorText={this.state.fnameErr}
@@ -380,18 +406,20 @@ export default class NewEmployee extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="Smith"
                 floatingLabelText="Last Name"
-                maxLength="25"
+                hintText="Doe"
+                maxLength="50"
+                value={this.state.lname}
                 onChange={this.handleTextChange.bind(this, 'lname')}
                 onBlur={this.validateLName.bind(this)}
                 errorText={this.state.lnameErr}
                 errorStyle={{float: "left"}}
               /><br />
               <TextField
-                hintText="Street"
                 floatingLabelText="Address"
+                hintText="123 Main Street"
                 maxLength="50"
+                value={this.state.address}
                 onChange={this.handleTextChange.bind(this, 'address')}
                 onBlur={this.validateAddress.bind(this)}
                 errorText={this.state.addressErr}
@@ -400,19 +428,21 @@ export default class NewEmployee extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="Unit #"
                 floatingLabelText="Unit #"
+                hintText="7e"
                 maxLength="10"
+                value={this.state.unitNum}
                 onChange={this.handleTextChange.bind(this, 'unitNum')}
                 onBlur={this.validateUnit.bind(this)}
                 errorText={this.state.unitNumErr}
                 errorStyle={{float: "left"}}
-              /><br />
-
+              />
+              <br />
               <TextField
-                hintText="City"
                 floatingLabelText="City"
-                maxLength="60"
+                hintText="Toronto"
+                maxLength="80"
+                value={this.state.city}
                 onChange={this.handleTextChange.bind(this, 'city')}
                 onBlur={this.validateCity.bind(this)}
                 errorText={this.state.cityErr}
@@ -420,42 +450,48 @@ export default class NewEmployee extends React.Component {
               />
               &nbsp;
               &nbsp;
+              <SelectField
+                floatingLabelText="Province"
+                floatingLabelFixed={false}
+                hintText="Select a Province"
+                value={this.state.province}
+                onChange={this.handleSelectChange.bind(this, "province")}
+                errorText={this.state.provinceErr}
+                errorStyle={{float: "left"}}
+              >
+                {provinces}
+              </SelectField>
+              <br />
               <TextField
-                hintText="Postal Code"
                 floatingLabelText="Postal Code"
+                hintText="M4B 5V9"
                 maxLength="7"
+                value={this.state.postalCode}
                 onChange={this.handleTextChange.bind(this, 'postalCode')}
                 onBlur={this.validatePostalCode.bind(this)}
                 errorText={this.state.postalCodeErr}
                 errorStyle={{float: "left"}}
-              /><br />
-              <SelectField
-                errorText={this.state.provinceErr}
-                errorStyle={{float: "left"}}
-                value={this.state.province}
-                onChange={this.handleSelectChange}
-                floatingLabelText="Province"
-                floatingLabelFixed={false}
-                hintText="Select a Province"
-                maxHeight={150}
-              >
-                {provinces}
-              </SelectField><br />
+              />
+              &nbsp;
+              &nbsp;
               <TextField
-                hintText="john@example.com"
                 floatingLabelText="Email"
+                hintText="name@domain.com"
                 type="email"
                 maxLength="50"
+                value={this.state.email}
                 onChange={this.handleTextChange.bind(this, 'email')}
                 onBlur={this.validateEmail.bind(this)}
                 errorText={this.state.emailErr}
                 errorStyle={{float: "left"}}
-              /><br />
+              />
+              <br />
               <TextField
-                hintText="555-555-1234"
                 floatingLabelText="Home Phone"
+                hintText="(123) 456-7890"
                 type="tel"
-                maxLength="12"
+                maxLength="14"
+                value={this.state.homePhone}
                 onChange={this.handleTextChange.bind(this, 'homePhone')}
                 onBlur={this.validateHomePhone.bind(this)}
                 errorText={this.state.homePhoneErr}
@@ -464,20 +500,22 @@ export default class NewEmployee extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText="555-555-1234"
                 floatingLabelText="Cell Phone"
+                hintText="(123) 456-7890"
                 type="tel"
-                maxLength="12"
+                maxLength="14"
+                value={this.state.cellPhone}
                 onChange={this.handleTextChange.bind(this, 'cellPhone')}
                 onBlur={this.validateCellPhone.bind(this)}
                 errorText={this.state.cellPhoneErr}
                 errorStyle={{float: "left"}}
               /><br />
               <TextField
-                hintText=""
                 floatingLabelText="Password"
+                hintText=""
                 type="password"
                 maxLength="20"
+                value={this.state.password}
                 onChange={this.handleTextChange.bind(this, 'password')}
                 onBlur={this.validatePassword.bind(this)}
                 errorText={this.state.passwordErr}
@@ -486,10 +524,11 @@ export default class NewEmployee extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
-                hintText=""
                 floatingLabelText="Repeat Password"
+                hintText=""
                 type="password"
                 maxLength="20"
+                value={this.state.repeatPassword}
                 onChange={this.handleTextChange.bind(this, 'repeatPassword')}
                 onBlur={this.validatePasswordRepeat.bind(this)}
                 errorText={this.state.repeatPasswordErr}
@@ -504,7 +543,7 @@ export default class NewEmployee extends React.Component {
                 secondary={true}
               />
               <RaisedButton
-                onClick={this.validateAndSubmit}
+                onClick={this.validateAllFields.bind(this)}
                 style={{float: 'right'}}
                 label="Create"
                 primary={true}

@@ -24,6 +24,7 @@ export default class AllSales extends React.Component {
       enableSelectAll: false,
       deselectOnClickaway: true,
       showCheckboxes: true,
+      selectedId: '',
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
       //end of table state variables
@@ -55,25 +56,29 @@ export default class AllSales extends React.Component {
   }
 
   handleDropdownChange(event, index, value) {
-    console.log(index);
-    console.log(value);
     this.setState({dropdownValue: value});
   }
 
   handleSelection(selectedRows) {
-    console.log(selectedRows);
-    console.log(this.state);
     if(selectedRows.length == 1) {
       this.setState({
         currentSelected: true,
         selectedNum: selectedRows[0],
+        selectedId: this.state.allSales[selectedRows].salesNumber,
       });
     } else {
       this.setState({
         currentSelected: false,
         selectedNum: -1,
+        selectedId: '',
       });
     }
+  }
+
+  handleRowClick(rowId){
+    this.setState({
+      selectedId: rowId,
+    });
   }
 
   render() {
@@ -96,7 +101,9 @@ export default class AllSales extends React.Component {
             {this.state.currentSelected ?
               <ToolbarGroup>
                 <ToolbarSeparator />
-                <RaisedButton label="Edit" primary={true} />
+                <RaisedButton label="Edit" primary={true}
+                  onClick={this.props.editClickHandler.bind(null,
+                    "edit", this.state.selectedId, "newSale")}/>
                 <RaisedButton label="Details" primary={true} />
                 <RaisedButton label="Delete" primary={true} />
               </ToolbarGroup>
@@ -126,7 +133,7 @@ export default class AllSales extends React.Component {
           </TableHeader>
           <TableBody
             displayRowCheckbox={this.state.showCheckboxes}
-            deselectOnClickaway={this.state.deselectOnClickaway}
+            deselectOnClickaway={false}
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
