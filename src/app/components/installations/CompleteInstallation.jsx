@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Tabs, Tab, TextField, SelectField, MenuItem, RadioButton, RadioButtonGroup,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  Checkbox, Divider, DatePicker, RaisedButton
+  Checkbox, Divider, DatePicker, RaisedButton,
 } from 'material-ui';
 import { validations } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
@@ -63,7 +63,7 @@ const tableData = [
   },
 ];
 
-export default class ScheduleInstallation extends React.Component {
+export default class CompleteInstallation extends React.Component {
 
   constructor(props) {
     super(props);
