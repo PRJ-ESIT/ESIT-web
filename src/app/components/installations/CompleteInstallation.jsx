@@ -102,7 +102,7 @@ export default class CompleteInstallation extends React.Component {
       minDate: minDate,
       maxDate: maxDate,
 
-      // Error messages for each input field
+      // Error messages for each field
       fnameErr: '',
       lnameErr: '',
       addressErr: '',
@@ -952,8 +952,9 @@ export default class CompleteInstallation extends React.Component {
                   value={this.state.notes}
                   onChange={this.handleTextChange.bind(this, "notes")}
                   className="full-width"
+                  errorText={this.state.checklistErr}
+                  errorStyle={{float: "left"}}
                 />
-                <div style={{color:"red", float: "left"}}>{this.state.checklistErr}</div>
 
                 <h2 className="headings">Customer Acknowledgement</h2>
                 <div>
@@ -1008,9 +1009,11 @@ export default class CompleteInstallation extends React.Component {
                     onChange={this.handleDateChange.bind(this, "installedDate")}
                     minDate={this.state.minDate}
                     maxDate={this.state.maxDate}
+                    errorText={this.state.installedDateErr}
+                    errorStyle={{float: "left"}}
                   />
-                  <div style={{color:"red", float: "left"}}>{this.state.installedDateErr}</div>
                 </div>
+                <br />
                 <div>
                   <RaisedButton label="Cancel" secondary={true} />
                   &nbsp;

@@ -271,6 +271,14 @@ var validations = {
     }
   },
 
+  validateInstaller(installer) {
+    if(installer != '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   isPostalCode(value) {
     if (matchRegexp(value, /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/)) {
       return true;

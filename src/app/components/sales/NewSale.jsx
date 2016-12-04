@@ -765,10 +765,9 @@ export default class NewSale extends React.Component {
                   maxDate={this.state.maxDate}
                   value={this.state.installationDate}
                   onChange={this.handleDateChange.bind(this, "installationDate")}
+                  errorText={this.state.installationDateErr}
+                  errorStyle={{float: "left"}}
                 />
-                <div style={{color:"red", float: "left"}}>
-                  {this.state.installationDateErr}
-                </div>
               </div>
               &nbsp;
               &nbsp;
@@ -779,10 +778,9 @@ export default class NewSale extends React.Component {
                   floatingLabelText="Installation Time"
                   value={this.state.installationTime}
                   onChange={this.handleTimeChange.bind(this, "installationTime")}
+                  errorText={this.state.installationTimeErr}
+                  errorStyle={{float: "left"}}
                 />
-                <div style={{color:"red", float: "left"}}>
-                  {this.state.installationTimeErr}
-                </div>
               </div>
               <br />
               <TextField
