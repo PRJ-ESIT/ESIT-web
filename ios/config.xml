@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.esit" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>HelloWorld</name>
+    <name>Esit</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        Electronic Sales and Installation Tool.
     </description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">
         Apache Cordova Team
@@ -24,4 +24,10 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <engine name="ios" spec="~4.2.1" />
+    <plugin name="cordova-plugin-camera" spec="~2.3.0">
+        <variable name="CAMERA_USAGE_DESCRIPTION" value="We are gonna be making very important pictures with the camera" />
+        <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value="We want to have access to the photolibrary" />
+    </plugin>
+    <plugin name="cordova.plugins.diagnostic" spec="~3.3.2" />
+    <plugin name="cordova-plugin-dialogs" spec="~1.3.0" />
 </widget>
