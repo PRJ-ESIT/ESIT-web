@@ -8,8 +8,10 @@ import LeftMenu from './LeftMenu.jsx';
 import Dashboard from './dashboard/Dashboard.jsx';
 import NewSale from './sales/NewSale.jsx';
 import AllSales from './sales/AllSales.jsx';
-import ScheduleInstallation from './installations/ScheduleInstallation.jsx';
+import InstallationContainer from './installations/InstallationContainer.jsx';
+import CompleteInstallation from './installations/CompleteInstallation.jsx';
 import AllInstallations from './installations/AllInstallations.jsx';
+import ScheduleInstallation from './management/ScheduleInstallation.jsx';
 import NewEmployee from './management/NewEmployee.jsx';
 import AllEmployees from './management/AllEmployees.jsx';
 import AllCustomers from './management/AllCustomers.jsx';
@@ -20,8 +22,9 @@ const defaultProps = {
   newSale: NewSale,
   allSales: AllSales,
   documents: Documents,
-  scheduleInstallation: ScheduleInstallation,
+  completeInstallation: InstallationContainer,
   allInstallations: AllInstallations,
+  scheduleInstallation: ScheduleInstallation,
   newEmployee: NewEmployee,
   allEmployees: AllEmployees,
   allCustomers: AllCustomers

@@ -4,16 +4,17 @@ import ExpandMore from 'material-ui/svg-icons/navigation/expand-more';
 import ExpandLess from 'material-ui/svg-icons/navigation/expand-less';
 import Dashboard from 'material-ui/svg-icons/action/dashboard';
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money';
-import ShowChart from 'material-ui/svg-icons/editor/show-chart';
-import AccountCircle from 'material-ui/svg-icons/action/account-circle';
-import SupervisorAccount from 'material-ui/svg-icons/action/supervisor-account';
+import TrendingUp from 'material-ui/svg-icons/action/trending-up';
+import Business from 'material-ui/svg-icons/communication/business';
 import Build from 'material-ui/svg-icons/action/build';
+import EventAvailable from 'material-ui/svg-icons/notification/event-available'
 import GroupAdd from 'material-ui/svg-icons/social/group-add';
-import ContactPhone from 'material-ui/svg-icons/communication/contact-phone';
-import Schedule from 'material-ui/svg-icons/action/schedule';
+import Group from 'material-ui/svg-icons/social/group';
+import TagFaces from 'material-ui/svg-icons/image/tag-faces';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
-import PictureInPicture from 'material-ui/svg-icons/action/picture-in-picture';
+import Folder from 'material-ui/svg-icons/file/folder';
 import Create from 'material-ui/svg-icons/content/create';
+import Event from 'material-ui/svg-icons/action/event';
 
 export default class LeftMenu extends React.Component {
   constructor(props) {
@@ -83,7 +84,7 @@ export default class LeftMenu extends React.Component {
               key={2}
               onClick={this.props.clickHandler.bind(null, "allSales")}
               primaryText="View All Sales"
-              leftIcon={<ShowChart color="white"/>}
+              leftIcon={<TrendingUp color="white"/>}
               style={fontStyle}
             />
           ]}
@@ -108,9 +109,9 @@ export default class LeftMenu extends React.Component {
           nestedItems={[
             <ListItem
               key={1}
-              onClick={this.props.clickHandler.bind(null, "scheduleInstallation")}
-              primaryText="Schedule Installation"
-              leftIcon={<Schedule color="white"/>}
+              onClick={this.props.clickHandler.bind(null, "completeInstallation")}
+              primaryText="Complete Installation"
+              leftIcon={<EventAvailable color="white"/>}
               style={fontStyle}
             />,
             <ListItem
@@ -127,7 +128,7 @@ export default class LeftMenu extends React.Component {
           primaryText="Management"
           primaryTogglesNestedList={true}
           onNestedListToggle={this.toggleCategory.bind(this, "managementOpen")}
-          leftIcon={<AccountCircle color="white" />}
+          leftIcon={<Business color="white" />}
           initiallyOpen={false}
           rightIconButton={
             <IconButton onClick={this.toggleCategory.bind(this, "managementOpen")}>
@@ -142,30 +143,37 @@ export default class LeftMenu extends React.Component {
           nestedItems={[
             <ListItem
               key={1}
+              onClick={this.props.clickHandler.bind(null, "scheduleInstallation")}
+              primaryText="Schedule Installation"
+              leftIcon={<Event color="white" />}
+              style={fontStyle}
+            />,
+            <ListItem
+              key={2}
               onClick={this.props.clickHandler.bind(null, "newEmployee")}
               primaryText="Create New Employee"
               leftIcon={<GroupAdd color="white" />}
               style={fontStyle}
             />,
             <ListItem
-              key={2}
+              key={3}
               onClick={this.props.clickHandler.bind(null, "allEmployees")}
               primaryText="View All Employees"
-              leftIcon={<SupervisorAccount color="white"/>}
+              leftIcon={<Group color="white"/>}
               style={fontStyle}
             />,
             <ListItem
-              key={3}
+              key={4}
               onClick={this.props.clickHandler.bind(null, "allCustomers")}
               primaryText="View All Customers"
-              leftIcon={<ContactPhone color="white" />}
+              leftIcon={<TagFaces color="white" />}
               style={fontStyle}
             />,
             <ListItem
               onClick={this.props.clickHandler.bind(null, "documents")}
-              key={4}
+              key={5}
               primaryText="Documents"
-              leftIcon={<PictureInPicture color="white" />}
+              leftIcon={<Folder color="white" />}
               style={fontStyle}
             />
           ]}
