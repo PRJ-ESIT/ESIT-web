@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var http = require("http");
+var https = require("https");
 //we need this to build our POST request
 var querystring = require('querystring');
 //added body-parser to grab information from the POST request
@@ -403,6 +404,48 @@ app.get('/getoneinstallation', function(request, response) {
 
     req.on('error', function(err) {
         //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
+
+app.get('/getbaseurl', function(request, response) {
+  var dsAuthHeader = JSON.stringify({
+		'Username': request.query.email,
+		'Password': request.query.password,
+		'IntegratorKey': request.query.integratorKey	// global
+	});
+  var options = {
+    hostname: 'demo.docusign.net',
+    path: '/restapi/v2/login_information',
+    method: 'GET',
+    body: '',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+  console.log(options);
+
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        console.log(output);
+        var obj = JSON.parse(output);
+        return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+      console.log(err);
+      response.send('error: ' + err.message);
     });
 
     req.end();

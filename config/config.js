@@ -1,6 +1,6 @@
-var IP = "myvmlab.senecacollege.ca:5521"
-var crudIP = "10.10.192.145"
-var authIP = "10.10.192.145"
-var docMgrIP = "10.10.192.145"
+var IP = "192.168.196.128:3000"
+var crudIP = "192.168.196.128"
+var authIP = "192.168.196.12"
+var docMgrIP = "192.168.196.128"
 
 module.exports =  { IP, crudIP, authIP, docMgrIP };

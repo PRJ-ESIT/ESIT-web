@@ -24,6 +24,12 @@ const provinces = [
   <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
 ];
 
+const docusign = {
+  "email": "esit.project.prj@gmail.com",				// your account email
+  "password": "esitproject2016",			// your account password
+  "integratorKey": "0edc98fa-39d4-46f2-baeb-09e7a0711e8c", // your account Integrator Key (found on Preferences -> API page)
+};
+
 export default class NewSale extends React.Component {
 
   constructor(props) {
@@ -60,6 +66,9 @@ export default class NewSale extends React.Component {
       dateSigned: new Date(),
       minDate: minDate,
       maxDate: maxDate,
+
+      // DocuSign
+      baseUrl: '',
 
       // Unknown data
       homeownerSignature: '',
@@ -145,6 +154,26 @@ export default class NewSale extends React.Component {
         + this.props.id, true);
       httpRequest.send(null);
     }
+  }
+
+  getBaseUrl() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(httpRequest.responseText);
+        let response = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
+
+        _this.setState({
+          baseUrl: response ? response : '',
+        });
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/getbaseurl?email="
+      + 'esit.project.prj@gmail.com' + '&password=' + 'esitproject2016'
+      + '&integratorKey=' + '0edc98fa-39d4-46f2-baeb-09e7a0711e8c', true);
+    httpRequest.send(null);
   }
 
   formatDate(date){
@@ -846,7 +875,7 @@ export default class NewSale extends React.Component {
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" secondary={true} />
+              <RaisedButton label="Cancel" onClick={this.getBaseUrl.bind(this)} secondary={true} />
               &nbsp;
               &nbsp;
               &nbsp;
