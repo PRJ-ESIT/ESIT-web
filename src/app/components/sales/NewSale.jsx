@@ -24,12 +24,6 @@ const provinces = [
   <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
 ];
 
-const docusign = {
-  "email": "esit.project.prj@gmail.com",				// your account email
-  "password": "esitproject2016",			// your account password
-  "integratorKey": "0edc98fa-39d4-46f2-baeb-09e7a0711e8c", // your account Integrator Key (found on Preferences -> API page)
-};
-
 export default class NewSale extends React.Component {
 
   constructor(props) {
@@ -69,6 +63,8 @@ export default class NewSale extends React.Component {
 
       // DocuSign
       baseUrl: '',
+      envelopeId: '',
+      embeddedUrl: '',
 
       // Unknown data
       homeownerSignature: '',
@@ -154,6 +150,7 @@ export default class NewSale extends React.Component {
         + this.props.id, true);
       httpRequest.send(null);
     }
+    this.getBaseUrl();
   }
 
   getBaseUrl() {
@@ -161,23 +158,57 @@ export default class NewSale extends React.Component {
     let _this = this;
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(httpRequest.responseText);
-        let response = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
-
+        let url = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
+        console.log(url);
         _this.setState({
-          baseUrl: response ? response : '',
+          baseUrl: url ? url : '',
         });
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/getbaseurl?email="
-      + 'esit.project.prj@gmail.com' + '&password=' + 'esitproject2016'
-      + '&integratorKey=' + '0edc98fa-39d4-46f2-baeb-09e7a0711e8c', true);
+    httpRequest.open('GET', "http://" + IP + "/getbaseurl", true);
     httpRequest.send(null);
   }
 
-  formatDate(date){
-    return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+  getEnvelopeId() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(httpRequest.responseText);
+        let id = JSON.parse(httpRequest.responseText).envelopeId;
+        console.log(id);
+        _this.setState({
+          envelopeId: id ? id : '',
+        });
+      }
+    };
+
+    // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
+    //   + "&recipientName=" + this.fname + " " + this.lname, true);
+    httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=klever@gmail.com&recipientName=Klever Loza Vega", true);
+    httpRequest.send(null);
+  }
+
+  getEmbeddedUrl() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(httpRequest.responseText);
+        let url = JSON.parse(httpRequest.responseText).url;
+        console.log(url);
+        _this.setState({
+          embeddedUrl: url ? url : '',
+        });
+      }
+    };
+
+    // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
+    //   + "&recipientName=" + this.fname + " " + this.lname, true);
+    httpRequest.open('POST', "http://" + IP
+      + "/getembeddedurl?envelopeId=b0023201-157f-41c0-abf3-8f6fc20247d9&email=klever@gmail.com&recipientName=Klever Loza Vega", true);
+    httpRequest.send(null);
   }
 
   handleTabChange(value) {
@@ -875,7 +906,7 @@ export default class NewSale extends React.Component {
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" onClick={this.getBaseUrl.bind(this)} secondary={true} />
+              <RaisedButton label="Cancel" onClick={this.getEmbeddedUrl.bind(this)} secondary={true} />
               &nbsp;
               &nbsp;
               &nbsp;

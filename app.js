@@ -13,6 +13,9 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //end of body-parser
 
+// DocuSign base url
+var baseUrl;
+
 //webpack hot load
 var webpack = require('webpack');
 var webpackConfig = require('./config/webpack.config');
@@ -410,11 +413,13 @@ app.get('/getoneinstallation', function(request, response) {
 });
 
 app.get('/getbaseurl', function(request, response) {
+  // Prepare DocuSign header
   var dsAuthHeader = JSON.stringify({
-		'Username': request.query.email,
-		'Password': request.query.password,
-		'IntegratorKey': request.query.integratorKey	// global
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
 	});
+
   var options = {
     hostname: 'demo.docusign.net',
     path: '/restapi/v2/login_information',
@@ -425,8 +430,8 @@ app.get('/getbaseurl', function(request, response) {
       'X-DocuSign-Authentication' : dsAuthHeader
     }
   };
-  console.log(options);
 
+  // Note HTTPS request here
   var req = https.request(options, function(res)
     {
       var output = '';
@@ -437,8 +442,8 @@ app.get('/getbaseurl', function(request, response) {
       });
 
       res.on('end', function() {
-        console.log(output);
         var obj = JSON.parse(output);
+        baseUrl = obj.loginAccounts[0].baseUrl
         return response.status(200).json(obj);
       });
     });
@@ -448,6 +453,145 @@ app.get('/getbaseurl', function(request, response) {
       response.send('error: ' + err.message);
     });
 
+    req.end();
+});
+
+app.post('/getenvelopeid', function(request, response) {
+  var url = "/restapi/v2/accounts/1848997/envelopes";
+  // Prepare the request body
+  var body = JSON.stringify({
+      "emailSubject": "DocuSign API call - Embedded Sending Example",
+      "templateId": config.docusign.saleTemplateId,
+      "templateRoles": [{
+        "email": request.query.email,
+        "name": request.query.recipientName,
+        "roleName": "Customer",
+        "clientUserId": "1001",	// user-configurable
+        "tabs" : {
+          "textTabs" : [{
+               tabLabel : "customerSalesNumber",
+               value : "123456789"
+              },
+              {
+                  tabLabel : "customerFName",
+                  value : "Klever"
+              },
+              {
+                  tabLabel : "customerLName",
+                  value : "Loza Vega"
+              },
+              {
+                  tabLabel : "customerAddress",
+                  value : "70 The Pond Road"
+              },
+              {
+                  tabLabel : "customerCity",
+                  value : 'Toronto'
+              },
+              {
+                  tabLabel : "customerPostalCode",
+                  value : 'M6M1J4'
+              }
+          ]
+        }
+      }],
+      "status": "sent"
+    });
+  // Prepare DocuSign header
+  var dsAuthHeader = JSON.stringify({
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
+	});
+
+  var options = {
+    hostname: 'demo.docusign.net',
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+console.log(options);
+  // Note HTTPS request here
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        console.log(obj);
+        return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+      console.log(err);
+      response.send('error: ' + err.message);
+    });
+
+    req.write(body);
+    req.end();
+});
+
+app.post('/getembeddedurl', function(request, response) {
+  var url = "/restapi/v2/accounts/1848997/envelopes/" + request.query.envelopeId + "/views/recipient";
+  // Prepare the request body
+    var body = JSON.stringify({
+				"returnUrl": "http://www.docusign.com/devcenter",
+				"authenticationMethod": "email",
+				"email": request.query.email,
+				"userName": request.query.recipientName,
+				"clientUserId": "1001",	// must match clientUserId in step 2!
+			});
+  // Prepare DocuSign header
+  var dsAuthHeader = JSON.stringify({
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
+	});
+
+  var options = {
+    hostname: 'demo.docusign.net',
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+console.log(options);
+  // Note HTTPS request here
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        console.log(obj);
+        return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+      console.log(err);
+      response.send('error: ' + err.message);
+    });
+
+    req.write(body);
     req.end();
 });
 
