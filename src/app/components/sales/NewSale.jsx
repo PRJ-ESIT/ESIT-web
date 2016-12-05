@@ -9,19 +9,19 @@ import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
-  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
-  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
-  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
-  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
-  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
-  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"AB"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"BC"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"MB"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"NB"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"NL"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"NS"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"ON"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"PE"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"QC"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"SK"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"NT"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"YT"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
 export default class NewSale extends React.Component {
@@ -60,6 +60,11 @@ export default class NewSale extends React.Component {
       dateSigned: new Date(),
       minDate: minDate,
       maxDate: maxDate,
+
+      // DocuSign
+      baseUrl: '',
+      envelopeId: '',
+      embeddedUrl: '',
 
       // Unknown data
       homeownerSignature: '',
@@ -173,10 +178,79 @@ export default class NewSale extends React.Component {
       httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
       httpRequest.send(null);
     }
+    // this.getBaseUrl();
   }
 
-  formatDate(date){
-    return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+  // getBaseUrl() {
+  //   var httpRequest = new XMLHttpRequest();
+  //   let _this = this;
+  //   httpRequest.onreadystatechange = function() {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       let url = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
+  //       console.log(url);
+  //       _this.setState({
+  //         baseUrl: url ? url : '',
+  //       });
+  //     }
+  //   };
+  //
+  //   httpRequest.open('GET', "http://" + IP + "/getbaseurl", true);
+  //   httpRequest.send(null);
+  // }
+
+  // getEnvelopeId() {
+  //   var httpRequest = new XMLHttpRequest();
+  //   let _this = this;
+  //   httpRequest.onreadystatechange = function() {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       console.log(httpRequest.responseText);
+  //       let id = JSON.parse(httpRequest.responseText).envelopeId;
+  //       console.log(id);
+  //       _this.setState({
+  //         envelopeId: id ? id : '',
+  //       });
+  //     }
+  //   };
+  //
+  //   // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
+  //   //   + "&recipientName=" + this.fname + " " + this.lname, true);
+  //   httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=klever@gmail.com&recipientName=Klever Loza Vega", true);
+  //   httpRequest.send(null);
+  // }
+
+  getEmbeddedUrl() {
+    var date = new Date(this.state.installationDate);
+    date = date.toLocaleDateString();
+    var time = new Date(this.state.installationTime);
+    time = time.toLocaleTimeString();
+
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname, //customer table
+      address: this.state.address, //address table
+      unitNum: this.state.unitNum,//address table
+      city: this.state.city,//address table
+      province: this.state.province,//address table
+      postalCode: this.state.postalCode.replace(/\s/g,''),//address table
+      enbridge: this.state.enbridge, //customer table
+      email: this.state.email, //customer table
+      homePhone: this.state.homePhone, //customer table
+      cellPhone: this.state.cellPhone, //customer table
+      dateSigned: this.state.dateSigned,
+      //program type
+      programType: this.state.programType, //sale table
+
+      //Installation & Delivery
+      installationDate: date, //sale table
+      installationTime: time, //sale table
+      notes: this.state.notes, //sale table
+      //the rest
+      salesRepId: this.state.salesRepId,
+      salesRep: this.state.salesRep
+    };
+    // console.log(data);
+    this.props.getEmbeddedUrl(data);
+
   }
 
   handleTabChange(value) {

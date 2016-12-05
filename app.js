@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var http = require("http");
+var https = require("https");
 //we need this to build our POST request
 var querystring = require('querystring');
 //added body-parser to grab information from the POST request
@@ -11,6 +12,9 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //end of body-parser
+
+// DocuSign base url
+var baseUrl;
 
 //webpack hot load
 var webpack = require('webpack');
@@ -633,6 +637,283 @@ app.get('/getoneinstallation', function(request, response) {
         //response.send('error: ' + err.message);
     });
 
+    req.end();
+});
+
+// app.get('/getbaseurl', function(request, response) {
+//   // Prepare DocuSign header
+//   var dsAuthHeader = JSON.stringify({
+// 		'Username': config.docusign.email,
+// 		'Password': config.docusign.password,
+// 		'IntegratorKey': config.docusign.integratorKey
+// 	});
+//
+//   var options = {
+//     hostname: 'demo.docusign.net',
+//     path: '/restapi/v2/login_information',
+//     method: 'GET',
+//     body: '',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'X-DocuSign-Authentication' : dsAuthHeader
+//     }
+//   };
+//
+//   // Note HTTPS request here
+//   var req = https.request(options, function(res)
+//     {
+//       var output = '';
+//       res.setEncoding('utf8');
+//
+//       res.on('data', function (chunk) {
+//         output += chunk;
+//       });
+//
+//       res.on('end', function() {
+//         var obj = JSON.parse(output);
+//         baseUrl = obj.loginAccounts[0].baseUrl
+//         return response.status(200).json(obj);
+//       });
+//     });
+//
+//     req.on('error', function(err) {
+//       console.log(err);
+//       response.send('error: ' + err.message);
+//     });
+//
+//     req.end();
+// });
+
+app.post('/getembeddedurl', function(request, response) {
+  var url = config.docusign.baseUrl + "/envelopes";
+  var recipientName = request.body.fname + ' ' +  request.body.lname;
+  console.log(request.body.email);
+  // Prepare the request body
+  var body = JSON.stringify({
+      "emailSubject": "DocuSign API call - Embedded Sending Example",
+      "templateId": config.docusign.saleTemplateId,
+      "templateRoles": [{
+        "email": request.body.email,
+        "name": recipientName,
+        "roleName": "Customer",
+        "clientUserId": "1001",	// user-configurable
+        "tabs" : {
+          "textTabs" : [{
+               tabLabel : "customerSalesNumber",
+               value : "123456789"
+              },
+              {
+                tabLabel : "customerFName",
+                value : request.body.fname
+              },
+              {
+                tabLabel : "customerLName",
+                value : request.body.lname
+              },
+              {
+                tabLabel : "customerAddress",
+                value : request.body.address
+              },
+              {
+                tabLabel : "customerCity",
+                value : request.body.city
+              },
+              {
+                tabLabel : "customerPostalCode",
+                value : request.body.postalCode
+              },
+              {
+                tabLabel : "customerHomePhone",
+                value : request.body.homePhone
+              },
+              {
+                tabLabel : "customerCellPhone",
+                value : request.body.cellPhone
+              },
+              {
+                tabLabel : "customerEnbridgeNumber",
+                value : request.body.enbridge
+              },
+              {
+                tabLabel : "customerInstallationDate",
+                value : request.body.installationDate
+              },
+              {
+                tabLabel : "customerInstallationTime",
+                value : request.body.installationTime
+              },
+              {
+                tabLabel : "customerNotes",
+                value : request.body.notes
+              },
+              {
+                tabLabel : "customerSalesRepId",
+                value : request.body.salesRepId
+              },
+              {
+                tabLabel : "customerSalesRepName",
+                value: request.body.saleRep
+              },
+              {
+                tabLabel : "customerProvince",
+                value : request.body.province
+              },
+              {
+                tabLabel : "customerProgram",
+                value : request.body.programType
+              }
+          ]
+        }
+      }],
+      "status": "sent"
+    });
+  // Prepare DocuSign header
+  var dsAuthHeader = JSON.stringify({
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
+	});
+
+  var options = {
+    hostname: config.docusign.hostname,
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+  console.log(options);
+  // Note HTTPS request here
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        var envelopeId = obj.envelopeId;
+        console.log(obj);
+        console.log(envelopeId);
+
+        // Get embedded URL
+        var innerUrl = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
+
+        // Prepare the request body
+        var innerBody = JSON.stringify({
+    				"returnUrl": "http://www.docusign.com/devcenter",
+    				"authenticationMethod": "email",
+    				"email": request.body.email,
+    				"userName": recipientName,
+    				"clientUserId": "1001",	// must match clientUserId in step 2!
+    			});
+
+        var innerOptions = {
+          hostname: config.docusign.hostname,
+          path: innerUrl,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(innerBody),
+            'X-DocuSign-Authentication' : dsAuthHeader
+          }
+        };
+        console.log(innerOptions);
+
+        // Inner request
+        var innerReq = https.request(innerOptions, function(innerRes)
+          {
+            var innerOutput = '';
+            innerRes.setEncoding('utf8');
+
+            innerRes.on('data', function (chunk) {
+              innerOutput += chunk;
+            });
+
+            innerRes.on('end', function() {
+              var innerObj = JSON.parse(innerOutput);
+              console.log(innerObj);
+              return response.status(200).json(innerObj);
+            });
+          });
+
+          innerReq.on('error', function(err) {
+            console.log(err);
+            response.send('error: ' + err.message);
+          });
+
+          innerReq.write(innerBody);
+          innerReq.end();
+
+        // return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+      console.log(err);
+      response.send('error: ' + err.message);
+    });
+
+    req.write(body);
+    req.end();
+});
+
+app.post('/getembeddedurl', function(request, response) {
+  var url = "/restapi/v2/accounts/1848997/envelopes/" + request.query.envelopeId + "/views/recipient";
+  // Prepare the request body
+    var body = JSON.stringify({
+				"returnUrl": "http://www.docusign.com/devcenter",
+				"authenticationMethod": "email",
+				"email": request.query.email,
+				"userName": request.query.recipientName,
+				"clientUserId": "1001",	// must match clientUserId in step 2!
+			});
+  // Prepare DocuSign header
+  var dsAuthHeader = JSON.stringify({
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
+	});
+
+  var options = {
+    hostname: 'demo.docusign.net',
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+console.log(options);
+  // Note HTTPS request here
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        console.log(obj);
+        return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+      console.log(err);
+      response.send('error: ' + err.message);
+    });
+
+    req.write(body);
     req.end();
 });
 
