@@ -135,6 +135,79 @@ app.get('/allsales', function(request, response) {
     req.end();
 });
 
+app.get('/scheduleinstallationinfo', function(request, response) {
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/SaleService/getAllCompletedSales/',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var object = undefined;
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        //saving all the completed sales from the current request
+        var sales = JSON.parse(output).sales;
+
+        //fetching all the installers from crud
+        var options = {
+          host: config.crudIP,
+          port: 8080,
+          path: '/crud/EmployeeService/getAllInstallers/',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
+
+        var reqs = http.request(options, function(resp)
+          {
+            var output = '';
+            resp.setEncoding('utf8');
+
+            resp.on('data', function (chunk) {
+              output += chunk;
+            });
+
+            resp.on('end', function() {
+                var installers = JSON.parse(output).installers;
+
+                var entry = {
+                  data: {
+                    'sales': sales,
+                    'installers': installers
+                  }
+                };
+                return response.status(200).json(entry);
+            });
+          });
+
+          reqs.on('error', function(err) {
+              //response.send('error: ' + err.message);
+          });
+
+          reqs.end();
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
 
 app.get('/allinstallations', function(request, response) {
 
@@ -357,7 +430,105 @@ app.post('/newsale', function(request, response) {
     });
 
     res.on('end', function() {
+      //#TODO remove tempObj and forward the SaleNumber from crud instead
+      var tempObj = {'a': 'b'};
+      return response.status(200).json(tempObj);
+    });
 
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
+});
+
+//POST http://localhost:3000/newinstallation
+app.post('/newinstallation', function(request, response) {
+  var jsonObj = querystring.stringify({
+    //homeowner's info
+    saleId: request.body.salesNumber,
+    installerId: request.body.installer,
+    installationDateTime: request.body.installationDateTime
+  });
+  console.log(jsonObj);
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'POST',
+    path: '/crud/InstallationService/createNewInstallation',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      //#TODO remove tempObj and forward the SaleNumber from crud instead
+      var tempObj = {'a': 'b'};
+      return response.status(200).json(tempObj);
+    });
+
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
+});
+
+//POST http://localhost:3000/newemployee
+app.post('/newemployee', function(request, response) {
+  var jsonObj = querystring.stringify({
+    //homeowner's info
+    fname: request.body.fname,
+    lname: request.body.lname,
+    street: request.body.address,
+    unitNum: request.body.unitNum,
+    city: request.body.city,
+    province: request.body.province,
+    postalCode: request.body.postalCode,
+    email: request.body.email,
+    homePhone: request.body.homePhone,
+    cellPhone: request.body.cellPhone,
+    password: request.body.password,
+    hireDate: request.body.hireDate,
+    isActive: request.body.isActive,
+    employeeType: request.body.employeeType
+  });
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'POST',
+    path: '/crud/EmployeeService/createNewEmployee',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
       //#TODO remove tempObj and forward the SaleNumber from crud instead
       var tempObj = {'a': 'b'};
       return response.status(200).json(tempObj);
