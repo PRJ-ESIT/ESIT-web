@@ -150,65 +150,73 @@ export default class NewSale extends React.Component {
         + this.props.id, true);
       httpRequest.send(null);
     }
-    this.getBaseUrl();
+    // this.getBaseUrl();
   }
 
-  getBaseUrl() {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let url = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
-        console.log(url);
-        _this.setState({
-          baseUrl: url ? url : '',
-        });
-      }
-    };
+  // getBaseUrl() {
+  //   var httpRequest = new XMLHttpRequest();
+  //   let _this = this;
+  //   httpRequest.onreadystatechange = function() {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       let url = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
+  //       console.log(url);
+  //       _this.setState({
+  //         baseUrl: url ? url : '',
+  //       });
+  //     }
+  //   };
+  //
+  //   httpRequest.open('GET', "http://" + IP + "/getbaseurl", true);
+  //   httpRequest.send(null);
+  // }
 
-    httpRequest.open('GET', "http://" + IP + "/getbaseurl", true);
-    httpRequest.send(null);
-  }
-
-  getEnvelopeId() {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log(httpRequest.responseText);
-        let id = JSON.parse(httpRequest.responseText).envelopeId;
-        console.log(id);
-        _this.setState({
-          envelopeId: id ? id : '',
-        });
-      }
-    };
-
-    // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
-    //   + "&recipientName=" + this.fname + " " + this.lname, true);
-    httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=klever@gmail.com&recipientName=Klever Loza Vega", true);
-    httpRequest.send(null);
-  }
+  // getEnvelopeId() {
+  //   var httpRequest = new XMLHttpRequest();
+  //   let _this = this;
+  //   httpRequest.onreadystatechange = function() {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       console.log(httpRequest.responseText);
+  //       let id = JSON.parse(httpRequest.responseText).envelopeId;
+  //       console.log(id);
+  //       _this.setState({
+  //         envelopeId: id ? id : '',
+  //       });
+  //     }
+  //   };
+  //
+  //   // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
+  //   //   + "&recipientName=" + this.fname + " " + this.lname, true);
+  //   httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=klever@gmail.com&recipientName=Klever Loza Vega", true);
+  //   httpRequest.send(null);
+  // }
 
   getEmbeddedUrl() {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log(httpRequest.responseText);
-        let url = JSON.parse(httpRequest.responseText).url;
-        console.log(url);
-        _this.setState({
-          embeddedUrl: url ? url : '',
-        });
-      }
-    };
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname, //customer table
+      address: this.state.address, //address table
+      unitNum: this.state.unitNum,//address table
+      city: this.state.city,//address table
+      province: this.state.province,//address table
+      postalCode: this.state.postalCode.replace(/\s/g,''),//address table
+      enbridge: this.state.enbridge, //customer table
+      email: this.state.email, //customer table
+      homePhone: this.state.homePhone, //customer table
+      cellPhone: this.state.cellPhone, //customer table
+      dateSigned: this.state.dateSigned,
+      //program type
+      programType: this.state.programType, //sale table
 
-    // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
-    //   + "&recipientName=" + this.fname + " " + this.lname, true);
-    httpRequest.open('POST', "http://" + IP
-      + "/getembeddedurl?envelopeId=b0023201-157f-41c0-abf3-8f6fc20247d9&email=klever@gmail.com&recipientName=Klever Loza Vega", true);
-    httpRequest.send(null);
+      //Installation & Delivery
+      installationDate: this.state.installationDate, //sale table
+      installationTime: this.state.installationTime, //sale table
+      notes: this.state.notes, //sale table
+      //the rest
+      salesRepId: this.state.salesRepId
+    };
+    // console.log(data);
+    this.props.getEmbeddedUrl(data);
+    
   }
 
   handleTabChange(value) {

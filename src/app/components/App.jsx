@@ -17,6 +17,8 @@ import AllEmployees from './management/AllEmployees.jsx';
 import AllCustomers from './management/AllCustomers.jsx';
 import Documents from './management/Documents.jsx';
 
+import { IP } from '../../../config/config.js';
+
 const defaultProps = {
   dashboard: Dashboard,
   newSale: NewSale,
@@ -42,6 +44,7 @@ export default class App extends React.Component {
 
       status: "",
       formId: undefined,
+      docuSignUrl: undefined,
     }
 
     this.handleLogin = this.handleLogin.bind(this);
@@ -49,6 +52,7 @@ export default class App extends React.Component {
     this.menuClickHandler = this.menuClickHandler.bind(this);
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
     this.editClickHandler = this.editClickHandler.bind(this);
+    this.getEmbeddedUrl = this.getEmbeddedUrl.bind(this);
   }
 
   getChildContext() {
@@ -115,7 +119,36 @@ export default class App extends React.Component {
       id: id,
     });
   }
-  render() {
+
+  getEmbeddedUrl(data) {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(httpRequest.responseText);
+        let url = JSON.parse(httpRequest.responseText).url;
+        console.log(url);
+
+        _this.setState({
+          docuSignURL: url,
+        });
+      }
+    };
+
+    httpRequest.open('POST', "http://" + IP + "/getembeddedurl", true);
+    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    httpRequest.send(JSON.stringify(data));
+  }
+  getIframe() {
+    return (
+      <iframe id='docusignIframe' src={this.state.docuSignURL} frameBorder="0"
+        style={{ overflow: "hidden", height: "100%", width: "100%", position: "absolute" }}
+        height="100%" width="100%">
+      </iframe>
+    );
+  }
+
+  getApp() {
     var leftMenuStyles = this.state.leftMenuOpen ? {'' : ''} : { 'display': 'none' };
     var appBarStyles = {'backgroundColor': '#2F3C7D'};
     let CurrentContent = this.state.currentContent;
@@ -132,7 +165,7 @@ export default class App extends React.Component {
             <LeftMenu clickHandler={this.menuClickHandler}/>
           </div>
           <div className="mainContent">
-            <CurrentContent editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id}/>
+            <CurrentContent getEmbeddedUrl={this.getEmbeddedUrl} editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id}/>
           </div>
         </div>
         { this.state.loginDialog ?
@@ -143,6 +176,15 @@ export default class App extends React.Component {
         : null }
       </div>
     );
+  }
+
+  render() {
+    if (this.state.docuSignURL) {
+      return this.getIframe();
+    }
+    else {
+      return this.getApp();
+    }
   }
 }
 
