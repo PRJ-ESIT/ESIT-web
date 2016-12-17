@@ -1,4 +1,10 @@
 node_modules/
 dist/
+
+ios/platforms/ios/build/
+ios/platforms/ios/www/
+ios/platforms/ios/cordova/console.log
+*.xcuserdatad
+ios/.DS_Store
 ios/www/js/bundle.js
 ios/platforms/ios/www/js/

@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  SelectField, MenuItem, DatePicker, RaisedButton,
+  SelectField, MenuItem, DatePicker, RaisedButton, TimePicker,
 } from 'material-ui';
-import { validations } from '../helpers/common.js';
+import { validations, dateHelpers } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
 
 export default class ScheduleInstallation extends React.Component {
@@ -19,17 +19,69 @@ export default class ScheduleInstallation extends React.Component {
       sale: '',
       installer: '',
       installationDate: {},
+      installationTime: {},
 
       // Error messages for each field
       saleErr: '',
       installerErr: '',
       installationDateErr: '',
+      installationTimeErr: '',
 
       // Validation fields
       saleValidated: false,
       installerValidated: false,
       installationDateValidated: false,
-      allValidated: false,
+      installationTimeValidated: false,
+
+      allSales: undefined,
+      allInstallers: undefined,
+    }
+
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allSales = JSON.parse(httpRequest.responseText).data.sales;
+        let allInstallers = JSON.parse(httpRequest.responseText).data.installers;
+        let data = JSON.parse(httpRequest.responseText).data;
+
+        _this.setState({
+          allSales: allSales,
+          allInstallers: allInstallers,
+        });
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/scheduleinstallationinfo", true);
+    httpRequest.send(null);
+  }
+
+  handleRowSelected(selectedRows) {
+    if(selectedRows.length == 1) {
+      this.setState({
+        sale: this.state.allSales[selectedRows[0]],
+        selectedNum: selectedRows[0],
+        installationDate: new Date(this.state.allSales[selectedRows[0]].installationDateTime),
+        installationDateErr: '',
+        installationDateValidated: true,
+        installationTime: new Date(this.state.allSales[selectedRows[0]].installationDateTime),
+        installationTimeErr: '',
+        installationTimeValidated: true,
+        saleValidated: true,
+      });
+    } else {
+      this.setState({
+        sale: undefined,
+        selectedNum: undefined,
+        installationDate: null,
+        installationDateValidated: false,
+        installationTime: null,
+        installationTimeValidated: false,
+        saleValidated: false,
+      });
     }
   }
 
@@ -49,8 +101,12 @@ export default class ScheduleInstallation extends React.Component {
     this.setState(obj);
   }
 
-  validateSale() {
-
+  handleTimeChange(fieldname, event, time) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = time;
+    this.setState(obj);
   }
 
   validateInstaller() {
@@ -84,61 +140,87 @@ export default class ScheduleInstallation extends React.Component {
     }
   }
 
-  validateAllFields() {
-    this.validateInstaller();
-    this.validateInstallationDate();
+  validateInstallationTime() {
+    let installationTime = this.state.installationTime;
+    if (validations.validateInstallationDate(installationTime)) {
+      this.setState({
+        installationTimeErr: '',
+        installationTimeValidated: true,
+      });
+    } else {
+      this.setState({
+        installationTimeErr: 'Must select installation time',
+        installationTimeValidated: false,
+      });
+    }
+  }
 
+  validateAllAndSubmit() {
     if (this.state.saleValidated &&
         this.state.installerValidated &&
         this.state.installationDateValidated) {
-      this.setState({allValidated: true});
+
+    this.createNewInstallation();
+
     } else {
-      this.setState({allValidated: false});
+      this.validateInstaller();
+      this.validateInstallationDate();
+      this.validateInstallationTime();
     }
+  }
+
+  createNewInstallation() {
+    //combining the date and time objects and converting them to MySQL DATETIME format
+    var finalDate = new Date(this.state.installationDate);
+    var hours = this.state.installationTime.getHours();
+    var minutes = this.state.installationTime.getMinutes();
+    finalDate.setHours(hours);
+    finalDate.setMinutes(minutes);
+
+    let data = {
+      salesNumber: this.state.sale.salesNumber,
+      installer: this.state.installer,
+      installationDateTime: dateHelpers.toMysqlFormat(finalDate),
+    };
+    console.log(data);
+    var request = new XMLHttpRequest();
+    request.open('POST', "http://" + IP + '/newinstallation', true);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.onreadystatechange = function() {
+      //#TODO receive Sale number and add it to the state
+    };
+
+    request.send(JSON.stringify(data));
   }
 
   render() {
     return (
       <div>
-        <Table>
+        <Table
+          onRowSelection={this.handleRowSelected.bind(this)}
+          selectable={true}>
           <TableHeader>
             <TableRow>
-              <TableHeaderColumn>ID</TableHeaderColumn>
-              <TableHeaderColumn>Customer</TableHeaderColumn>
+              <TableHeaderColumn>#</TableHeaderColumn>
+              <TableHeaderColumn>Name</TableHeaderColumn>
               <TableHeaderColumn>Address</TableHeaderColumn>
+              <TableHeaderColumn>Product</TableHeaderColumn>
               <TableHeaderColumn>Scheduled Date</TableHeaderColumn>
               <TableHeaderColumn>Scheduled Time</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableRowColumn>1</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>2</TableRowColumn>
-              <TableRowColumn>Randal White</TableRowColumn>
-              <TableRowColumn>Unemployed</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>3</TableRowColumn>
-              <TableRowColumn>Stephanie Sanders</TableRowColumn>
-              <TableRowColumn>Employed</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-            </TableRow>
-            <TableRow>
-              <TableRowColumn>4</TableRowColumn>
-              <TableRowColumn>Steve Brown</TableRowColumn>
-              <TableRowColumn>Employed</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-              <TableRowColumn>John Smith</TableRowColumn>
-            </TableRow>
+          <TableBody deselectOnClickaway={false}>
+            {this.state.allSales? this.state.allSales.map( (row, index) => (
+              <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.address}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.product}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} >{row.installationDateTime}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.installationDateTime}</TableRowColumn>
+              </TableRow>
+              ))
+            : null }
           </TableBody>
         </Table>
 
@@ -151,7 +233,10 @@ export default class ScheduleInstallation extends React.Component {
           errorText={this.state.installerErr}
           errorStyle={{float: "left"}}
         >
-          <MenuItem key={1} value={"Installer 1"} primaryText="Installer Name Here" />
+          {this.state.allInstallers ? this.state.allInstallers.map((installer, index) => (
+            <MenuItem key={index} value={installer.employeeNumber} primaryText={installer.name} />
+          ))
+          : null }
         </SelectField>
         <DatePicker
           floatingLabelText="Scheduled Installation Date"
@@ -165,10 +250,19 @@ export default class ScheduleInstallation extends React.Component {
           errorStyle={{float: "left"}}
         />
         <br />
+        <TimePicker
+          hintText="Installation Time"
+          floatingLabelText="Installation Time"
+          value={this.state.installationTime}
+          onChange={this.handleTimeChange.bind(this, "installationTime")}
+          errorText={this.state.installationTimeErr}
+          errorStyle={{float: "left"}}
+        />
+        <br />
         <RaisedButton label="Cancel" secondary={true} />
         &nbsp;
         &nbsp;
-        <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
+        <RaisedButton label="Schedule" onClick={this.validateAllAndSubmit.bind(this)} />
       </div>
     );
   }

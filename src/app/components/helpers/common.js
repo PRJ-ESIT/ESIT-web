@@ -336,45 +336,59 @@ function validateEmail(email) {
   }
 }
 
-function isTabletPortrait() {
-  // @tablet-portrait media query:
-  return (window.matchMedia('(orientation: portrait)').matches &&
-    window.matchMedia('(max-device-aspect-ratio: 1/1)').matches &&
-    window.matchMedia('(min-device-width: 481px)').matches) ||
-    // @tablet-portrait-with-keyboard media query:
-    (window.matchMedia('(orientation: landscape)').matches &&
-    window.matchMedia('(max-device-aspect-ratio: 1/1)').matches &&
-    window.matchMedia('(min-device-width: 481px)').matches);
-}
+var dateHelpers = {
+  /**
+  * You first need to create a formatting function to pad numbers to two digits…
+  **/
+  twoDigits(d) {
+    if(0 <= d && d < 10) return "0" + d.toString();
+    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+    return d.toString();
+  },
 
-function isTabletLandscape() {
-  // @tablet-landscape media query:
-  return (window.matchMedia('(orientation: landscape)').matches &&
-    window.matchMedia('(min-device-aspect-ratio: 1/1)').matches &&
-    window.matchMedia('(min-device-width: 960px)').matches &&
-    window.matchMedia('(max-device-width: 1366px)').matches);
-}
+  toMysqlFormat(date) {
+    return date.getFullYear() + "-" + this.twoDigits(1 + date.getMonth()) + "-" + this.twoDigits(date.getDate()) + " " + this.twoDigits(date.getHours()) + ":" + this.twoDigits(date.getMinutes()) + ":" + this.twoDigits(date.getSeconds());
+  }
+};
 
-function isDesktopPortrait() {
-  // @desktop-portrait media query:
-  return (window.matchMedia('(orientation: portrait)').matches &&
-    window.matchMedia('(min-device-aspect-ratio: 1/1)').matches);
-}
+var mediaQueries = {
 
-function isDesktopLandscape() {
-  // @desktop-landscape media query:
-  return (window.matchMedia('(orientation: landscape)').matches &&
-    window.matchMedia('(min-device-aspect-ratio: 1/1)').matches &&
-    window.matchMedia('(min-device-width: 1367px)').matches);
-}
+  isTabletPortrait() {
+    // @tablet-portrait media query:
+    return (window.matchMedia('(orientation: portrait)').matches &&
+      window.matchMedia('(max-device-aspect-ratio: 1/1)').matches &&
+      window.matchMedia('(min-device-width: 481px)').matches) ||
+      // @tablet-portrait-with-keyboard media query:
+      (window.matchMedia('(orientation: landscape)').matches &&
+      window.matchMedia('(max-device-aspect-ratio: 1/1)').matches &&
+      window.matchMedia('(min-device-width: 481px)').matches);
+  },
 
+  isTabletLandscape() {
+    // @tablet-landscape media query:
+    return (window.matchMedia('(orientation: landscape)').matches &&
+      window.matchMedia('(min-device-aspect-ratio: 1/1)').matches &&
+      window.matchMedia('(min-device-width: 960px)').matches &&
+      window.matchMedia('(max-device-width: 1366px)').matches);
+  },
+
+  isDesktopPortrait() {
+    // @desktop-portrait media query:
+    return (window.matchMedia('(orientation: portrait)').matches &&
+      window.matchMedia('(min-device-aspect-ratio: 1/1)').matches);
+  },
+
+  isDesktopLandscape() {
+    // @desktop-landscape media query:
+    return (window.matchMedia('(orientation: landscape)').matches &&
+      window.matchMedia('(min-device-aspect-ratio: 1/1)').matches &&
+      window.matchMedia('(min-device-width: 1367px)').matches);
+  }
+};
 
 module.exports = {
-  isTabletPortrait,
-  isTabletLandscape,
-  isDesktopPortrait,
-  isDesktopLandscape,
-
+  dateHelpers,
+  mediaQueries,
   validations,
   //TODO remove next 2 functions
   validateLogin,

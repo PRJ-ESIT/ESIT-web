@@ -540,7 +540,11 @@ export default class NewSale extends React.Component {
         this.state.installationTimeValidated &&
         this.state.salesRepValidated &&
         this.state.salesRepIdValidated) {
-      this.setState({allValidated: true});
+
+      //everything was validated, send an httpRequest to create a new sale
+      this.createNewSale();
+      //TODO handle the case when users click 'Submit' multiple times
+
     } else {
       this.validateAddress();
       this.validateFName();
@@ -558,12 +562,6 @@ export default class NewSale extends React.Component {
       this.validateInstallationTime();
       this.validateSalesRep();
       this.validateSalesRepId();
-    }
-  }
-
-  componentDidUpdate() {
-    if(this.state.allValidated) {
-      this.createNewSale();
     }
   }
 
@@ -902,12 +900,6 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} />
-              : null }
               <br />
             </div>
           </div>
@@ -1123,12 +1115,6 @@ export default class NewSale extends React.Component {
               &nbsp;
               <RaisedButton label="Save" onClick={this.validateRentalAgreement.bind(this)} />
               // Change validateRentalAgreement here to validatePAD; make new function
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} />
-              : null }
             </div>
           </div>
         </div>
