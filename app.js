@@ -182,7 +182,7 @@ app.get('/scheduleinstallationinfo', function(request, response) {
             });
 
             resp.on('end', function() {
-                var installers = JSON.parse(output).installers;
+                var installers = JSON.parse(output).employees;
 
                 var entry = {
                   data: {

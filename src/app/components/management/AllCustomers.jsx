@@ -118,9 +118,9 @@ export default class AllCustomers extends React.Component {
             <TableRow className={'trow'}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Email">Email</TableHeaderColumn>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Phone Number</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Home Phone</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Cell Phone</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Enbridge Number">Enbridge Number</TableHeaderColumn>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Last Sale">Last Sale</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -133,9 +133,9 @@ export default class AllCustomers extends React.Component {
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.email}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.phoneNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.homePhone}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.cellPhone}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.enbridgeNumber}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.date}</TableRowColumn>
               </TableRow>
               ))
             : null }
