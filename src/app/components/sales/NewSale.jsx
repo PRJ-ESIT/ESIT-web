@@ -847,7 +847,11 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
+              {this.props.status == "edit" ?
+                <RaisedButton label="Update" onClick={this.validateRentalAgreement.bind(this)} />
+              :
+                <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
+              }
               <br />
             </div>
           </div>
