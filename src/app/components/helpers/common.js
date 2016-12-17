@@ -199,6 +199,14 @@ var validations = {
     }
   },
 
+  validateSalesRep(salesRep) {
+    if(salesRep != '') {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   validateSalesRepId(salesRepId) {
     if(this.isNumeric(salesRepId)) {
       return true;

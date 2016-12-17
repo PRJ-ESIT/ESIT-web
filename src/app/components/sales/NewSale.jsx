@@ -54,6 +54,7 @@ export default class NewSale extends React.Component {
       installationDate: {},
       installationTime: {},
       notes: '',
+      salesRep: '',
       salesRepId: '',
       applicationNumber: '',
       programType: '',
@@ -80,7 +81,7 @@ export default class NewSale extends React.Component {
       emailErr: '',
       homePhoneErr: '',
       cellPhoneErr: '',
-      salesRepIdErr: '',
+      salesRepErr: '',
       applicationNumberErr: '',
       programTypeErr: '',
       installationDateErr: '',
@@ -98,12 +99,14 @@ export default class NewSale extends React.Component {
       emailValidated: false,
       homePhoneValidated: false,
       cellPhoneValidated: false,
-      salesRepIdValidated: false,
+      salesRepValidated: false,
       applicationNumberValidated: false,
       programTypeValidated: false,
       installationDateValidated: false,
       installationTimeValidated: false,
       allValidated: false,
+
+      allSalesReps: undefined,
     };
     this.handleTabChange = this.handleTabChange.bind(this);
   }
@@ -119,30 +122,57 @@ export default class NewSale extends React.Component {
           var tempDateTime = new Date(sale.installationDateTime);
           var minDate = new Date(2000, 0, 1);
 
-          _this.setState({
-            fname: sale.firstName ? sale.firstName : '',
-            lname: sale.lastName ? sale.lastName : '',
-            address: sale.address ? sale.address : '',
-            unitNum: sale.unit ? sale.unit : '',
-            city: sale.city ? sale.city : '',
-            province: sale.province ? sale.province : '',
-            postalCode: sale.postalCode ? sale.postalCode : '',
-            enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
-            email: sale.email ? sale.email : '',
-            programType: sale.programId ? sale.programId : '',
-            homePhone: sale.homePhone ? sale.homePhone : '',
-            cellPhone: sale.cellPhone ? sale.cellPhone : '',
-            installationDate: tempDateTime ? tempDateTime : '',
-            installationTime: tempDateTime ? tempDateTime : '',
-            notes: sale.notes ? sale.notes : '',
-            salesRepId: sale.salesRepId ? sale.salesRepId : '',
-            minDate: minDate,
-          });
+          var httpReq = new XMLHttpRequest();
+          httpReq.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              let allSalesReps = JSON.parse(httpReq.responseText).employees;
+
+              _this.setState({
+                fname: sale.firstName ? sale.firstName : '',
+                lname: sale.lastName ? sale.lastName : '',
+                address: sale.address ? sale.address : '',
+                unitNum: sale.unit ? sale.unit : '',
+                city: sale.city ? sale.city : '',
+                province: sale.province ? sale.province : '',
+                postalCode: sale.postalCode ? sale.postalCode : '',
+                enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
+                email: sale.email ? sale.email : '',
+                programType: sale.programId ? sale.programId : '',
+                homePhone: sale.homePhone ? sale.homePhone : '',
+                cellPhone: sale.cellPhone ? sale.cellPhone : '',
+                installationDate: tempDateTime ? tempDateTime : '',
+                installationTime: tempDateTime ? tempDateTime : '',
+                notes: sale.notes ? sale.notes : '',
+                salesRepId: sale.salesRepId ? sale.salesRepId : '',
+                salesRep: sale.salesRep ? sale.salesRep : '',
+                minDate: minDate,
+                allSalesReps: allSalesReps,
+              });
+            }
+          };
+
+          httpReq.open('GET', "http://" + IP + "/allemployees", true);
+          httpReq.send(null);
         }
       };
 
       httpRequest.open('GET', "http://" + IP + "/existingsale?id="
         + this.props.id, true);
+      httpRequest.send(null);
+    } else {
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let allSalesReps = JSON.parse(httpRequest.responseText).employees;
+
+          _this.setState({
+            allSalesReps: allSalesReps,
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/allemployees", true);
       httpRequest.send(null);
     }
   }
@@ -445,6 +475,22 @@ export default class NewSale extends React.Component {
     }
   }
 
+  validateSalesRep() {
+    let salesRep = this.state.salesRep;
+    if (validations.validateSalesRep(salesRep)) {
+      this.setState({
+        salesRepErr: '',
+        salesRep: salesRep,
+        salesRepValidated: true,
+      });
+    } else {
+      this.setState({
+        salesRepErr: 'Must select a salesperson',
+        salesRepValidated: false,
+      });
+    }
+  }
+
   validateSalesRepId() {
     let salesRepId = this.state.salesRepId.trim();
     if(validations.validateSalesRepId(salesRepId)) {
@@ -492,6 +538,7 @@ export default class NewSale extends React.Component {
         this.state.programTypeValidated &&
         this.state.installationDateValidated &&
         this.state.installationTimeValidated &&
+        this.state.salesRepValidated &&
         this.state.salesRepIdValidated) {
       this.setState({allValidated: true});
     } else {
@@ -509,6 +556,7 @@ export default class NewSale extends React.Component {
       this.validateProgramType();
       this.validateInstallationDate();
       this.validateInstallationTime();
+      this.validateSalesRep();
       this.validateSalesRepId();
     }
   }
@@ -831,17 +879,20 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <TextField
-                floatingLabelText="Sales Rep ID"
-                hintText="1234567"
-                type="number"
-                min="1"
-                value={this.state.salesRepId}
-                onChange={this.handleTextChange.bind(this, "salesRepId")}
-                onBlur={this.validateSalesRepId.bind(this)}
-                errorText={this.state.salesRepIdErr}
+              <SelectField
+                value={this.state.salesRep}
+                onChange={this.handleSelectChange.bind(this, "salesRep")}
+                floatingLabelText="Sales Representative"
+                floatingLabelFixed={false}
+                hintText="Select a Sales Representative"
+                errorText={this.state.salesRepErr}
                 errorStyle={{float: "left"}}
-              />
+              >
+                {this.state.allSalesReps ? this.state.allSalesReps.map((salesRep, index) => (
+                  <MenuItem key={index} value={salesRep.employeeNumber} primaryText={salesRep.name} />
+                ))
+                : null }
+              </SelectField>
               <br />
               <br />
               <Divider />
