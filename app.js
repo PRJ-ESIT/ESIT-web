@@ -165,7 +165,7 @@ app.get('/scheduleinstallationinfo', function(request, response) {
         var options = {
           host: config.crudIP,
           port: 8080,
-          path: '/crud/EmployeeService/getAllInstallers/',
+          path: '/crud/EmployeeService/getEmployeesByRole/installer',
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -287,6 +287,41 @@ app.get('/allemployees', function(request, response) {
     host: config.crudIP,
     port: 8080,
     path: '/crud/EmployeeService/getAllEmployees/',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var object = undefined;
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+          var obj = JSON.parse(output);
+          return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
+
+app.get('/allemployeesbyrole', function(request, response) {
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/EmployeeService/getEmployeesByRole/' + request.query.role,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
