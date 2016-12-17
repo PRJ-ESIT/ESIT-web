@@ -151,7 +151,7 @@ export default class NewSale extends React.Component {
             }
           };
 
-          httpReq.open('GET', "http://" + IP + "/allemployees", true);
+          httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
           httpReq.send(null);
         }
       };
@@ -172,7 +172,7 @@ export default class NewSale extends React.Component {
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/allemployees", true);
+      httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
       httpRequest.send(null);
     }
   }
