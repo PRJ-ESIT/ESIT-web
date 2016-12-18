@@ -437,8 +437,7 @@ app.post('/newsale', function(request, response) {
     //program type
     programType: request.body.programType,
     //Installation & Delivery
-    installationDate: request.body.installationDate,
-    installationTime: request.body.installationTime,
+    installationDateTime: request.body.installationDateTime,
     notes: request.body.notes,
 
     //the rest
