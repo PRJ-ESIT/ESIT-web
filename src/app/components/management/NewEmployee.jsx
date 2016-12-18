@@ -89,6 +89,11 @@ export default class NewEmployee extends React.Component {
             email: employee.email ? employee.email : '',
             homePhone: employee.homePhone ? employee.homePhone : '',
             cellPhone: employee.cellPhone ? employee.cellPhone : '',
+            address: employee.address ? employee.address : '',
+            unitNum: employee.unit ? employee.unit : '',
+            city: employee.city ? employee.city : '',
+            province: employee.province ? employee.province : '',
+            postalCode: employee.postalCode ? employee.postalCode : '',
           });
         }
       };
