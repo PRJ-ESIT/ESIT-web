@@ -23,15 +23,13 @@ export default class AllCustomers extends React.Component {
       multiSelectable: false,
       enableSelectAll: false,
       deselectOnClickaway: true,
-      showCheckboxes: true,
+      showCheckboxes: false,
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
       //end of table state variables
 
       //this variable keeps the state of a current selected row
-      currentSelected: false,
       selectedNum: -1,
-
       //an array to keep the data for the AllCustomers table
       allCustomers: undefined,
     }
@@ -59,17 +57,14 @@ export default class AllCustomers extends React.Component {
     this.setState({dropdownValue: value});
   }
 
+
   handleSelection(selectedRows) {
-    console.log(selectedRows);
-    console.log(this.state);
     if(selectedRows.length == 1) {
       this.setState({
-        currentSelected: true,
         selectedNum: selectedRows[0],
       });
     } else {
       this.setState({
-        currentSelected: false,
         selectedNum: -1,
       });
     }
@@ -93,14 +88,6 @@ export default class AllCustomers extends React.Component {
               <MenuItem value={3} primaryText="Show 50" />
               <MenuItem value={4} primaryText="Show 100" />
             </DropDownMenu>
-            {this.state.currentSelected ?
-              <ToolbarGroup>
-                <ToolbarSeparator />
-                <RaisedButton label="Edit" primary={true} />
-                <RaisedButton label="Details" primary={true} />
-                <RaisedButton label="Delete" primary={true} />
-              </ToolbarGroup>
-            : null }
           </ToolbarGroup>
         </Toolbar>
         <Table

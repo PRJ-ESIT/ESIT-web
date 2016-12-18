@@ -2,6 +2,7 @@ import React from 'react';
 import { Toolbar, ToolbarTitle, TextField, MenuItem, RaisedButton, SelectField } from 'material-ui';
 import { validations } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
+import { dateHelpers } from '../helpers/common.js';
 
 // Provinces for SelectField
 const provinces = [
@@ -378,6 +379,8 @@ export default class NewEmployee extends React.Component {
   }
 
   createNewEmployee() {
+    var date = new Date();
+    date = date.getFullYear() + "-" + dateHelpers.twoDigits(1 + date.getMonth()) + "-" + dateHelpers.twoDigits(date.getDate());
     let data = {
       fname: this.state.fname,
       lname: this.state.lname,
@@ -390,11 +393,11 @@ export default class NewEmployee extends React.Component {
       homePhone: this.state.homePhone,
       cellPhone: this.state.cellPhone,
       password: this.state.password,
-      hireDate: new Date(),
+      hireDate: date,
       isActive: true,
       employeeType: this.state.employeeType,
     };
-    console.log(data);
+
     var request = new XMLHttpRequest();
     request.open('POST', "http://" + IP + '/newemployee', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -576,6 +579,7 @@ export default class NewEmployee extends React.Component {
                 style={{float: 'left'}}
                 label="Cancel"
                 secondary={true}
+                onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
               />
               <RaisedButton
                 onClick={this.validateAllFields.bind(this)}
