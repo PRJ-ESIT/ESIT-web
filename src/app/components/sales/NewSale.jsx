@@ -592,7 +592,9 @@ export default class NewSale extends React.Component {
     request.open('POST', "http://" + IP + '/newsale', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
-      //#TODO receive Sale number and add it to the state
+      if (this.readyState == 4 && this.status == 201) {
+        let saleObject = JSON.parse(request.responseText).sale;
+      }
     };
 
     request.send(JSON.stringify(data));
