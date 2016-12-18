@@ -104,7 +104,6 @@ export default class NewSale extends React.Component {
       programTypeValidated: false,
       installationDateValidated: false,
       installationTimeValidated: false,
-      allValidated: false,
 
       allSalesReps: undefined,
     };
@@ -546,9 +545,9 @@ export default class NewSale extends React.Component {
       //TODO handle the case when users click 'Submit' multiple times
 
     } else {
-      this.validateAddress();
       this.validateFName();
       this.validateLName();
+      this.validateAddress();
       this.validateUnit();
       this.validateCity();
       this.validateProvince();
@@ -581,9 +580,9 @@ export default class NewSale extends React.Component {
       province: this.state.province,//address table
       postalCode: this.state.postalCode.replace(/\s/g,''),//address table
       enbridge: this.state.enbridge, //customer table
-      email: this.state.email, //customer table
       homePhone: this.state.homePhone, //customer table
       cellPhone: this.state.cellPhone, //customer table
+      email: this.state.email, //customer table
       dateSigned: this.state.dateSigned,
       //program type
       programType: this.state.programType, //sale table
@@ -597,8 +596,8 @@ export default class NewSale extends React.Component {
     };
 
     var request = new XMLHttpRequest();
-    request.open('POST', "http://" + IP + '/newsale', true);
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.open('POST', 'http://' + IP + '/newsale', true);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     request.onreadystatechange = function() {
       //#TODO receive Sale number and add it to the state
     };
@@ -878,11 +877,11 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
-                value={this.state.salesRep}
-                onChange={this.handleSelectChange.bind(this, "salesRep")}
                 floatingLabelText="Sales Representative"
                 floatingLabelFixed={false}
                 hintText="Select a Sales Representative"
+                value={this.state.salesRep}
+                onChange={this.handleSelectChange.bind(this, "salesRep")}
                 errorText={this.state.salesRepErr}
                 errorStyle={{float: "left"}}
               >
