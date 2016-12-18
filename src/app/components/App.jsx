@@ -132,7 +132,7 @@ export default class App extends React.Component {
             <LeftMenu clickHandler={this.menuClickHandler}/>
           </div>
           <div className="mainContent">
-            <CurrentContent editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id}/>
+            <CurrentContent editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler}/>
           </div>
         </div>
         { this.state.loginDialog ?

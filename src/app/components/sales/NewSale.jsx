@@ -4,7 +4,7 @@ import {Tabs, Tab, TextField, Divider, RadioButton,
   CardHeader, CardMedia, CardTitle, CardText, FlatButton,
   DatePicker, TimePicker, Toggle, Checkbox, SelectField,
   MenuItem} from 'material-ui';
-import { validations } from '../helpers/common.js';
+import { validations, dateHelpers } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
@@ -54,7 +54,6 @@ export default class NewSale extends React.Component {
       installationDate: {},
       installationTime: {},
       notes: '',
-      salesRep: '',
       salesRepId: '',
       applicationNumber: '',
       programType: '',
@@ -104,7 +103,6 @@ export default class NewSale extends React.Component {
       programTypeValidated: false,
       installationDateValidated: false,
       installationTimeValidated: false,
-      allValidated: false,
 
       allSalesReps: undefined,
     };
@@ -476,33 +474,17 @@ export default class NewSale extends React.Component {
   }
 
   validateSalesRep() {
-    let salesRep = this.state.salesRep;
-    if (validations.validateSalesRep(salesRep)) {
+    let salesRepId = this.state.salesRepId;
+    if (validations.validateSalesRep(salesRepId)) {
       this.setState({
         salesRepErr: '',
-        salesRep: salesRep,
+        salesRepId: salesRepId,
         salesRepValidated: true,
       });
     } else {
       this.setState({
         salesRepErr: 'Must select a salesperson',
         salesRepValidated: false,
-      });
-    }
-  }
-
-  validateSalesRepId() {
-    let salesRepId = this.state.salesRepId.trim();
-    if(validations.validateSalesRepId(salesRepId)) {
-      this.setState({
-        salesRepIdErr: '',
-        salesRepId: salesRepId,
-        salesRepIdValidated: true,
-      });
-    } else {
-      this.setState({
-        salesRepIdErr: 'Must only consist of numbers',
-        salesRepIdValidated: false,
       });
     }
   }
@@ -538,8 +520,7 @@ export default class NewSale extends React.Component {
         this.state.programTypeValidated &&
         this.state.installationDateValidated &&
         this.state.installationTimeValidated &&
-        this.state.salesRepValidated &&
-        this.state.salesRepIdValidated) {
+        this.state.salesRepValidated) {
 
       //everything was validated, send an httpRequest to create a new sale
       this.createNewSale();
@@ -561,7 +542,6 @@ export default class NewSale extends React.Component {
       this.validateInstallationDate();
       this.validateInstallationTime();
       this.validateSalesRep();
-      this.validateSalesRepId();
     }
   }
 
@@ -572,6 +552,19 @@ export default class NewSale extends React.Component {
   }
 
   createNewSale() {
+    //combining the date and time objects and converting them to MySQL DATETIME format
+    var finalDate = new Date(this.state.installationDate);
+    var hours = this.state.installationTime.getHours();
+    var minutes = this.state.installationTime.getMinutes();
+    finalDate.setHours(hours);
+    finalDate.setMinutes(minutes);
+
+    //correcting the dateSigned field for the MySQL DATE format
+    var dateSigned = this.state.dateSigned;
+    dateSigned = dateSigned.getFullYear()
+      + "-" + dateHelpers.twoDigits(1 + dateSigned.getMonth())
+      + "-" + dateHelpers.twoDigits(dateSigned.getDate());
+
     let data = {
       fname: this.state.fname,
       lname: this.state.lname, //customer table
@@ -584,13 +577,12 @@ export default class NewSale extends React.Component {
       email: this.state.email, //customer table
       homePhone: this.state.homePhone, //customer table
       cellPhone: this.state.cellPhone, //customer table
-      dateSigned: this.state.dateSigned,
+      dateSigned: dateSigned,
       //program type
       programType: this.state.programType, //sale table
 
       //Installation & Delivery
-      installationDate: this.state.installationDate, //sale table
-      installationTime: this.state.installationTime, //sale table
+      installationDateTime: dateHelpers.toMysqlFormat(finalDate), //sale table
       notes: this.state.notes, //sale table
       //the rest
       salesRepId: this.state.salesRepId
@@ -600,7 +592,9 @@ export default class NewSale extends React.Component {
     request.open('POST', "http://" + IP + '/newsale', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
-      //#TODO receive Sale number and add it to the state
+      if (this.readyState == 4 && this.status == 201) {
+        let saleObject = JSON.parse(request.responseText).sale;
+      }
     };
 
     request.send(JSON.stringify(data));
@@ -878,8 +872,8 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
-                value={this.state.salesRep}
-                onChange={this.handleSelectChange.bind(this, "salesRep")}
+                value={this.state.salesRepId}
+                onChange={this.handleSelectChange.bind(this, "salesRepId")}
                 floatingLabelText="Sales Representative"
                 floatingLabelFixed={false}
                 hintText="Select a Sales Representative"
@@ -895,11 +889,15 @@ export default class NewSale extends React.Component {
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" secondary={true} />
+              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
+              {this.props.status == "edit" ?
+                <RaisedButton label="Update" onClick={this.validateRentalAgreement.bind(this)} />
+              :
+                <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
+              }
               <br />
             </div>
           </div>

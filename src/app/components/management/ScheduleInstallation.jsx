@@ -259,7 +259,7 @@ export default class ScheduleInstallation extends React.Component {
           errorStyle={{float: "left"}}
         />
         <br />
-        <RaisedButton label="Cancel" secondary={true} />
+        <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
         &nbsp;
         &nbsp;
         <RaisedButton label="Schedule" onClick={this.validateAllAndSubmit.bind(this)} />
