@@ -29,7 +29,7 @@ export default class LeftMenu extends React.Component {
   }
 
   toggleCategory(category) {
-    console.log(category);
+
     if(this.state.currentOpen == category) {
       this.setState({
         currentOpen: undefined,

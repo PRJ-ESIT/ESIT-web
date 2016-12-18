@@ -895,7 +895,7 @@ export default class NewSale extends React.Component {
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" secondary={true} />
+              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
               &nbsp;
               &nbsp;
               &nbsp;
