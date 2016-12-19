@@ -53,6 +53,7 @@ export default class App extends React.Component {
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
     this.editClickHandler = this.editClickHandler.bind(this);
     this.getEmbeddedUrl = this.getEmbeddedUrl.bind(this);
+    this.closeIframe = this.closeIframe.bind(this);
   }
 
   getChildContext() {
@@ -139,9 +140,32 @@ export default class App extends React.Component {
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(data));
   }
+
+  closeIframe(message) {
+    console.log(message);
+    console.log('I  AM HERE');
+    if(message == "Sale forms are signed") {
+      this.setState({
+        docuSignURL: undefined,
+      });
+    }
+  }
+
+  componentDidMount() {
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+    var _this = this;
+    eventer(messageEvent,function(e) {
+      var key = e.message ? "message" : "data";
+      var data = e[key];
+      _this.closeIframe(data);
+    },false);
+  }
+
   getIframe() {
     return (
-      <iframe id='docusignIframe' src={this.state.docuSignURL} frameBorder="0"
+      <iframe id='docusignIframe' src={"http://" + IP + "/testiframe"} frameBorder="0"
         style={{ overflow: "hidden", height: "100%", width: "100%", position: "absolute" }}
         height="100%" width="100%">
       </iframe>

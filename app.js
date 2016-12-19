@@ -32,6 +32,13 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, './src/client/index.html'));
 });
 
+app.get('/testiframe', function(req, res) {
+    res.sendFile(path.join(__dirname + '/src/client/iframe.html'));
+});
+
+app.get('/closeiframe', function(req, res) {
+    res.sendFile(path.join(__dirname + '/src/client/closeiframe.html'));
+});
 
 app.get('/dashboard', function(request, response) {
 
