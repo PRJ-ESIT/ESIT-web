@@ -752,18 +752,25 @@ app.post('/getembeddedurl', function(request, response) {
               },
               {
                 tabLabel : "customerSalesRepName",
-                value: request.body.saleRep
-              },
-              {
-                tabLabel : "customerProvince",
-                value : request.body.province
-              },
-              {
-                tabLabel : "customerProgram",
-                value : request.body.programType
+                value: request.body.salesRepName
               }
           ]
         }
+      }],
+      "radioGroupTabs" : [{
+        "groupName" : "customerProgram",
+        "radios" : [{
+          "value" : "1",
+          "selected" : request.body.programType == "1"
+        },
+        {
+          "value" : "2",
+          "selected" : request.body.programType == "2"
+        },
+        {
+          "value" : "3",
+          "selected" : request.body.programType == "3"
+        }]
       }],
       "status": "sent"
     });

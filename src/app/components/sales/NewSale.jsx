@@ -55,6 +55,7 @@ export default class NewSale extends React.Component {
       installationTime: {},
       notes: '',
       salesRepId: '',
+      salesRepName: '',
       applicationNumber: '',
       programType: '',
       dateSigned: new Date(),
@@ -246,8 +247,9 @@ export default class NewSale extends React.Component {
       notes: this.state.notes, //sale table
       //the rest
       salesRepId: this.state.salesRepId,
-      salesRep: this.state.salesRep
+      salesRepName: this.state.salesRepName
     };
+    console.log(data);
     // console.log(data);
     this.props.getEmbeddedUrl(data);
 
@@ -278,9 +280,13 @@ export default class NewSale extends React.Component {
 
   handleSelectChange(fieldname, event, index, value) {
     var obj = {};
+    if(fieldname == "salesRepId") {
+      obj["salesRepName"] = this.state.allSalesReps[index].name;
+    }
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = value;
+    console.log(obj);
     this.setState(obj);
   }
 
@@ -963,7 +969,7 @@ export default class NewSale extends React.Component {
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
+              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.getEmbeddedUrl.bind(this)}/>
               &nbsp;
               &nbsp;
               &nbsp;
