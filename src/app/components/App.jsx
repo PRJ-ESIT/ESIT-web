@@ -125,7 +125,7 @@ export default class App extends React.Component {
     let _this = this;
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(httpRequest.responseText);
+        // console.log(httpRequest.responseText);
         let url = JSON.parse(httpRequest.responseText).url;
         console.log(url);
 

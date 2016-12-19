@@ -121,15 +121,20 @@ export default class NewSale extends React.Component {
       let _this = this;
       httpRequest.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          let sale = JSON.parse(httpRequest.responseText).sale;
-          // Format time
-          var tempDateTime = new Date(sale.installationDateTime);
-          var minDate = new Date(2000, 0, 1);
+          let allSalesReps = JSON.parse(httpRequest.responseText).employees;
+          // console.log(allSalesReps);
+          var allEmployees = {};
+          for (var employee in allSalesReps) {
+            allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
+          }
 
           var httpReq = new XMLHttpRequest();
           httpReq.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-              let allSalesReps = JSON.parse(httpReq.responseText).employees;
+              let sale = JSON.parse(httpReq.responseText).sale;
+              // Format time
+              var tempDateTime = new Date(sale.installationDateTime);
+              var minDate = new Date(2000, 0, 1);
 
               _this.setState({
                 fname: sale.firstName ? sale.firstName : '',
@@ -148,20 +153,20 @@ export default class NewSale extends React.Component {
                 installationTime: tempDateTime ? tempDateTime : '',
                 notes: sale.notes ? sale.notes : '',
                 salesRepId: sale.salesRepId ? sale.salesRepId : '',
-                salesRep: sale.salesRep ? sale.salesRep : '',
+                salesRepName: sale.salesRepId ? allEmployees[sale.salesRepId] : '',
                 minDate: minDate,
                 allSalesReps: allSalesReps,
               });
             }
           };
 
-          httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
+          httpReq.open('GET', "http://" + IP + "/existingsale?id="
+            + _this.props.id, true);
           httpReq.send(null);
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/existingsale?id="
-        + this.props.id, true);
+      httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
       httpRequest.send(null);
     } else {
       var httpRequest = new XMLHttpRequest();
@@ -179,45 +184,7 @@ export default class NewSale extends React.Component {
       httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
       httpRequest.send(null);
     }
-    // this.getBaseUrl();
   }
-
-  // getBaseUrl() {
-  //   var httpRequest = new XMLHttpRequest();
-  //   let _this = this;
-  //   httpRequest.onreadystatechange = function() {
-  //     if (this.readyState == 4 && this.status == 200) {
-  //       let url = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
-  //       console.log(url);
-  //       _this.setState({
-  //         baseUrl: url ? url : '',
-  //       });
-  //     }
-  //   };
-  //
-  //   httpRequest.open('GET', "http://" + IP + "/getbaseurl", true);
-  //   httpRequest.send(null);
-  // }
-
-  // getEnvelopeId() {
-  //   var httpRequest = new XMLHttpRequest();
-  //   let _this = this;
-  //   httpRequest.onreadystatechange = function() {
-  //     if (this.readyState == 4 && this.status == 200) {
-  //       console.log(httpRequest.responseText);
-  //       let id = JSON.parse(httpRequest.responseText).envelopeId;
-  //       console.log(id);
-  //       _this.setState({
-  //         envelopeId: id ? id : '',
-  //       });
-  //     }
-  //   };
-  //
-  //   // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
-  //   //   + "&recipientName=" + this.fname + " " + this.lname, true);
-  //   httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=klever@gmail.com&recipientName=Klever Loza Vega", true);
-  //   httpRequest.send(null);
-  // }
 
   getEmbeddedUrl() {
     var date = new Date(this.state.installationDate);
