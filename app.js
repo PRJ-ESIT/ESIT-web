@@ -123,7 +123,6 @@ app.get('/allsales', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -146,6 +145,78 @@ app.get('/allsales', function(request, response) {
     req.end();
 });
 
+app.get('/scheduleinstallationinfo', function(request, response) {
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/SaleService/getAllCompletedSales/',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        //saving all the completed sales from the current request
+        var sales = JSON.parse(output).sales;
+
+        //fetching all the installers from crud
+        var options = {
+          host: config.crudIP,
+          port: 8080,
+          path: '/crud/EmployeeService/getEmployeesByRole/installer',
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
+
+        var reqs = http.request(options, function(resp)
+          {
+            var output = '';
+            resp.setEncoding('utf8');
+
+            resp.on('data', function (chunk) {
+              output += chunk;
+            });
+
+            resp.on('end', function() {
+                var installers = JSON.parse(output).employees;
+
+                var entry = {
+                  data: {
+                    'sales': sales,
+                    'installers': installers
+                  }
+                };
+                return response.status(200).json(entry);
+            });
+          });
+
+          reqs.on('error', function(err) {
+              //response.send('error: ' + err.message);
+          });
+
+          reqs.end();
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
 
 app.get('/allinstallations', function(request, response) {
 
@@ -159,7 +230,6 @@ app.get('/allinstallations', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -182,6 +252,39 @@ app.get('/allinstallations', function(request, response) {
     req.end();
 });
 
+app.get('/scheduledinstallations', function(request, response) {
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/InstallationService/getScheduledInstallations/',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+          var obj = JSON.parse(output);
+          return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
 
 app.get('/allcustomers', function(request, response) {
 
@@ -195,7 +298,6 @@ app.get('/allcustomers', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -231,7 +333,40 @@ app.get('/allemployees', function(request, response) {
     }
   };
 
-  var object = undefined;
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+          var obj = JSON.parse(output);
+          return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
+
+app.get('/allemployeesbyrole', function(request, response) {
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/EmployeeService/getEmployeesByRole/' + request.query.role,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -265,7 +400,6 @@ app.get('/existingsale', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -299,7 +433,6 @@ app.get('/getoneemployee', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -340,8 +473,7 @@ app.post('/newsale', function(request, response) {
     //program type
     programType: request.body.programType,
     //Installation & Delivery
-    installationDate: request.body.installationDate,
-    installationTime: request.body.installationTime,
+    installationDateTime: request.body.installationDateTime,
     notes: request.body.notes,
 
     //the rest
@@ -368,7 +500,104 @@ app.post('/newsale', function(request, response) {
     });
 
     res.on('end', function() {
+      var saleObj = JSON.parse(output);
+      return response.status(201).json(saleObj);
+    });
 
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
+});
+
+//POST http://localhost:3000/newinstallation
+app.post('/newinstallation', function(request, response) {
+  var jsonObj = querystring.stringify({
+    //homeowner's info
+    saleId: request.body.salesNumber,
+    installerId: request.body.installer,
+    installationDateTime: request.body.installationDateTime
+  });
+  console.log(jsonObj);
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'POST',
+    path: '/crud/InstallationService/createNewInstallation',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      //#TODO remove tempObj and forward the SaleNumber from crud instead
+      var tempObj = {'a': 'b'};
+      return response.status(200).json(tempObj);
+    });
+
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
+});
+
+//POST http://localhost:3000/newemployee
+app.post('/newemployee', function(request, response) {
+  var jsonObj = querystring.stringify({
+    //homeowner's info
+    fname: request.body.fname,
+    lname: request.body.lname,
+    street: request.body.address,
+    unitNum: request.body.unitNum,
+    city: request.body.city,
+    province: request.body.province,
+    postalCode: request.body.postalCode,
+    email: request.body.email,
+    homePhone: request.body.homePhone,
+    cellPhone: request.body.cellPhone,
+    password: request.body.password,
+    hireDate: request.body.hireDate,
+    isActive: request.body.isActive,
+    employeeType: request.body.employeeType
+  });
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'POST',
+    path: '/crud/EmployeeService/createNewEmployee',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
       //#TODO remove tempObj and forward the SaleNumber from crud instead
       var tempObj = {'a': 'b'};
       return response.status(200).json(tempObj);
@@ -396,7 +625,6 @@ app.get('/getoneinstallation', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -411,62 +639,15 @@ app.get('/getoneinstallation', function(request, response) {
           return response.status(200).json(obj);
       });
     });
-
     req.on('error', function(err) {
         //response.send('error: ' + err.message);
     });
-
     req.end();
 });
-
-// app.get('/getbaseurl', function(request, response) {
-//   // Prepare DocuSign header
-//   var dsAuthHeader = JSON.stringify({
-// 		'Username': config.docusign.email,
-// 		'Password': config.docusign.password,
-// 		'IntegratorKey': config.docusign.integratorKey
-// 	});
-//
-//   var options = {
-//     hostname: 'demo.docusign.net',
-//     path: '/restapi/v2/login_information',
-//     method: 'GET',
-//     body: '',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'X-DocuSign-Authentication' : dsAuthHeader
-//     }
-//   };
-//
-//   // Note HTTPS request here
-//   var req = https.request(options, function(res)
-//     {
-//       var output = '';
-//       res.setEncoding('utf8');
-//
-//       res.on('data', function (chunk) {
-//         output += chunk;
-//       });
-//
-//       res.on('end', function() {
-//         var obj = JSON.parse(output);
-//         baseUrl = obj.loginAccounts[0].baseUrl
-//         return response.status(200).json(obj);
-//       });
-//     });
-//
-//     req.on('error', function(err) {
-//       console.log(err);
-//       response.send('error: ' + err.message);
-//     });
-//
-//     req.end();
-// });
 
 app.post('/getembeddedurl', function(request, response) {
   var url = config.docusign.baseUrl + "/envelopes";
   var recipientName = request.body.fname + ' ' +  request.body.lname;
-  console.log(request.body.email);
   // Prepare the request body
   var body = JSON.stringify({
       "emailSubject": "DocuSign API call - Embedded Sending Example",
@@ -479,57 +660,143 @@ app.post('/getembeddedurl', function(request, response) {
         "tabs" : {
           "textTabs" : [{
                tabLabel : "customerSalesNumber",
-               value : "123456789"
+               value : "123456789",
+               locked : "true"
               },
               {
                 tabLabel : "customerFName",
-                value : request.body.fname
+                value : request.body.fname,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADFName",
+                value : request.body.fname,
+                locked : "true"
               },
               {
                 tabLabel : "customerLName",
-                value : request.body.lname
+                value : request.body.lname,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADLName",
+                value : request.body.lname,
+                locked : "true"
               },
               {
                 tabLabel : "customerAddress",
-                value : request.body.address
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADUnit",
+                value : request.body.unitNum,
+                locked : "true"
               },
               {
                 tabLabel : "customerCity",
-                value : request.body.city
+                value : request.body.city,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADCity",
+                value : request.body.city,
+                locked : "true"
               },
               {
                 tabLabel : "customerPostalCode",
-                value : request.body.postalCode
+                value : request.body.postalCode,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADPostalCode",
+                value : request.body.postalCode,
+                locked : "true"
               },
               {
                 tabLabel : "customerHomePhone",
-                value : request.body.homePhone
+                value : request.body.homePhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADHomePhone",
+                value : request.body.homePhone,
+                locked : "true"
               },
               {
                 tabLabel : "customerCellPhone",
-                value : request.body.cellPhone
+                value : request.body.cellPhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADCellPhone",
+                value : request.body.cellPhone,
+                locked : "true"
               },
               {
                 tabLabel : "customerEnbridgeNumber",
-                value : request.body.enbridge
+                value : request.body.enbridge,
+                locked : "true"
               },
               {
                 tabLabel : "customerInstallationDate",
-                value : request.body.installationDate
+                value : request.body.installationDate,
+                locked : "true"
               },
               {
                 tabLabel : "customerInstallationTime",
-                value : request.body.installationTime
+                value : request.body.installationTime,
+                locked : "true"
               },
               {
                 tabLabel : "customerNotes",
-                value : request.body.notes
+                value : request.body.notes,
+                locked : "true"
               },
               {
                 tabLabel : "customerSalesRepId",
-                value : request.body.salesRepId
+                value : request.body.salesRepId,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerSalesRepName",
+                value: request.body.salesRepName,
+                locked : "true"
               }
-          ]
+          ],
+          "radioGroupTabs" : [{
+            "groupName" : "customerProgram",
+            "radios" : [{
+              "value" : "1",
+              "selected" : request.body.programType == "1",
+              locked : "true"
+            },
+            {
+              "value" : "2",
+              "selected" : request.body.programType == "2",
+              locked : "true"
+            },
+            {
+              "value" : "3",
+              "selected" : request.body.programType == "3",
+              locked : "true"
+            }]
+          }],
+          "listTabs" : [{
+            "tabLabel" : "customerProvince",
+            "value" : request.body.province,
+            locked : "true"
+          }]
         }
       }],
       "status": "sent"
@@ -551,7 +818,7 @@ app.post('/getembeddedurl', function(request, response) {
       'X-DocuSign-Authentication' : dsAuthHeader
     }
   };
-  console.log(options);
+
   // Note HTTPS request here
   var req = https.request(options, function(res)
     {
@@ -565,8 +832,6 @@ app.post('/getembeddedurl', function(request, response) {
       res.on('end', function() {
         var obj = JSON.parse(output);
         var envelopeId = obj.envelopeId;
-        console.log(obj);
-        console.log(envelopeId);
 
         // Get embedded URL
         var innerUrl = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
@@ -590,7 +855,6 @@ app.post('/getembeddedurl', function(request, response) {
             'X-DocuSign-Authentication' : dsAuthHeader
           }
         };
-        console.log(innerOptions);
 
         // Inner request
         var innerReq = https.request(innerOptions, function(innerRes)
@@ -604,13 +868,12 @@ app.post('/getembeddedurl', function(request, response) {
 
             innerRes.on('end', function() {
               var innerObj = JSON.parse(innerOutput);
-              console.log(innerObj);
+
               return response.status(200).json(innerObj);
             });
           });
 
           innerReq.on('error', function(err) {
-            console.log(err);
             response.send('error: ' + err.message);
           });
 
@@ -618,60 +881,6 @@ app.post('/getembeddedurl', function(request, response) {
           innerReq.end();
 
         // return response.status(200).json(obj);
-      });
-    });
-
-    req.on('error', function(err) {
-      console.log(err);
-      response.send('error: ' + err.message);
-    });
-
-    req.write(body);
-    req.end();
-});
-
-app.post('/getembeddedurl', function(request, response) {
-  var url = "/restapi/v2/accounts/1848997/envelopes/" + request.query.envelopeId + "/views/recipient";
-  // Prepare the request body
-    var body = JSON.stringify({
-				"returnUrl": "http://www.docusign.com/devcenter",
-				"authenticationMethod": "email",
-				"email": request.query.email,
-				"userName": request.query.recipientName,
-				"clientUserId": "1001",	// must match clientUserId in step 2!
-			});
-  // Prepare DocuSign header
-  var dsAuthHeader = JSON.stringify({
-		'Username': config.docusign.email,
-		'Password': config.docusign.password,
-		'IntegratorKey': config.docusign.integratorKey
-	});
-
-  var options = {
-    hostname: 'demo.docusign.net',
-    path: url,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(body),
-      'X-DocuSign-Authentication' : dsAuthHeader
-    }
-  };
-console.log(options);
-  // Note HTTPS request here
-  var req = https.request(options, function(res)
-    {
-      var output = '';
-      res.setEncoding('utf8');
-
-      res.on('data', function (chunk) {
-        output += chunk;
-      });
-
-      res.on('end', function() {
-        var obj = JSON.parse(output);
-        console.log(obj);
-        return response.status(200).json(obj);
       });
     });
 

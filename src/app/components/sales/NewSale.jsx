@@ -4,24 +4,24 @@ import {Tabs, Tab, TextField, Divider, RadioButton,
   CardHeader, CardMedia, CardTitle, CardText, FlatButton,
   DatePicker, TimePicker, Toggle, Checkbox, SelectField,
   MenuItem} from 'material-ui';
-import { validations } from '../helpers/common.js';
+import { validations, dateHelpers } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
-  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
-  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
-  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
-  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
-  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
-  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"AB"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"BC"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"MB"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"NB"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"NL"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"NS"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"ON"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"PE"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"QC"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"SK"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"NT"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"YT"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
 export default class NewSale extends React.Component {
@@ -55,6 +55,7 @@ export default class NewSale extends React.Component {
       installationTime: {},
       notes: '',
       salesRepId: '',
+      salesRepName: '',
       applicationNumber: '',
       programType: '',
       dateSigned: new Date(),
@@ -85,7 +86,7 @@ export default class NewSale extends React.Component {
       emailErr: '',
       homePhoneErr: '',
       cellPhoneErr: '',
-      salesRepIdErr: '',
+      salesRepErr: '',
       applicationNumberErr: '',
       programTypeErr: '',
       installationDateErr: '',
@@ -103,12 +104,13 @@ export default class NewSale extends React.Component {
       emailValidated: false,
       homePhoneValidated: false,
       cellPhoneValidated: false,
-      salesRepIdValidated: false,
+      salesRepValidated: false,
       applicationNumberValidated: false,
       programTypeValidated: false,
       installationDateValidated: false,
       installationTimeValidated: false,
-      allValidated: false,
+
+      allSalesReps: undefined,
     };
     this.handleTabChange = this.handleTabChange.bind(this);
   }
@@ -120,77 +122,75 @@ export default class NewSale extends React.Component {
       httpRequest.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           let sale = JSON.parse(httpRequest.responseText).sale;
-          // Format time
-          var tempDateTime = new Date(sale.installationDateTime);
-          var minDate = new Date(2000, 0, 1);
+          var httpReq = new XMLHttpRequest();
+          httpReq.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              let allSalesReps = JSON.parse(httpReq.responseText).employees;
+              // Create employee object, indexed by employeeNumber
+              var allEmployees = {};
+              for (var employee in allSalesReps) {
+                allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
+              }
+console.log(allSalesReps);
+console.log(allEmployees);
+              // Format time
+              var tempDateTime = new Date(sale.installationDateTime);
+              var minDate = new Date(2000, 0, 1);
+
+              _this.setState({
+                fname: sale.firstName ? sale.firstName : '',
+                lname: sale.lastName ? sale.lastName : '',
+                address: sale.address ? sale.address : '',
+                unitNum: sale.unit ? sale.unit : '',
+                city: sale.city ? sale.city : '',
+                province: sale.province ? sale.province : '',
+                postalCode: sale.postalCode ? sale.postalCode : '',
+                enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
+                email: sale.email ? sale.email : '',
+                programType: sale.programId ? sale.programId : '',
+                homePhone: sale.homePhone ? sale.homePhone : '',
+                cellPhone: sale.cellPhone ? sale.cellPhone : '',
+                installationDate: tempDateTime ? tempDateTime : '',
+                installationTime: tempDateTime ? tempDateTime : '',
+                notes: sale.notes ? sale.notes : '',
+                salesRepId: sale.salesRepId ? sale.salesRepId : '',
+                salesRepName: sale.salesRepId ? allEmployees[sale.salesRepId] : '',
+                minDate: minDate,
+                allSalesReps: allSalesReps,
+              });
+            }
+          };
+            httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
+          httpReq.send(null);
+        }
+      };
+      httpRequest.open('GET', "http://" + IP + "/existingsale?id="
+        + _this.props.id, true);
+      httpRequest.send(null);
+    } else {
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let allSalesReps = JSON.parse(httpRequest.responseText).employees;
 
           _this.setState({
-            fname: sale.firstName ? sale.firstName : '',
-            lname: sale.lastName ? sale.lastName : '',
-            address: sale.address ? sale.address : '',
-            unitNum: sale.unit ? sale.unit : '',
-            city: sale.city ? sale.city : '',
-            province: sale.province ? sale.province : '',
-            postalCode: sale.postalCode ? sale.postalCode : '',
-            enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
-            email: sale.email ? sale.email : '',
-            programType: sale.programId ? sale.programId : '',
-            homePhone: sale.homePhone ? sale.homePhone : '',
-            cellPhone: sale.cellPhone ? sale.cellPhone : '',
-            installationDate: tempDateTime ? tempDateTime : '',
-            installationTime: tempDateTime ? tempDateTime : '',
-            notes: sale.notes ? sale.notes : '',
-            salesRepId: sale.salesRepId ? sale.salesRepId : '',
-            minDate: minDate,
+            allSalesReps: allSalesReps,
           });
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/existingsale?id="
-        + this.props.id, true);
+      httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
       httpRequest.send(null);
     }
-    // this.getBaseUrl();
   }
 
-  // getBaseUrl() {
-  //   var httpRequest = new XMLHttpRequest();
-  //   let _this = this;
-  //   httpRequest.onreadystatechange = function() {
-  //     if (this.readyState == 4 && this.status == 200) {
-  //       let url = JSON.parse(httpRequest.responseText).loginAccounts[0].baseUrl;
-  //       console.log(url);
-  //       _this.setState({
-  //         baseUrl: url ? url : '',
-  //       });
-  //     }
-  //   };
-  //
-  //   httpRequest.open('GET', "http://" + IP + "/getbaseurl", true);
-  //   httpRequest.send(null);
-  // }
-
-  // getEnvelopeId() {
-  //   var httpRequest = new XMLHttpRequest();
-  //   let _this = this;
-  //   httpRequest.onreadystatechange = function() {
-  //     if (this.readyState == 4 && this.status == 200) {
-  //       console.log(httpRequest.responseText);
-  //       let id = JSON.parse(httpRequest.responseText).envelopeId;
-  //       console.log(id);
-  //       _this.setState({
-  //         envelopeId: id ? id : '',
-  //       });
-  //     }
-  //   };
-  //
-  //   // httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=" + this.state.email
-  //   //   + "&recipientName=" + this.fname + " " + this.lname, true);
-  //   httpRequest.open('POST', "http://" + IP + "/getenvelopeid?email=klever@gmail.com&recipientName=Klever Loza Vega", true);
-  //   httpRequest.send(null);
-  // }
-
   getEmbeddedUrl() {
+    var date = new Date(this.state.installationDate);
+    date = date.toLocaleDateString();
+    var time = new Date(this.state.installationTime);
+    time = time.toLocaleTimeString();
+
     let data = {
       fname: this.state.fname,
       lname: this.state.lname, //customer table
@@ -208,15 +208,15 @@ export default class NewSale extends React.Component {
       programType: this.state.programType, //sale table
 
       //Installation & Delivery
-      installationDate: this.state.installationDate, //sale table
-      installationTime: this.state.installationTime, //sale table
+      installationDate: date, //sale table
+      installationTime: time, //sale table
       notes: this.state.notes, //sale table
       //the rest
-      salesRepId: this.state.salesRepId
+      salesRepId: this.state.salesRepId,
+      salesRepName: this.state.salesRepName
     };
     // console.log(data);
     this.props.getEmbeddedUrl(data);
-    
   }
 
   handleTabChange(value) {
@@ -244,9 +244,13 @@ export default class NewSale extends React.Component {
 
   handleSelectChange(fieldname, event, index, value) {
     var obj = {};
+    if(fieldname == "salesRepId") {
+      obj["salesRepName"] = this.state.allSalesReps[index].name;
+    }
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = value;
+    console.log(obj);
     this.setState(obj);
   }
 
@@ -513,18 +517,18 @@ export default class NewSale extends React.Component {
     }
   }
 
-  validateSalesRepId() {
-    let salesRepId = this.state.salesRepId.trim();
-    if(validations.validateSalesRepId(salesRepId)) {
+  validateSalesRep() {
+    let salesRepId = this.state.salesRepId;
+    if (validations.validateSalesRep(salesRepId)) {
       this.setState({
-        salesRepIdErr: '',
+        salesRepErr: '',
         salesRepId: salesRepId,
-        salesRepIdValidated: true,
+        salesRepValidated: true,
       });
     } else {
       this.setState({
-        salesRepIdErr: 'Must only consist of numbers',
-        salesRepIdValidated: false,
+        salesRepErr: 'Must select a salesperson',
+        salesRepValidated: false,
       });
     }
   }
@@ -560,8 +564,12 @@ export default class NewSale extends React.Component {
         this.state.programTypeValidated &&
         this.state.installationDateValidated &&
         this.state.installationTimeValidated &&
-        this.state.salesRepIdValidated) {
-      this.setState({allValidated: true});
+        this.state.salesRepValidated) {
+
+      //everything was validated, send an httpRequest to create a new sale
+      this.createNewSale();
+      //TODO handle the case when users click 'Submit' multiple times
+
     } else {
       this.validateAddress();
       this.validateFName();
@@ -577,13 +585,7 @@ export default class NewSale extends React.Component {
       this.validateProgramType();
       this.validateInstallationDate();
       this.validateInstallationTime();
-      this.validateSalesRepId();
-    }
-  }
-
-  componentDidUpdate() {
-    if(this.state.allValidated) {
-      this.createNewSale();
+      this.validateSalesRep();
     }
   }
 
@@ -594,6 +596,19 @@ export default class NewSale extends React.Component {
   }
 
   createNewSale() {
+    //combining the date and time objects and converting them to MySQL DATETIME format
+    var finalDate = new Date(this.state.installationDate);
+    var hours = this.state.installationTime.getHours();
+    var minutes = this.state.installationTime.getMinutes();
+    finalDate.setHours(hours);
+    finalDate.setMinutes(minutes);
+
+    //correcting the dateSigned field for the MySQL DATE format
+    var dateSigned = this.state.dateSigned;
+    dateSigned = dateSigned.getFullYear()
+      + "-" + dateHelpers.twoDigits(1 + dateSigned.getMonth())
+      + "-" + dateHelpers.twoDigits(dateSigned.getDate());
+
     let data = {
       fname: this.state.fname,
       lname: this.state.lname, //customer table
@@ -606,13 +621,12 @@ export default class NewSale extends React.Component {
       email: this.state.email, //customer table
       homePhone: this.state.homePhone, //customer table
       cellPhone: this.state.cellPhone, //customer table
-      dateSigned: this.state.dateSigned,
+      dateSigned: dateSigned,
       //program type
       programType: this.state.programType, //sale table
 
       //Installation & Delivery
-      installationDate: this.state.installationDate, //sale table
-      installationTime: this.state.installationTime, //sale table
+      installationDateTime: dateHelpers.toMysqlFormat(finalDate), //sale table
       notes: this.state.notes, //sale table
       //the rest
       salesRepId: this.state.salesRepId
@@ -622,7 +636,9 @@ export default class NewSale extends React.Component {
     request.open('POST', "http://" + IP + '/newsale', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
-      //#TODO receive Sale number and add it to the state
+      if (this.readyState == 4 && this.status == 201) {
+        let saleObject = JSON.parse(request.responseText).sale;
+      }
     };
 
     request.send(JSON.stringify(data));
@@ -899,32 +915,33 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               &nbsp;
-              <TextField
-                floatingLabelText="Sales Rep ID"
-                hintText="1234567"
-                type="number"
-                min="1"
+              <SelectField
                 value={this.state.salesRepId}
-                onChange={this.handleTextChange.bind(this, "salesRepId")}
-                onBlur={this.validateSalesRepId.bind(this)}
-                errorText={this.state.salesRepIdErr}
+                onChange={this.handleSelectChange.bind(this, "salesRepId")}
+                floatingLabelText="Sales Representative"
+                floatingLabelFixed={false}
+                hintText="Select a Sales Representative"
+                errorText={this.state.salesRepErr}
                 errorStyle={{float: "left"}}
-              />
+              >
+                {this.state.allSalesReps ? this.state.allSalesReps.map((salesRep, index) => (
+                  <MenuItem key={index} value={salesRep.employeeNumber} primaryText={salesRep.name} />
+                ))
+                : null }
+              </SelectField>
               <br />
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" onClick={this.getEmbeddedUrl.bind(this)} secondary={true} />
+              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.getEmbeddedUrl.bind(this)}/>
               &nbsp;
               &nbsp;
               &nbsp;
-              <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} />
-              : null }
+              {this.props.status == "edit" ?
+                <RaisedButton label="Update" onClick={this.validateRentalAgreement.bind(this)} />
+              :
+                <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
+              }
               <br />
             </div>
           </div>
@@ -1140,12 +1157,6 @@ export default class NewSale extends React.Component {
               &nbsp;
               <RaisedButton label="Save" onClick={this.validateRentalAgreement.bind(this)} />
               // Change validateRentalAgreement here to validatePAD; make new function
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              { this.state.allValidated ?
-              <RaisedButton label="Submit" primary={true} />
-              : null }
             </div>
           </div>
         </div>

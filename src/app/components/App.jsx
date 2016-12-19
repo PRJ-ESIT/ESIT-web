@@ -126,10 +126,7 @@ export default class App extends React.Component {
     let _this = this;
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(httpRequest.responseText);
         let url = JSON.parse(httpRequest.responseText).url;
-        console.log(url);
-
         _this.setState({
           docuSignURL: url,
         });
@@ -189,7 +186,8 @@ export default class App extends React.Component {
             <LeftMenu clickHandler={this.menuClickHandler}/>
           </div>
           <div className="mainContent">
-            <CurrentContent getEmbeddedUrl={this.getEmbeddedUrl} editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id}/>
+            <CurrentContent getEmbeddedUrl={this.getEmbeddedUrl} editClickHandler={this.editClickHandler}
+              status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler}/>
           </div>
         </div>
         { this.state.loginDialog ?

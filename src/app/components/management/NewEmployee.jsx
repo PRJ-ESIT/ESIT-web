@@ -2,6 +2,7 @@ import React from 'react';
 import { Toolbar, ToolbarTitle, TextField, MenuItem, RaisedButton, SelectField } from 'material-ui';
 import { validations } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
+import { dateHelpers } from '../helpers/common.js';
 
 // Provinces for SelectField
 const provinces = [
@@ -39,6 +40,8 @@ export default class NewEmployee extends React.Component {
       cellPhone: '',
       password: '',
       repeatPassword: '',
+      hireDate: {},
+      isActive: true,
 
       //error messages for each input field
       employeeTypeErr: '',
@@ -69,7 +72,6 @@ export default class NewEmployee extends React.Component {
       cellPhoneValidated: false,
       passwordValidated: false,
       passwordRepeatValidated: false,
-      allvalidated: false,
     };
   }
 
@@ -88,6 +90,11 @@ export default class NewEmployee extends React.Component {
             email: employee.email ? employee.email : '',
             homePhone: employee.homePhone ? employee.homePhone : '',
             cellPhone: employee.cellPhone ? employee.cellPhone : '',
+            address: employee.address ? employee.address : '',
+            unitNum: employee.unit ? employee.unit : '',
+            city: employee.city ? employee.city : '',
+            province: employee.province ? employee.province : '',
+            postalCode: employee.postalCode ? employee.postalCode : '',
           });
         }
       };
@@ -337,20 +344,6 @@ export default class NewEmployee extends React.Component {
   }
 
   validateAllFields() {
-    this.validateEmployeeType();
-    this.validateFName();
-    this.validateLName();
-    this.validateAddress();
-    this.validateUnit();
-    this.validateCity();
-    this.validateProvince();
-    this.validatePostalCode();
-    this.validateEmail();
-    this.validateHomePhone();
-    this.validateCellPhone();
-    this.validatePassword();
-    this.validatePasswordRepeat();
-
     if (this.state.employeeTypeValidated &&
         this.state.fnameValidated &&
         this.state.lnameValidated &&
@@ -364,10 +357,55 @@ export default class NewEmployee extends React.Component {
         this.state.cellPhoneValidated &&
         this.state.passwordValidated &&
         this.state.passwordRepeatValidated) {
-      this.setState({allvalidated: true});
+
+      //everything is validated, creating a new Employee
+      this.createNewEmployee();
+
     } else {
-      this.setState({allvalidated: false});
+      this.validateEmployeeType();
+      this.validateFName();
+      this.validateLName();
+      this.validateAddress();
+      this.validateUnit();
+      this.validateCity();
+      this.validateProvince();
+      this.validatePostalCode();
+      this.validateEmail();
+      this.validateHomePhone();
+      this.validateCellPhone();
+      this.validatePassword();
+      this.validatePasswordRepeat();
     }
+  }
+
+  createNewEmployee() {
+    var date = new Date();
+    date = date.getFullYear() + "-" + dateHelpers.twoDigits(1 + date.getMonth()) + "-" + dateHelpers.twoDigits(date.getDate());
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname,
+      address: this.state.address,
+      unitNum: this.state.unitNum,
+      city: this.state.city,
+      province: this.state.province,
+      postalCode: this.state.postalCode,
+      email: this.state.email,
+      homePhone: this.state.homePhone,
+      cellPhone: this.state.cellPhone,
+      password: this.state.password,
+      hireDate: date,
+      isActive: true,
+      employeeType: this.state.employeeType,
+    };
+
+    var request = new XMLHttpRequest();
+    request.open('POST', "http://" + IP + '/newemployee', true);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.onreadystatechange = function() {
+      //#TODO add error check and display `Snackbar` in both success or fail cases
+    };
+
+    request.send(JSON.stringify(data));
   }
 
   render() {
@@ -541,6 +579,7 @@ export default class NewEmployee extends React.Component {
                 style={{float: 'left'}}
                 label="Cancel"
                 secondary={true}
+                onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
               />
               <RaisedButton
                 onClick={this.validateAllFields.bind(this)}

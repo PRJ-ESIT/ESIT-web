@@ -23,15 +23,13 @@ export default class AllCustomers extends React.Component {
       multiSelectable: false,
       enableSelectAll: false,
       deselectOnClickaway: true,
-      showCheckboxes: true,
+      showCheckboxes: false,
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
       //end of table state variables
 
       //this variable keeps the state of a current selected row
-      currentSelected: false,
       selectedNum: -1,
-
       //an array to keep the data for the AllCustomers table
       allCustomers: undefined,
     }
@@ -59,17 +57,14 @@ export default class AllCustomers extends React.Component {
     this.setState({dropdownValue: value});
   }
 
+
   handleSelection(selectedRows) {
-    console.log(selectedRows);
-    console.log(this.state);
     if(selectedRows.length == 1) {
       this.setState({
-        currentSelected: true,
         selectedNum: selectedRows[0],
       });
     } else {
       this.setState({
-        currentSelected: false,
         selectedNum: -1,
       });
     }
@@ -93,14 +88,6 @@ export default class AllCustomers extends React.Component {
               <MenuItem value={3} primaryText="Show 50" />
               <MenuItem value={4} primaryText="Show 100" />
             </DropDownMenu>
-            {this.state.currentSelected ?
-              <ToolbarGroup>
-                <ToolbarSeparator />
-                <RaisedButton label="Edit" primary={true} />
-                <RaisedButton label="Details" primary={true} />
-                <RaisedButton label="Delete" primary={true} />
-              </ToolbarGroup>
-            : null }
           </ToolbarGroup>
         </Toolbar>
         <Table
@@ -118,9 +105,9 @@ export default class AllCustomers extends React.Component {
             <TableRow className={'trow'}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Email">Email</TableHeaderColumn>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Phone Number</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Home Phone</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Cell Phone</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Enbridge Number">Enbridge Number</TableHeaderColumn>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Last Sale">Last Sale</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -133,9 +120,9 @@ export default class AllCustomers extends React.Component {
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.email}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.phoneNumber}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.homePhone}</TableRowColumn>
+                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.cellPhone}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.enbridgeNumber}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.date}</TableRowColumn>
               </TableRow>
               ))
             : null }

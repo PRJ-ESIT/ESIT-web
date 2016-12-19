@@ -1,11 +1,70 @@
 import React from 'react';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, } from 'material-ui';
 import { IP } from '../../../../config/config.js';
+import { dateHelpers } from '../helpers/common.js';
 
 export default class SelectInstallation extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      //an array of all scheduled installations
+      installations: undefined,
+
+      //selected installation
+      selectedInstallation: undefined,
+    };
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let installations = JSON.parse(httpRequest.responseText).installations;
+        console.log(installations);
+        _this.setState({
+          installations: installations
+        });
+
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/scheduledinstallations", true);
+    httpRequest.send(null);
+  }
+
+  handleRowSelected(selectedRows) {
+    if(selectedRows.length == 1) {
+      this.setState({
+        selectedInstallation: this.state.installations[selectedRows[0]],
+        selectedNum: selectedRows[0],
+      });
+    } else {
+      this.setState({
+        selectedInstallation: undefined,
+        selectedNum: undefined,
+      });
+    }
+  }
+
+  getDate(datetime) {
+    var date = new Date(datetime);
+    return dateHelpers.twoDigits(1 + date.getMonth())  + "-" + dateHelpers.twoDigits(date.getDate()) + "-" + date.getFullYear();
+  }
+
+  getTime(datetime) {
+    var date = new Date(datetime);
+    return date.getHours() + ":" + date.getMinutes();
+  }
+
   render() {
     return (
-      <Table>
+      <Table
+        onRowSelection={this.handleRowSelected.bind(this)}
+        selectable={true}
+      >
         <TableHeader>
           <TableRow>
             <TableHeaderColumn>ID</TableHeaderColumn>
@@ -13,37 +72,21 @@ export default class SelectInstallation extends React.Component {
             <TableHeaderColumn>Address</TableHeaderColumn>
             <TableHeaderColumn>Scheduled Date</TableHeaderColumn>
             <TableHeaderColumn>Scheduled Time</TableHeaderColumn>
+            <TableHeaderColumn>Installer</TableHeaderColumn>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableRowColumn>1</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-          </TableRow>
-          <TableRow>
-            <TableRowColumn>2</TableRowColumn>
-            <TableRowColumn>Randal White</TableRowColumn>
-            <TableRowColumn>Unemployed</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-          </TableRow>
-          <TableRow>
-            <TableRowColumn>3</TableRowColumn>
-            <TableRowColumn>Stephanie Sanders</TableRowColumn>
-            <TableRowColumn>Employed</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-          </TableRow>
-          <TableRow>
-            <TableRowColumn>4</TableRowColumn>
-            <TableRowColumn>Steve Brown</TableRowColumn>
-            <TableRowColumn>Employed</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-            <TableRowColumn>John Smith</TableRowColumn>
-          </TableRow>
+        <TableBody deselectOnClickaway={false}>
+          {this.state.installations? this.state.installations.map( (row, index) => (
+              <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
+                <TableRowColumn>{row.installationNumber}</TableRowColumn>
+                <TableRowColumn>{row.customerName}</TableRowColumn>
+                <TableRowColumn>{row.address}</TableRowColumn>
+                <TableRowColumn>{this.getDate(row.installationDateTime)}</TableRowColumn>
+                <TableRowColumn>{this.getTime(row.installationDateTime)}</TableRowColumn>
+                <TableRowColumn>{row.installerName}</TableRowColumn>
+              </TableRow>
+              ))
+          : null }
         </TableBody>
       </Table>
     );
