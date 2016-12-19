@@ -93,12 +93,20 @@ export default class CompleteInstallation extends React.Component {
       bathrooms: '',
       residents: '',
       pool: '',
-      checklist: '',
+      checklist1: '',
+      checklist2: '',
+      checklist3: '',
+      checklist4: '',
+      checklist5: '',
+      checklist6: '',
       notes: '',
-      acknowledgement: '',
+      acknowledgement1: false,
+      acknowledgement2: false,
+      acknowledgement3: false,
+      acknowledgement4: false,
       installedDate: {},
-      contractorId: '',
-      installerName: '',
+      installerId: '',
+      installer: '',
       minDate: minDate,
       maxDate: maxDate,
 
@@ -120,6 +128,7 @@ export default class CompleteInstallation extends React.Component {
       poolErr: '',
       checklistErr: '',
       acknowledgementErr: '',
+      installerErr: '',
       installedDateErr: '',
 
       // Validation fields
@@ -140,8 +149,10 @@ export default class CompleteInstallation extends React.Component {
       poolValidated: false,
       checklistValidated: false,
       acknowledgementValidated: false,
+      installerValidated: false,
       installedDateValidated: false,
-      allValidated: false,
+
+      allInstallers: undefined,
 
       // table properties
       fixedHeader: true,
@@ -172,33 +183,59 @@ export default class CompleteInstallation extends React.Component {
           var tempDateTime = new Date(installation.installationDateTime);
           var minDate = new Date(2000, 0, 1);
 
-          _this.setState({
-            // salesNumber: sale.salesNumber,
-            fname: installation.customerFirstName ? installation.customerFirstName : '',
-            lname: installation.customerLastName ? installation.customerLastName : '',
-            address: installation.address ? installation.address : '',
-            unitNum: installation.unit ? installation.unit : '',
-            city: installation.city ? installation.city : '',
-            province: installation.province ? installation.province : '',
-            postalCode: installation.postalCode ? installation.postalCode : '',
-            enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
-            email: installation.email ? installation.email : '',
-            homePhone: installation.homePhone ? installation.homePhone : '',
-            cellPhone: installation.cellPhone ? installation.cellPhone : '',
-            sqft: installation.sqFootage ? installation.sqFootage : '',
-            residents: installation.residents ? installation.residents : '',
-            pool: installation.hasPool ? installation.hasPool : '',
-            bathrooms: installation.bathrooms ? installation.bathrooms : '',
-            installedDate: tempDateTime ? tempDateTime : '',
-            contractorId: installation.installerId ? installation.installerId : '',
-            installerName: installation.installerName ? installation.installerName : '',
-            minDate: minDate,
-          });
+          var httpReq = new XMLHttpRequest();
+          httpReq.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              let allInstallers = JSON.parse(httpReq.responseText).employees;
+
+              _this.setState({
+                // salesNumber: sale.salesNumber,
+                fname: installation.customerFirstName ? installation.customerFirstName : '',
+                lname: installation.customerLastName ? installation.customerLastName : '',
+                address: installation.address ? installation.address : '',
+                unitNum: installation.unit ? installation.unit : '',
+                city: installation.city ? installation.city : '',
+                province: installation.province ? installation.province : '',
+                postalCode: installation.postalCode ? installation.postalCode : '',
+                enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
+                email: installation.email ? installation.email : '',
+                homePhone: installation.homePhone ? installation.homePhone : '',
+                cellPhone: installation.cellPhone ? installation.cellPhone : '',
+                sqft: installation.sqFootage ? installation.sqFootage : '',
+                residents: installation.residents ? installation.residents : '',
+                pool: installation.hasPool ? installation.hasPool : '',
+                bathrooms: installation.bathrooms ? installation.bathrooms : '',
+                installedDate: tempDateTime ? tempDateTime : '',
+                installerId: installation.installerId ? installation.installerId : '',
+                installer: installation.installer ? installation.installer : '',
+                minDate: minDate,
+                allInstallers: allInstallers,
+              });
+            }
+          };
+
+          httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=installer", true);
+          httpReq.send(null);
         }
       };
 
       httpRequest.open('GET', "http://" + IP + "/getoneinstallation?id="
         + this.props.id, true);
+      httpRequest.send(null);
+    } else {
+      var httpRequest = new XMLHttpRequest();
+      let _this = this;
+      httpRequest.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          let allInstallers = JSON.parse(httpRequest.responseText).employees;
+
+          _this.setState({
+            allInstallers: allInstallers,
+          });
+        }
+      };
+
+      httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=installer", true);
       httpRequest.send(null);
     }
   }
@@ -239,6 +276,12 @@ export default class CompleteInstallation extends React.Component {
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = value;
+    this.setState(obj);
+  }
+
+  handleCheckboxChange(fieldname, event, isInputChecked) {
+    var obj = {};
+    obj[fieldname] = isInputChecked;
     this.setState(obj);
   }
 
@@ -503,23 +546,40 @@ export default class CompleteInstallation extends React.Component {
   }
 
   validateChecklist() {
-    let checklist = this.state.checklist;
-    if (validations.validateChecklist(checklist)) {
+    let checklist1 = this.state.checklist1;
+    let checklist2 = this.state.checklist2;
+    let checklist3 = this.state.checklist3;
+    let checklist4 = this.state.checklist4;
+    let checklist5 = this.state.checklist5;
+    let checklist6 = this.state.checklist6;
+    if (validations.validateChecklist(checklist1) &&
+        validations.validateChecklist(checklist2) &&
+        validations.validateChecklist(checklist3) &&
+        validations.validateChecklist(checklist4) &&
+        validations.validateChecklist(checklist5) &&
+        validations.validateChecklist(checklist6)) {
       this.setState({
         checklistErr: '',
         checklistValidated: true,
       });
     } else {
       this.setState({
-        checklistErr: 'All options must be selected',
+        checklistErr: 'All options must be checked Yes',
         checklistValidated: false,
       });
     }
   }
 
   validateAcknowledgement() {
-    let acknowledgement = this.state.acknowledgement;
-    if (validations.validateAcknowledgement(acknowledgement)) {
+    let acknowledgement1 = this.state.acknowledgement1;
+    let acknowledgement2 = this.state.acknowledgement2;
+    let acknowledgement3 = this.state.acknowledgement3;
+    let acknowledgement4 = this.state.acknowledgement4;
+    console.log(acknowledgement1);
+    if (validations.validateAcknowledgement(acknowledgement1) &&
+        validations.validateAcknowledgement(acknowledgement2) &&
+        validations.validateAcknowledgement(acknowledgement3) &&
+        validations.validateAcknowledgement(acknowledgement4)) {
       this.setState({
         acknowledgementErr: '',
         acknowledgementValidated: true,
@@ -528,6 +588,22 @@ export default class CompleteInstallation extends React.Component {
       this.setState({
         acknowledgementErr: 'Customer must acknowledge all fields',
         acknowledgementValidated: false,
+      });
+    }
+  }
+
+  validateInstaller() {
+    let installer = this.state.installer;
+    if (validations.validateInstaller(installer)) {
+      this.setState({
+        installerErr: '',
+        installer: installer,
+        installerValidated: true,
+      });
+    } else {
+      this.setState({
+        installerErr: 'Must select an installer',
+        installerValidated: false,
       });
     }
   }
@@ -549,25 +625,6 @@ export default class CompleteInstallation extends React.Component {
 
 
   validateAllFields() {
-    this.validateFName();
-    this.validateLName();
-    this.validateAddress();
-    this.validateUnit();
-    this.validateCity();
-    this.validateProvince();
-    this.validatePostalCode();
-    this.validateEnbridge();
-    this.validateEmail();
-    this.validateHomePhone();
-    this.validateCellPhone();
-    this.validateSqft();
-    this.validateBathrooms();
-    this.validateResidents();
-    this.validatePool();
-    this.validateChecklist();
-    this.validateAcknowledgement();
-    this.validateInstalledDate();
-
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
@@ -585,13 +642,66 @@ export default class CompleteInstallation extends React.Component {
         this.state.poolValidated &&
         this.state.checklistValidated &&
         this.state.acknowledgementValidated &&
+        this.state.installerValidated &&
         this.state.installedDateValidated) {
-      this.setState({allValidated: true});
+      //everything was validated, send an httpRequest to create a new sale
+      this.createNewInstallation();
+      //TODO handle the case when users click 'Submit' multiple times
+
     } else {
-      this.setState({allValidated: false});
+      this.validateFName();
+      this.validateLName();
+      this.validateAddress();
+      this.validateUnit();
+      this.validateCity();
+      this.validateProvince();
+      this.validatePostalCode();
+      this.validateEnbridge();
+      this.validateEmail();
+      this.validateHomePhone();
+      this.validateCellPhone();
+      this.validateSqft();
+      this.validateBathrooms();
+      this.validateResidents();
+      this.validatePool();
+      this.validateChecklist();
+      this.validateAcknowledgement();
+      this.validateInstaller();
+      this.validateInstalledDate();
     }
   }
 
+  createNewInstallation() {
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname,
+      address: this.state.address,
+      unitNum: this.state.unitNum,
+      city: this.state.city,
+      province: this.state.province,
+      postalCode: this.state.postalCode,
+      enbridge: this.state.enbridge,
+      email: this.state.email,
+      homePhone: this.state.homePhone,
+      cellPhone: this.state.cellPhone,
+      sqft: this.state.sqft,
+      bathrooms: this.state.bathrooms,
+      residents: this.state.residents,
+      pool: this.state.pool,
+      notes: this.state.notes,
+      installedDate: this.state.installedDate,
+      installerId: this.state.installerId,
+    };
+
+    var request = new XMLHttpRequest();
+    request.open('PUT', 'http://' + IP + '/updateinstallation', true);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    request.onreadystatechange = function() {
+      //#TODO recieve Installation number and add it to the state
+    };
+
+    request.send(JSON.stringify(data));
+  }
 
   render() {
     return (
@@ -848,8 +958,8 @@ export default class CompleteInstallation extends React.Component {
                 <h2 className="headings">Installation Checklist</h2>
                 <div className="radioActionText">
                   <p className="radioRow">Bypass Installed</p>
-                  <RadioButtonGroup name="checklist" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
+                  <RadioButtonGroup name="installationCheck" className="radioGroup"
+                  onChange={this.handleTextChange.bind(this, "checklist1")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -865,7 +975,7 @@ export default class CompleteInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Leak Check Equipment</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
+                  onChange={this.handleTextChange.bind(this, "checklist2")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -881,7 +991,7 @@ export default class CompleteInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">System Flushed</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
+                  onChange={this.handleTextChange.bind(this, "checklist3")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -897,7 +1007,7 @@ export default class CompleteInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Conservation System Explanation</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
+                  onChange={this.handleTextChange.bind(this, "checklist4")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -913,7 +1023,7 @@ export default class CompleteInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Shut-off Valve Explanation</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
+                  onChange={this.handleTextChange.bind(this, "checklist5")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -929,7 +1039,7 @@ export default class CompleteInstallation extends React.Component {
                 <div className="radioActionText">
                   <p className="radioRow">Filter Replacement Explanation</p>
                   <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
+                  onChange={this.handleTextChange.bind(this, "checklist6")}>
                     <RadioButton
                       className="radio"
                       value="yes"
@@ -961,15 +1071,23 @@ export default class CompleteInstallation extends React.Component {
                   <p>I hereby confirm the following statements:</p>
                   <Checkbox
                     label="Installation was completed to my satisfaction."
+                    value={this.state.acknowledgement1}
+                    onCheck={this.handleCheckboxChange.bind(this, "acknowledgement1")}
                   />
                   <Checkbox
                     label="The technician explained how to by-pass the filter and change the pre-filter."
+                    value={this.state.acknowledgement2}
+                    onCheck={this.handleCheckboxChange.bind(this, "acknowledgement2")}
                   />
                   <Checkbox
                     label="I recieved the bottling kit."
+                    value={this.state.acknowledgement3}
+                    onCheck={this.handleCheckboxChange.bind(this, "acknowledgement3")}
                   />
                   <Checkbox
                     label="My savings are not guaranteed."
+                    value={this.state.acknowledgement4}
+                    onCheck={this.handleCheckboxChange.bind(this, "acknowledgement4")}
                   />
                 </div>
                 <div style={{color:"red"}}>{this.state.acknowledgementErr}</div>
@@ -979,26 +1097,20 @@ export default class CompleteInstallation extends React.Component {
                   className="full-width"
                 />
                 <div>
-                  <TextField
-                    floatingLabelText="Contractor ID"
-                    type="number"
-                    min="1"
-                    value={this.state.contractorId}
-                    style={{ width: '32%' }}
-                  />
-                  &nbsp;
-                  &nbsp;
-                  <TextField
-                    floatingLabelText="Technician's Signature"
-                    style={{ width: '32%' }}
-                  />
-                  &nbsp;
-                  &nbsp;
-                  <TextField
-                    floatingLabelText="Greenlife Water Rep. Name"
-                    value={this.state.installerName}
-                    style={{ width: '32%' }}
-                  />
+                  <SelectField
+                    floatingLabelText="Installer"
+                    floatingLabelFixed={false}
+                    hintText="Select a Installer"
+                    value={this.state.installer}
+                    onChange={this.handleSelectChange.bind(this, "installer")}
+                    errorText={this.state.installerErr}
+                    errorStyle={{float: "left"}}
+                  >
+                    {this.state.allInstallers ? this.state.allInstallers.map((installer, index) => (
+                      <MenuItem key={index} value={installer.employeeNumber} primaryText={installer.name} />
+                    ))
+                    : null }
+                  </SelectField>
                   &nbsp;
                   &nbsp;
                   <DatePicker
@@ -1015,13 +1127,7 @@ export default class CompleteInstallation extends React.Component {
                 </div>
                 <br />
                 <div>
-                  <RaisedButton label="Cancel" secondary={true} />
-                  &nbsp;
-                  &nbsp;
                   <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
-                  &nbsp;
-                  &nbsp;
-                  <RaisedButton label="Proceed" primary={true} />
                 </div>
               </div>
             </div>

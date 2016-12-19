@@ -256,7 +256,7 @@ var validations = {
   },
 
   validateChecklist(checklist) {
-    if(checklist != '') {
+    if(checklist != '' && checklist == 'yes') {
       return true;
     } else {
       return false;
@@ -264,7 +264,7 @@ var validations = {
   },
 
   validateAcknowledgement(acknowledgement) {
-    if(acknowledgement != '') {
+    if(acknowledgement) {
       return true;
     } else {
       return false;
