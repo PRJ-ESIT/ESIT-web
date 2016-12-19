@@ -46,7 +46,6 @@ export default class ScheduleInstallation extends React.Component {
       if (this.readyState == 4 && this.status == 200) {
         let allSales = JSON.parse(httpRequest.responseText).data.sales;
         let allInstallers = JSON.parse(httpRequest.responseText).data.installers;
-        let data = JSON.parse(httpRequest.responseText).data;
 
         _this.setState({
           allSales: allSales,

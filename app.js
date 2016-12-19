@@ -112,7 +112,6 @@ app.get('/allsales', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -147,7 +146,6 @@ app.get('/scheduleinstallationinfo', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -221,7 +219,6 @@ app.get('/allinstallations', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -244,6 +241,39 @@ app.get('/allinstallations', function(request, response) {
     req.end();
 });
 
+app.get('/scheduledinstallations', function(request, response) {
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/InstallationService/getScheduledInstallations/',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+          var obj = JSON.parse(output);
+          return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
 
 app.get('/allcustomers', function(request, response) {
 
@@ -257,7 +287,6 @@ app.get('/allcustomers', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -293,7 +322,6 @@ app.get('/allemployees', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -328,7 +356,6 @@ app.get('/allemployeesbyrole', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -362,7 +389,6 @@ app.get('/existingsale', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -396,7 +422,6 @@ app.get('/getoneemployee', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
@@ -589,7 +614,6 @@ app.get('/getoneinstallation', function(request, response) {
     }
   };
 
-  var object = undefined;
   var req = http.request(options, function(res)
     {
       var output = '';
