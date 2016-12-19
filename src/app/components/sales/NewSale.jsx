@@ -121,17 +121,18 @@ export default class NewSale extends React.Component {
       let _this = this;
       httpRequest.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          let allSalesReps = JSON.parse(httpRequest.responseText).employees;
-          // console.log(allSalesReps);
-          var allEmployees = {};
-          for (var employee in allSalesReps) {
-            allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
-          }
-
+          let sale = JSON.parse(httpRequest.responseText).sale;
           var httpReq = new XMLHttpRequest();
           httpReq.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-              let sale = JSON.parse(httpReq.responseText).sale;
+              let allSalesReps = JSON.parse(httpReq.responseText).employees;
+              // Create employee object, indexed by employeeNumber
+              var allEmployees = {};
+              for (var employee in allSalesReps) {
+                allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
+              }
+console.log(allSalesReps);
+console.log(allEmployees);
               // Format time
               var tempDateTime = new Date(sale.installationDateTime);
               var minDate = new Date(2000, 0, 1);
@@ -159,14 +160,12 @@ export default class NewSale extends React.Component {
               });
             }
           };
-
-          httpReq.open('GET', "http://" + IP + "/existingsale?id="
-            + _this.props.id, true);
+            httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
           httpReq.send(null);
         }
       };
-
-      httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
+      httpRequest.open('GET', "http://" + IP + "/existingsale?id="
+        + _this.props.id, true);
       httpRequest.send(null);
     } else {
       var httpRequest = new XMLHttpRequest();
@@ -216,7 +215,6 @@ export default class NewSale extends React.Component {
       salesRepId: this.state.salesRepId,
       salesRepName: this.state.salesRepName
     };
-    console.log(data);
     // console.log(data);
     this.props.getEmbeddedUrl(data);
 

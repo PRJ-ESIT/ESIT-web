@@ -643,7 +643,7 @@ app.get('/getoneinstallation', function(request, response) {
 app.post('/getembeddedurl', function(request, response) {
   var url = config.docusign.baseUrl + "/envelopes";
   var recipientName = request.body.fname + ' ' +  request.body.lname;
-  console.log(request.body.email);
+  // console.log(request.body.email);
   // Prepare the request body
   var body = JSON.stringify({
       "emailSubject": "DocuSign API call - Embedded Sending Example",
@@ -656,79 +656,142 @@ app.post('/getembeddedurl', function(request, response) {
         "tabs" : {
           "textTabs" : [{
                tabLabel : "customerSalesNumber",
-               value : "123456789"
+               value : "123456789",
+               locked : "true"
               },
               {
                 tabLabel : "customerFName",
-                value : request.body.fname
+                value : request.body.fname,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADFName",
+                value : request.body.fname,
+                locked : "true"
               },
               {
                 tabLabel : "customerLName",
-                value : request.body.lname
+                value : request.body.lname,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADLName",
+                value : request.body.lname,
+                locked : "true"
               },
               {
                 tabLabel : "customerAddress",
-                value : request.body.address
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADUnit",
+                value : request.body.unitNum,
+                locked : "true"
               },
               {
                 tabLabel : "customerCity",
-                value : request.body.city
+                value : request.body.city,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADCity",
+                value : request.body.city,
+                locked : "true"
               },
               {
                 tabLabel : "customerPostalCode",
-                value : request.body.postalCode
+                value : request.body.postalCode,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADPostalCode",
+                value : request.body.postalCode,
+                locked : "true"
               },
               {
                 tabLabel : "customerHomePhone",
-                value : request.body.homePhone
+                value : request.body.homePhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADHomePhone",
+                value : request.body.homePhone,
+                locked : "true"
               },
               {
                 tabLabel : "customerCellPhone",
-                value : request.body.cellPhone
+                value : request.body.cellPhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADCellPhone",
+                value : request.body.cellPhone,
+                locked : "true"
               },
               {
                 tabLabel : "customerEnbridgeNumber",
-                value : request.body.enbridge
+                value : request.body.enbridge,
+                locked : "true"
               },
               {
                 tabLabel : "customerInstallationDate",
-                value : request.body.installationDate
+                value : request.body.installationDate,
+                locked : "true"
               },
               {
                 tabLabel : "customerInstallationTime",
-                value : request.body.installationTime
+                value : request.body.installationTime,
+                locked : "true"
               },
               {
                 tabLabel : "customerNotes",
-                value : request.body.notes
+                value : request.body.notes,
+                locked : "true"
               },
               {
                 tabLabel : "customerSalesRepId",
-                value : request.body.salesRepId
+                value : request.body.salesRepId,
+                locked : "true"
               },
               {
                 tabLabel : "customerSalesRepName",
-                value: request.body.salesRepName
+                value: request.body.salesRepName,
+                locked : "true"
               }
           ],
           "radioGroupTabs" : [{
             "groupName" : "customerProgram",
             "radios" : [{
               "value" : "1",
-              "selected" : request.body.programType == "1"
+              "selected" : request.body.programType == "1",
+              locked : "true"
             },
             {
               "value" : "2",
-              "selected" : request.body.programType == "2"
+              "selected" : request.body.programType == "2",
+              locked : "true"
             },
             {
               "value" : "3",
-              "selected" : request.body.programType == "3"
+              "selected" : request.body.programType == "3",
+              locked : "true"
             }]
           }],
           "listTabs" : [{
             "tabLabel" : "customerProvince",
-            "value" : request.body.province
+            "value" : request.body.province,
+            locked : "true"
           }]
         }
       }],
@@ -751,7 +814,7 @@ app.post('/getembeddedurl', function(request, response) {
       'X-DocuSign-Authentication' : dsAuthHeader
     }
   };
-  console.log(options);
+  // console.log(options);
   // Note HTTPS request here
   var req = https.request(options, function(res)
     {
@@ -765,8 +828,8 @@ app.post('/getembeddedurl', function(request, response) {
       res.on('end', function() {
         var obj = JSON.parse(output);
         var envelopeId = obj.envelopeId;
-        console.log(obj);
-        console.log(envelopeId);
+        // console.log(obj);
+        // console.log(envelopeId);
 
         // Get embedded URL
         var innerUrl = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
@@ -790,7 +853,7 @@ app.post('/getembeddedurl', function(request, response) {
             'X-DocuSign-Authentication' : dsAuthHeader
           }
         };
-        console.log(innerOptions);
+        // console.log(innerOptions);
 
         // Inner request
         var innerReq = https.request(innerOptions, function(innerRes)
