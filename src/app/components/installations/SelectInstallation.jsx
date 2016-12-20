@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, } from 'material-ui';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, RaisedButton, } from 'material-ui';
 import { IP } from '../../../../config/config.js';
 import { dateHelpers } from '../helpers/common.js';
 
@@ -59,36 +59,55 @@ export default class SelectInstallation extends React.Component {
     return date.getHours() + ":" + date.getMinutes();
   }
 
+  validateSelected() {
+    if (this.state.selectedNum != undefined) {
+      this.props.handleNext({selectedInstallationId: this.state.selectedInstallation.installationNumber});
+    }
+  }
+
   render() {
     return (
-      <Table
-        onRowSelection={this.handleRowSelected.bind(this)}
-        selectable={true}
-      >
-        <TableHeader>
-          <TableRow>
-            <TableHeaderColumn>ID</TableHeaderColumn>
-            <TableHeaderColumn>Customer</TableHeaderColumn>
-            <TableHeaderColumn>Address</TableHeaderColumn>
-            <TableHeaderColumn>Scheduled Date</TableHeaderColumn>
-            <TableHeaderColumn>Scheduled Time</TableHeaderColumn>
-            <TableHeaderColumn>Installer</TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody deselectOnClickaway={false}>
-          {this.state.installations? this.state.installations.map( (row, index) => (
-              <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
-                <TableRowColumn>{row.installationNumber}</TableRowColumn>
-                <TableRowColumn>{row.customerName}</TableRowColumn>
-                <TableRowColumn>{row.address}</TableRowColumn>
-                <TableRowColumn>{this.getDate(row.installationDateTime)}</TableRowColumn>
-                <TableRowColumn>{this.getTime(row.installationDateTime)}</TableRowColumn>
-                <TableRowColumn>{row.installerName}</TableRowColumn>
-              </TableRow>
-              ))
-          : null }
-        </TableBody>
-      </Table>
+      <div>
+        <Table
+          onRowSelection={this.handleRowSelected.bind(this)}
+          selectable={true}
+        >
+          <TableHeader>
+            <TableRow>
+              <TableHeaderColumn>ID</TableHeaderColumn>
+              <TableHeaderColumn>Customer</TableHeaderColumn>
+              <TableHeaderColumn>Address</TableHeaderColumn>
+              <TableHeaderColumn>Scheduled Date</TableHeaderColumn>
+              <TableHeaderColumn>Scheduled Time</TableHeaderColumn>
+              <TableHeaderColumn>Installer</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody deselectOnClickaway={false}>
+            {this.state.installations? this.state.installations.map( (row, index) => (
+                <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
+                  <TableRowColumn>{row.installationNumber}</TableRowColumn>
+                  <TableRowColumn>{row.customerName}</TableRowColumn>
+                  <TableRowColumn>{row.address}</TableRowColumn>
+                  <TableRowColumn>{this.getDate(row.installationDateTime)}</TableRowColumn>
+                  <TableRowColumn>{this.getTime(row.installationDateTime)}</TableRowColumn>
+                  <TableRowColumn>{row.installerName}</TableRowColumn>
+                </TableRow>
+                ))
+            : null }
+          </TableBody>
+        </Table>
+        <div>
+          <RaisedButton
+            label="Cancel"
+            onTouchTap={this.props.handlePrev}
+          />
+          <RaisedButton
+            label={'Next'}
+            primary={true}
+            onTouchTap={this.validateSelected.bind(this)}
+          />
+        </div>
+      </div>
     );
   }
 }
