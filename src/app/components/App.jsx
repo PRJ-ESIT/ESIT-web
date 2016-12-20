@@ -23,6 +23,7 @@ const defaultProps = {
   allSales: AllSales,
   documents: Documents,
   completeInstallation: InstallationContainer,
+  editInstallation: CompleteInstallation,
   allInstallations: AllInstallations,
   scheduleInstallation: ScheduleInstallation,
   newEmployee: NewEmployee,

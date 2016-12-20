@@ -1,7 +1,8 @@
 import React from 'react';
-import { Step, Stepper, StepLabel, RaisedButton, } from 'material-ui';
+import { Step, Stepper, StepLabel, } from 'material-ui';
 import CompleteInstallation from './CompleteInstallation.jsx';
 import SelectInstallation from './SelectInstallation.jsx';
+import DocuSignInstallation from './DocuSignInstallation.jsx';
 
 export default class InstallationContainer extends React.Component {
   constructor(props) {
@@ -10,15 +11,20 @@ export default class InstallationContainer extends React.Component {
     this.state = {
       finished: false,
       stepIndex: 0,
+      selectedInstallationId: undefined,
     };
   }
 
-  handleNext = () => {
+  handleNext = (obj) => {
     const {stepIndex} = this.state;
-    this.setState({
-      stepIndex: stepIndex + 1,
-      finished: stepIndex >= 2,
-    });
+    if(obj == undefined) {
+      var obj = {};
+    }
+
+    obj['stepIndex']=stepIndex + 1;
+    obj['finished']=stepIndex >= 2;
+
+    this.setState(obj);
   }
 
   handlePrev = () => {
@@ -31,11 +37,13 @@ export default class InstallationContainer extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <SelectInstallation />;
+        return <SelectInstallation handleNext={this.handleNext} handlePrev={this.handlePrev} />;
       case 1:
-        return <CompleteInstallation />;
+        return <CompleteInstallation handleNext={this.handleNext} handlePrev={this.handlePrev} status={'create'} id={this.state.selectedInstallationId} />;
       case 2:
-        return 'This is the bit I really care about!';
+        return <DocuSignInstallation />;
+      case 3:
+        return 'pictures'
       default:
         return 'You\'re a long way from home sonny jim!';
     }
@@ -43,7 +51,6 @@ export default class InstallationContainer extends React.Component {
 
   render() {
     const {finished, stepIndex} = this.state;
-
     return (
       <div style={{width: '100%', maxWidth: 900, margin: 'auto'}}>
         <Stepper activeStep={stepIndex}>
@@ -55,6 +62,9 @@ export default class InstallationContainer extends React.Component {
           </Step>
           <Step>
             <StepLabel>Sign the Documents</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Take Installation Photos</StepLabel>
           </Step>
         </Stepper>
         <div>
@@ -72,19 +82,7 @@ export default class InstallationContainer extends React.Component {
             </p>
           ) : (
             <div>
-              <div>{this.getStepContent(stepIndex)}</div>
-              <div>
-                <RaisedButton
-                  label="Back"
-                  disabled={stepIndex === 0}
-                  onTouchTap={this.handlePrev}
-                />
-                <RaisedButton
-                  label={stepIndex === 2 ? 'Finish' : 'Next'}
-                  primary={true}
-                  onTouchTap={this.handleNext}
-                />
-              </div>
+              {this.getStepContent(stepIndex)}
             </div>
           )}
         </div>
