@@ -103,7 +103,7 @@ export default class AllSales extends React.Component {
                 <ToolbarSeparator />
                 <RaisedButton label="Edit" primary={true}
                   onClick={this.props.editClickHandler.bind(null,
-                    "edit", this.state.selectedId, "newSale")}/>
+                    "edit", this.state.selectedId, "editSale")}/>
                 <RaisedButton label="Details" primary={true} />
                 <RaisedButton label="Delete" primary={true} />
               </ToolbarGroup>

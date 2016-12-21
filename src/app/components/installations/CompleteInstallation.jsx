@@ -638,7 +638,7 @@ export default class CompleteInstallation extends React.Component {
 
   validateForm() {
     if (this.validateAllFields()) {
-      this.props.handleNext();
+      this.props.handleInstallationNext();
     }
   }
 
@@ -1088,11 +1088,11 @@ export default class CompleteInstallation extends React.Component {
             </div>
           </div>
         </div>
-        <div>
+        <div style={{margin: '50px'}}>
           <RaisedButton
             label={this.props.status === 'create' ? 'Back' : 'Cancel'}
             secondary={this.props.status === 'create' ? false : true}
-            onTouchTap={this.props.handlePrev}
+            onTouchTap={this.props.handleInstallationPrev}
           />
           <RaisedButton
             label={this.props.status === 'create' ? 'Next' : 'Update'}

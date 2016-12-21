@@ -1,9 +1,9 @@
 import React from 'react';
-import {Tabs, Tab, TextField, Divider, RadioButton,
-  RadioButtonGroup, RaisedButton, Card, CardActions,
-  CardHeader, CardMedia, CardTitle, CardText, FlatButton,
-  DatePicker, TimePicker, Toggle, Checkbox, SelectField,
-  MenuItem} from 'material-ui';
+import {
+  TextField, Divider, RadioButton, RadioButtonGroup,
+  RaisedButton, FlatButton, DatePicker, TimePicker,
+  Toggle, Checkbox, SelectField, MenuItem
+} from 'material-ui';
 import { validations, dateHelpers } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
 
@@ -34,10 +34,6 @@ export default class NewSale extends React.Component {
     maxDate.setFullYear(maxDate.getFullYear() + 1);
 
     this.state = {
-      tabA: true,
-      tabB: false,
-      tabValue: 'a',
-
       // Form data
       saleNumber: '',
       fname: '',
@@ -112,7 +108,6 @@ export default class NewSale extends React.Component {
 
       allSalesReps: undefined,
     };
-    this.handleTabChange = this.handleTabChange.bind(this);
   }
 
   componentDidMount() {
@@ -165,7 +160,7 @@ export default class NewSale extends React.Component {
       httpRequest.open('GET', "http://" + IP + "/existingsale?id="
         + _this.props.id, true);
       httpRequest.send(null);
-    } else {
+    } else if (this.props.status == 'create') {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
@@ -183,21 +178,8 @@ export default class NewSale extends React.Component {
     }
   }
 
-  handleTabChange(value) {
-    if (value == 'a') {
-      this.setState({
-        tabValue: value,
-        tabA: true,
-        tabB: false,
-      });
-    }
-    else if (value == 'b') {
-      this.setState({
-        tabValue: value,
-        tabA: false,
-        tabB: true,
-      });
-    }
+  formatDate(date){
+    return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
   }
 
   handleTextChange(fieldname, event) {
@@ -583,7 +565,7 @@ export default class NewSale extends React.Component {
       homePhone: this.state.homePhone, //customer table
       cellPhone: this.state.cellPhone, //customer table
       email: this.state.email, //customer table
-      dateSigned: this.state.dateSigned,
+      dateSigned: dateSigned,
       //program type
       programType: this.state.programType, //sale table
 
@@ -593,8 +575,8 @@ export default class NewSale extends React.Component {
       //the rest
       salesRepId: this.state.salesRepId
     };
-    var request = new XMLHttpRequest();
     let _this = this;
+    var request = new XMLHttpRequest();
     request.open('POST', "http://" + IP + '/newsale', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
@@ -642,17 +624,6 @@ export default class NewSale extends React.Component {
   render() {
     return (
       <div>
-        <Tabs
-          value={this.state.tabValue}
-          onChange={this.handleTabChange}
-          inkBarStyle={{ backgroundColor: "yellow" }}
-        >
-        <Tab label="Rental Agreement Form" value="a" className="tabs">
-        </Tab>
-        <Tab label="Pre-Authorized Debit Form" value="b" className="tabs">
-        </Tab>
-      </Tabs>
-      { this.state.tabA ?
         <div className="newEmployeeFormContainer">
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
@@ -924,238 +895,21 @@ export default class NewSale extends React.Component {
                 ))
                 : null }
               </SelectField>
-              <br />
-              <br />
-              <Divider />
-              <br />
-              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              {this.props.status == "edit" ?
-                <RaisedButton label="Update" onClick={this.validateRentalAgreement.bind(this)} />
-              :
-                <RaisedButton label="Next" onClick={this.validateRentalAgreement.bind(this)} />
-              }
-              <br />
             </div>
           </div>
         </div>
-      : null }
-      { this.state.tabB ?
-        <div className="newEmployeeFormContainer">
-          <div className="newEmployeeForm">
-            <div className="newEmployeeFormBox">
-              <TextField
-                floatingLabelText="Application Number"
-                hintText="1234567"
-                type="number"
-                min="1"
-                value={this.state.applicationNumber}
-                onChange={this.handleTextChange.bind(this, "applicationNumber")}
-                onBlur={this.validateApplicationNumber.bind(this)}
-                errorText={this.state.applicationNumberErr}
-                errorStyle={{float: "left" }}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <DatePicker
-                hintText="2017-08-20"
-                container="inline"
-                floatingLabelText="Installation Date"
-                minDate={this.state.minDate}
-                maxDate={this.state.maxDate}
-                value={this.state.installationDate}
-                onChange={this.handleTextChange.bind(this, "installationDate")}
-                style={{ display: "inline-block" }}
-              />
-              <h2 className="headings">Homeowner Information</h2>
-              <TextField
-                floatingLabelText="First Name"
-                hintText="John"
-                maxLength="50"
-                value={this.state.fname}
-                onChange={this.handleTextChange.bind(this, "fname")}
-                onBlur={this.validateFName.bind(this)}
-                errorText={this.state.fnameErr}
-                errorStyle={{float: "left"}}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Last Name"
-                hintText="Doe"
-                maxLength="50"
-                value={this.state.lname}
-                onChange={this.handleTextChange.bind(this, "lname")}
-                onBlur={this.validateLName.bind(this)}
-                errorText={this.state.lnameErr}
-                errorStyle={{float: "left"}}
-              />
-              <br />
-              <TextField
-                floatingLabelText="Address"
-                hintText="123 Fake Street"
-                maxLength="50"
-                value={this.state.address}
-                onChange={this.handleTextChange.bind(this, "address")}
-                onBlur={this.validateAddress.bind(this)}
-                errorText={this.state.addressErr}
-                errorStyle={{float: "left"}}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Unit #"
-                hintText="7e"
-                maxLength="10"
-                onChange={this.handleTextChange.bind(this, "unitNum")}
-                onBlur={this.validateUnit.bind(this)}
-                errorText={this.state.unitNumErr}
-                errorStyle={{float: "left"}}
-              />
-              <br />
-              <TextField
-                floatingLabelText="City"
-                hintText="Toronto"
-                maxLength="80"
-                value={this.state.city}
-                onChange={this.handleTextChange.bind(this, "city")}
-                onBlur={this.validateCity.bind(this)}
-                errorText={this.state.cityErr}
-                errorStyle={{float: "left"}}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <SelectField
-                value={this.state.province}
-                onChange={this.handleSelectChange.bind(this, "province")}
-                floatingLabelText="Province"
-                floatingLabelFixed={false}
-                hintText="Select a Province"
-                errorText={this.state.provinceErr}
-                errorStyle={{float: "left"}}
-              >
-                {provinces}
-              </SelectField>
-              <br />
-              <TextField
-                floatingLabelText="Postal Code"
-                hintText="M4B 5V9"
-                maxLength="7"
-                value={this.state.postalCode}
-                onChange={this.handleTextChange.bind(this, "postalCode")}
-                onBlur={this.validatePostalCode.bind(this)}
-                errorText={this.state.postalCodeErr}
-                errorStyle={{float: "left"}}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Enbridge Gas #"
-                hintText="1234567890"
-                maxLength="20"
-                value={this.state.enbridge}
-                onChange={this.handleTextChange.bind(this, "enbridge")}
-                onBlur={this.validateEnbridge.bind(this)}
-                errorText={this.state.enbridgeErr}
-                errorStyle={{float: "left"}}
-              />
-              <br />
-              <TextField
-                floatingLabelText="Home Phone"
-                hintText="416-123-4567"
-                maxLength="14"
-                value={this.state.homePhone}
-                onChange={this.handleTextChange.bind(this, "homePhone")}
-                onBlur={this.validateHomePhone.bind(this)}
-                errorText={this.state.homePhoneErr}
-                errorStyle={{float: "left"}}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <TextField
-                floatingLabelText="Cell Phone"
-                hintText="416-123-4567"
-                maxLength="14"
-                value={this.state.cellPhone}
-                onChange={this.handleTextChange.bind(this, "cellPhone")}
-                onBlur={this.validateCellPhone.bind(this)}
-                errorText={this.state.cellPhoneErr}
-                errorStyle={{float: "left"}}
-              />
-              <br />
-              <TextField
-                floatingLabelText="Email"
-                hintText="name@domain.com"
-                type="email"
-                maxLength="50"
-                value={this.state.email}
-                onChange={this.handleTextChange.bind(this, "email")}
-                onBlur={this.validateEmail.bind(this)}
-                errorText={this.state.emailErr}
-                errorStyle={{float: "left"}}
-              />
-              <h2 className="headings">Void Cheque</h2>
-              <Card>
-                <CardMedia>
-                  <img src="http://dc466.4shared.com/img/L8gcz3sL/s23/135ac1260a0/bbf_void_cheque" />
-                </CardMedia>
-                <CardTitle title="Void Cheque" subtitle="Customer Number: 123-4567" />
-                <CardText>
-                  Void cheque provided by customer.
-                </CardText>
-                <CardActions>
-                  <FlatButton label="Download" />
-                </CardActions>
-              </Card>
-              <h2 className="headings">Authorization</h2>
-              <Checkbox
-                label="Homeowner Signature"
-                labelPosition="left"
-                labelStyle={{width:"auto"}}
-                style={{display:"inline-block", width:"256px"}}
-                checked={true}
-                disabled={true}
-                value={this.state.homeownerSignature}
-                onCheck={this.handleTextChange.bind(this, "homeownerSignature")}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <div style={{ display: 'inline-block' }}>
-                <DatePicker
-                  hintText="2017-08-20" container="inline"
-                  floatingLabelText="Installation Date"
-                  minDate={this.state.minDate}
-                  maxDate={this.state.maxDate}
-                  value={this.state.installationDate}
-                  onChange={this.handleDateChange.bind(this, "installationDate")}
-                />
-                <div style={{color:"red", float: "left"}}>
-                  {this.state.installationDateErr}
-                </div>
-              </div>
-              <br />
-              <br />
-              <Divider />
-              <br />
-              <RaisedButton label="Cancel" secondary={true} />
-              &nbsp;
-              &nbsp;
-              &nbsp;
-              <RaisedButton label="Save" onClick={this.validateRentalAgreement.bind(this)} />
-              // Change validateRentalAgreement here to validatePAD; make new function
-            </div>
-          </div>
+        <div style={{margin: '50px'}}>
+          <RaisedButton
+            label={'Cancel'}
+            secondary={true}
+            onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
+          />
+          <RaisedButton
+            label={this.props.status === 'create' ? 'Next' : 'Update'}
+            primary={true}
+            onTouchTap={this.validateRentalAgreement.bind(this)}
+          />
         </div>
-      : null }
       </div>
     );
   }

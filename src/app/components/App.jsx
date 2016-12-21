@@ -6,6 +6,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LoginDialog from './modals/LoginDialog.jsx';
 import LeftMenu from './LeftMenu.jsx';
 import Dashboard from './dashboard/Dashboard.jsx';
+import SaleContainer from './sales/SaleContainer.jsx';
 import NewSale from './sales/NewSale.jsx';
 import AllSales from './sales/AllSales.jsx';
 import InstallationContainer from './installations/InstallationContainer.jsx';
@@ -21,7 +22,8 @@ import { IP } from '../../../config/config.js';
 
 const defaultProps = {
   dashboard: Dashboard,
-  newSale: NewSale,
+  newSale: SaleContainer,
+  editSale: NewSale,
   allSales: AllSales,
   documents: Documents,
   completeInstallation: InstallationContainer,
@@ -42,6 +44,9 @@ export default class App extends React.Component {
       loginDialog: false,
       leftMenuOpen: false,
       currentContent: Dashboard,
+      saleStepIndex: 0,
+      installationStepIndex: 0,
+      selectedInstallationId: undefined,
 
       status: "",
       formId: undefined,
@@ -72,7 +77,41 @@ export default class App extends React.Component {
     this.setState({
       loginDialog: true,
     });
-  };
+  }
+
+  handleSaleNext = (obj) => {
+    const {saleStepIndex} = this.state;
+    if(obj == undefined) {
+      var obj = {};
+    }
+
+    obj['saleStepIndex']=saleStepIndex + 1;
+
+    this.setState(obj);
+  }
+
+  handleSalePrev = () => {
+    const {saleStepIndex} = this.state;
+
+    this.setState({saleStepIndex: saleStepIndex - 1});
+  }
+
+  handleInstallationNext = (obj) => {
+    const {installationStepIndex} = this.state;
+    if(obj == undefined) {
+      var obj = {};
+    }
+
+    obj['installationStepIndex']=installationStepIndex + 1;
+
+    this.setState(obj);
+  }
+
+  handleInstallationPrev = () => {
+    const {installationStepIndex} = this.state;
+
+    this.setState({installationStepIndex: installationStepIndex - 1});
+  }
 
   getRightButtons() {
     var rightButtonsStyle = {
@@ -189,7 +228,11 @@ export default class App extends React.Component {
           </div>
           <div className="mainContent">
             <CurrentContent getEmbeddedUrl={this.getEmbeddedUrl} editClickHandler={this.editClickHandler}
-              status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler}/>
+              status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler}
+              saleStepIndex={this.state.saleStepIndex} installationStepIndex={this.state.installationStepIndex}
+              handleSaleNext={this.handleSaleNext} handleSalePrev={this.handleSalePrev}
+              handleInstallationNext={this.handleInstallationNext} handleInstallationPrev={this.handleInstallationPrev}
+              selectedInstallationId={this.state.selectedInstallationId} />
           </div>
         </div>
         { this.state.loginDialog ?
