@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Tabs, Tab, TextField, SelectField, MenuItem, RadioButton, RadioButtonGroup,
+  TextField, SelectField, MenuItem, RadioButton, RadioButtonGroup,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
   Checkbox, Divider, DatePicker, RaisedButton,
 } from 'material-ui';
@@ -73,10 +73,6 @@ export default class CompleteInstallation extends React.Component {
     maxDate.setFullYear(maxDate.getFullYear() + 1);
 
     this.state = {
-      tabA: true,
-      tabB: false,
-      tabValue: 'a',
-
       // form data
       fname: '',
       lname: '',
@@ -93,12 +89,20 @@ export default class CompleteInstallation extends React.Component {
       bathrooms: '',
       residents: '',
       pool: '',
-      checklist: '',
+      checklist1: '',
+      checklist2: '',
+      checklist3: '',
+      checklist4: '',
+      checklist5: '',
+      checklist6: '',
       notes: '',
-      acknowledgement: '',
+      acknowledgement1: false,
+      acknowledgement2: false,
+      acknowledgement3: false,
+      acknowledgement4: false,
       installedDate: {},
-      contractorId: '',
-      installerName: '',
+      installerId: '',
+      installer: '',
       minDate: minDate,
       maxDate: maxDate,
 
@@ -120,6 +124,7 @@ export default class CompleteInstallation extends React.Component {
       poolErr: '',
       checklistErr: '',
       acknowledgementErr: '',
+      installerErr: '',
       installedDateErr: '',
 
       // Validation fields
@@ -140,8 +145,10 @@ export default class CompleteInstallation extends React.Component {
       poolValidated: false,
       checklistValidated: false,
       acknowledgementValidated: false,
+      installerValidated: false,
       installedDateValidated: false,
-      allValidated: false,
+
+      allInstallers: undefined,
 
       // table properties
       fixedHeader: true,
@@ -157,12 +164,11 @@ export default class CompleteInstallation extends React.Component {
       // This variable keeps the state of a current selected row
       selectedNum: -1,
     };
-      this.handleTabChange = this.handleTabChange.bind(this);
       this.handleSelection = this.handleSelection.bind(this);
   }
 
   componentDidMount() {
-    if(this.props.status == "edit"){
+    if(this.props.status == "edit" || this.props.status == "create"){
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
@@ -172,28 +178,39 @@ export default class CompleteInstallation extends React.Component {
           var tempDateTime = new Date(installation.installationDateTime);
           var minDate = new Date(2000, 0, 1);
 
-          _this.setState({
-            // salesNumber: sale.salesNumber,
-            fname: installation.customerFirstName ? installation.customerFirstName : '',
-            lname: installation.customerLastName ? installation.customerLastName : '',
-            address: installation.address ? installation.address : '',
-            unitNum: installation.unit ? installation.unit : '',
-            city: installation.city ? installation.city : '',
-            province: installation.province ? installation.province : '',
-            postalCode: installation.postalCode ? installation.postalCode : '',
-            enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
-            email: installation.email ? installation.email : '',
-            homePhone: installation.homePhone ? installation.homePhone : '',
-            cellPhone: installation.cellPhone ? installation.cellPhone : '',
-            sqft: installation.sqFootage ? installation.sqFootage : '',
-            residents: installation.residents ? installation.residents : '',
-            pool: installation.hasPool ? installation.hasPool : '',
-            bathrooms: installation.bathrooms ? installation.bathrooms : '',
-            installedDate: tempDateTime ? tempDateTime : '',
-            contractorId: installation.installerId ? installation.installerId : '',
-            installerName: installation.installerName ? installation.installerName : '',
-            minDate: minDate,
-          });
+          var httpReq = new XMLHttpRequest();
+          httpReq.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              let allInstallers = JSON.parse(httpReq.responseText).employees;
+
+              _this.setState({
+                // salesNumber: sale.salesNumber,
+                fname: installation.customerFirstName ? installation.customerFirstName : '',
+                lname: installation.customerLastName ? installation.customerLastName : '',
+                address: installation.address ? installation.address : '',
+                unitNum: installation.unit ? installation.unit : '',
+                city: installation.city ? installation.city : '',
+                province: installation.province ? installation.province : '',
+                postalCode: installation.postalCode ? installation.postalCode : '',
+                enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
+                email: installation.email ? installation.email : '',
+                homePhone: installation.homePhone ? installation.homePhone : '',
+                cellPhone: installation.cellPhone ? installation.cellPhone : '',
+                sqft: installation.sqFootage ? installation.sqFootage : '',
+                residents: installation.residents ? installation.residents : '',
+                pool: installation.hasPool ? installation.hasPool : '',
+                bathrooms: installation.bathrooms ? installation.bathrooms : '',
+                installedDate: tempDateTime ? tempDateTime : '',
+                installerId: installation.installerId ? installation.installerId : '',
+                installer: installation.installer ? installation.installer : '',
+                minDate: minDate,
+                allInstallers: allInstallers,
+              });
+            }
+          };
+
+          httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=installer", true);
+          httpReq.send(null);
         }
       };
 
@@ -202,23 +219,6 @@ export default class CompleteInstallation extends React.Component {
       httpRequest.send(null);
     }
   }
-
-  handleTabChange(value) {
-    if (value == 'a') {
-      this.setState({
-        tabValue: value,
-        tabA: true,
-        tabB: false,
-      });
-    }
-    else if (value == 'b') {
-      this.setState({
-        tabValue: value,
-        tabA: false,
-        tabB: true,
-      });
-    }
-  };
 
   handleTextChange(fieldname, event) {
     var obj = {};
@@ -239,6 +239,12 @@ export default class CompleteInstallation extends React.Component {
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = value;
+    this.setState(obj);
+  }
+
+  handleCheckboxChange(fieldname, event, isInputChecked) {
+    var obj = {};
+    obj[fieldname] = isInputChecked;
     this.setState(obj);
   }
 
@@ -503,23 +509,39 @@ export default class CompleteInstallation extends React.Component {
   }
 
   validateChecklist() {
-    let checklist = this.state.checklist;
-    if (validations.validateChecklist(checklist)) {
+    let checklist1 = this.state.checklist1;
+    let checklist2 = this.state.checklist2;
+    let checklist3 = this.state.checklist3;
+    let checklist4 = this.state.checklist4;
+    let checklist5 = this.state.checklist5;
+    let checklist6 = this.state.checklist6;
+    if (validations.validateChecklist(checklist1) &&
+        validations.validateChecklist(checklist2) &&
+        validations.validateChecklist(checklist3) &&
+        validations.validateChecklist(checklist4) &&
+        validations.validateChecklist(checklist5) &&
+        validations.validateChecklist(checklist6)) {
       this.setState({
         checklistErr: '',
         checklistValidated: true,
       });
     } else {
       this.setState({
-        checklistErr: 'All options must be selected',
+        checklistErr: 'All options must be checked Yes',
         checklistValidated: false,
       });
     }
   }
 
   validateAcknowledgement() {
-    let acknowledgement = this.state.acknowledgement;
-    if (validations.validateAcknowledgement(acknowledgement)) {
+    let acknowledgement1 = this.state.acknowledgement1;
+    let acknowledgement2 = this.state.acknowledgement2;
+    let acknowledgement3 = this.state.acknowledgement3;
+    let acknowledgement4 = this.state.acknowledgement4;
+    if (validations.validateAcknowledgement(acknowledgement1) &&
+        validations.validateAcknowledgement(acknowledgement2) &&
+        validations.validateAcknowledgement(acknowledgement3) &&
+        validations.validateAcknowledgement(acknowledgement4)) {
       this.setState({
         acknowledgementErr: '',
         acknowledgementValidated: true,
@@ -528,6 +550,22 @@ export default class CompleteInstallation extends React.Component {
       this.setState({
         acknowledgementErr: 'Customer must acknowledge all fields',
         acknowledgementValidated: false,
+      });
+    }
+  }
+
+  validateInstaller() {
+    let installer = this.state.installer;
+    if (validations.validateInstaller(installer)) {
+      this.setState({
+        installerErr: '',
+        installer: installer,
+        installerValidated: true,
+      });
+    } else {
+      this.setState({
+        installerErr: 'Must select an installer',
+        installerValidated: false,
       });
     }
   }
@@ -549,25 +587,6 @@ export default class CompleteInstallation extends React.Component {
 
 
   validateAllFields() {
-    this.validateFName();
-    this.validateLName();
-    this.validateAddress();
-    this.validateUnit();
-    this.validateCity();
-    this.validateProvince();
-    this.validatePostalCode();
-    this.validateEnbridge();
-    this.validateEmail();
-    this.validateHomePhone();
-    this.validateCellPhone();
-    this.validateSqft();
-    this.validateBathrooms();
-    this.validateResidents();
-    this.validatePool();
-    this.validateChecklist();
-    this.validateAcknowledgement();
-    this.validateInstalledDate();
-
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
@@ -585,456 +604,502 @@ export default class CompleteInstallation extends React.Component {
         this.state.poolValidated &&
         this.state.checklistValidated &&
         this.state.acknowledgementValidated &&
+        this.state.installerValidated &&
         this.state.installedDateValidated) {
-      this.setState({allValidated: true});
+      //everything was validated, send an httpRequest to create a new sale
+      return true;
+      //FIXME this.createNewInstallation();
+      //TODO handle the case when users click 'Submit' multiple times
+
     } else {
-      this.setState({allValidated: false});
+      this.validateFName();
+      this.validateLName();
+      this.validateAddress();
+      this.validateUnit();
+      this.validateCity();
+      this.validateProvince();
+      this.validatePostalCode();
+      this.validateEnbridge();
+      this.validateEmail();
+      this.validateHomePhone();
+      this.validateCellPhone();
+      this.validateSqft();
+      this.validateBathrooms();
+      this.validateResidents();
+      this.validatePool();
+      this.validateChecklist();
+      this.validateAcknowledgement();
+      this.validateInstaller();
+      this.validateInstalledDate();
+
+      return false;
     }
   }
 
+  validateForm() {
+    if (this.validateAllFields()) {
+      this.props.handleNext();
+    }
+  }
+
+  createNewInstallation() {
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname,
+      address: this.state.address,
+      unitNum: this.state.unitNum,
+      city: this.state.city,
+      province: this.state.province,
+      postalCode: this.state.postalCode,
+      enbridge: this.state.enbridge,
+      email: this.state.email,
+      homePhone: this.state.homePhone,
+      cellPhone: this.state.cellPhone,
+      sqft: this.state.sqft,
+      bathrooms: this.state.bathrooms,
+      residents: this.state.residents,
+      pool: this.state.pool,
+      notes: this.state.notes,
+      installedDate: this.state.installedDate,
+      installerId: this.state.installerId,
+    };
+
+    var request = new XMLHttpRequest();
+    request.open('PUT', 'http://' + IP + '/updateinstallation', true);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    request.onreadystatechange = function() {
+      //#TODO recieve Installation number and add it to the state
+    };
+
+    request.send(JSON.stringify(data));
+  }
 
   render() {
     return (
       <div>
-        <Tabs
-          value={this.state.tabValue}
-          onChange={this.handleTabChange}
-          inkBarStyle={{ backgroundColor: "yellow" }}
-        >
-          <Tab label="Installation Completion Certificate" value="a" className="tabs">
-          </Tab>
-          <Tab label="Installation Pictures" value="b" className="tabs">
-          </Tab>
-        </Tabs>
-        { this.state.tabA ?
-          <div className="newEmployeeFormContainer">
-            <div className="newEmployeeForm">
-              <div className="newEmployeeFormBox">
-                <h2 className="headings">Homeowner Information</h2>
-                <TextField
-                  floatingLabelText="First Name"
-                  hintText="John"
-                  maxLength="50"
-                  value={this.state.fname}
-                  onChange={this.handleTextChange.bind(this, "fname")}
-                  onBlur={this.validateFName.bind(this)}
-                  errorText={this.state.fnameErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="Last Name"
-                  hintText="Doe"
-                  maxLength="50"
-                  value={this.state.lname}
-                  onChange={this.handleTextChange.bind(this, "lname")}
-                  onBlur={this.validateLName.bind(this)}
-                  errorText={this.state.lnameErr}
-                  errorStyle={{float: "left"}}
-                />
+        <div className="newEmployeeFormContainer">
+          <div className="newEmployeeForm">
+            <div className="newEmployeeFormBox">
+              <h2 className="headings">Homeowner Information</h2>
+              <TextField
+                floatingLabelText="First Name"
+                hintText="John"
+                maxLength="50"
+                value={this.state.fname}
+                onChange={this.handleTextChange.bind(this, "fname")}
+                onBlur={this.validateFName.bind(this)}
+                errorText={this.state.fnameErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              <TextField
+                floatingLabelText="Last Name"
+                hintText="Doe"
+                maxLength="50"
+                value={this.state.lname}
+                onChange={this.handleTextChange.bind(this, "lname")}
+                onBlur={this.validateLName.bind(this)}
+                errorText={this.state.lnameErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                floatingLabelText="Address"
+                hintText="123 Main Street"
+                maxLength="50"
+                value={this.state.address}
+                onChange={this.handleTextChange.bind(this, "address")}
+                onBlur={this.validateAddress.bind(this)}
+                errorText={this.state.addressErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              <TextField
+                floatingLabelText="Unit #"
+                hintText="7e"
+                maxLength="10"
+                value={this.state.unitNum}
+                onChange={this.handleTextChange.bind(this, "unitNum")}
+                onBlur={this.validateUnit.bind(this)}
+                errorText={this.state.unitNumErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                floatingLabelText="City"
+                hintText="Toronto"
+                maxLength="80"
+                value={this.state.city}
+                onChange={this.handleTextChange.bind(this, "city")}
+                onBlur={this.validateCity.bind(this)}
+                errorText={this.state.cityErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              <SelectField
+                floatingLabelText="Province"
+                floatingLabelFixed={false}
+                hintText="Select a Province"
+                value={this.state.province}
+                onChange={this.handleSelectChange.bind(this, "province")}
+                errorText={this.state.provinceErr}
+                errorStyle={{float: "left"}}
+              >
+                {provinces}
+              </SelectField>
+              <br />
+              <TextField
+                floatingLabelText="Postal Code"
+                hintText="M4B 5V9"
+                maxLength="7"
+                value={this.state.postalCode}
+                onChange={this.handleTextChange.bind(this, "postalCode")}
+                onBlur={this.validatePostalCode.bind(this)}
+                errorText={this.state.postalCodeErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              <TextField
+                floatingLabelText="Enbridge Gas #"
+                hintText="1234567890"
+                maxLength="20"
+                value={this.state.enbridge}
+                onChange={this.handleTextChange.bind(this, "enbridge")}
+                onBlur={this.validateEnbridge.bind(this)}
+                errorText={this.state.enbridgeErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                floatingLabelText="Email"
+                hintText="name@domain.com"
+                type="email"
+                maxLength="50"
+                value={this.state.email}
+                onChange={this.handleTextChange.bind(this, "email")}
+                onBlur={this.validateEmail.bind(this)}
+                errorText={this.state.emailErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              <TextField
+                floatingLabelText="Home Phone"
+                hintText="(416) 123-4567"
+                type="tel"
+                maxLength="14"
+                value={this.state.homePhone}
+                onChange={this.handleTextChange.bind(this, "homePhone")}
+                onBlur={this.validateHomePhone.bind(this)}
+                errorText={this.state.homePhoneErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                floatingLabelText="Cell Phone"
+                hintText="(416) 123-4567"
+                type="tel"
+                maxLength="14"
+                value={this.state.cellPhone}
+                onChange={this.handleTextChange.bind(this, "cellPhone")}
+                onBlur={this.validateCellPhone.bind(this)}
+                errorText={this.state.cellPhoneErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              <TextField
+                floatingLabelText="SQ Footage"
+                hintText="3000"
+                type="number"
+                maxLength="5"
+                min="0"
+                max="99999"
+                value={this.state.sqft}
+                onChange={this.handleTextChange.bind(this, "sqft")}
+                onBlur={this.validateSqft.bind(this)}
+                errorText={this.state.sqftErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <TextField
+                floatingLabelText="Bathrooms"
+                hintText="3"
+                type="number"
+                maxLength="2"
+                min="0"
+                max="99"
+                value={this.state.bathrooms}
+                onChange={this.handleTextChange.bind(this, "bathrooms")}
+                onBlur={this.validateBathrooms.bind(this)}
+                errorText={this.state.bathroomsErr}
+                errorStyle={{float: "left"}}
+              />
+              &nbsp;
+              &nbsp;
+              <TextField
+                floatingLabelText="Residents"
+                hintText="4"
+                type="number"
+                maxLength="2"
+                min="0"
+                max="99"
+                value={this.state.residents}
+                onChange={this.handleTextChange.bind(this, "residents")}
+                onBlur={this.validateResidents.bind(this)}
+                errorText={this.state.residentsErr}
+                errorStyle={{float: "left"}}
+              />
+              <br />
+              <div className="radioActionText">
+                <p className="radioRow">Pool</p>
+                <RadioButtonGroup name="pool" className="radioGroup"
+                valueSelected={this.state.pool}
+                onChange={this.handleRadioChange.bind(this, "pool")}>
+                  <RadioButton
+                    className="radio"
+                    value="1"
+                    label="Yes"
+                  />
+                  <RadioButton
+                    className="radio"
+                    value="0"
+                    label="No"
+                  />
+                </RadioButtonGroup>
                 <br />
-                <TextField
-                  floatingLabelText="Address"
-                  hintText="123 Main Street"
-                  maxLength="50"
-                  value={this.state.address}
-                  onChange={this.handleTextChange.bind(this, "address")}
-                  onBlur={this.validateAddress.bind(this)}
-                  errorText={this.state.addressErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="Unit #"
-                  hintText="7e"
-                  maxLength="10"
-                  value={this.state.unitNum}
-                  onChange={this.handleTextChange.bind(this, "unitNum")}
-                  onBlur={this.validateUnit.bind(this)}
-                  errorText={this.state.unitNumErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  floatingLabelText="City"
-                  hintText="Toronto"
-                  maxLength="80"
-                  value={this.state.city}
-                  onChange={this.handleTextChange.bind(this, "city")}
-                  onBlur={this.validateCity.bind(this)}
-                  errorText={this.state.cityErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                <SelectField
-                  floatingLabelText="Province"
-                  floatingLabelFixed={false}
-                  hintText="Select a Province"
-                  value={this.state.province}
-                  onChange={this.handleSelectChange.bind(this, "province")}
-                  errorText={this.state.provinceErr}
-                  errorStyle={{float: "left"}}
-                >
-                  {provinces}
-                </SelectField>
-                <br />
-                <TextField
-                  floatingLabelText="Postal Code"
-                  hintText="M4B 5V9"
-                  maxLength="7"
-                  value={this.state.postalCode}
-                  onChange={this.handleTextChange.bind(this, "postalCode")}
-                  onBlur={this.validatePostalCode.bind(this)}
-                  errorText={this.state.postalCodeErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="Enbridge Gas #"
-                  hintText="1234567890"
-                  maxLength="20"
-                  value={this.state.enbridge}
-                  onChange={this.handleTextChange.bind(this, "enbridge")}
-                  onBlur={this.validateEnbridge.bind(this)}
-                  errorText={this.state.enbridgeErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  floatingLabelText="Email"
-                  hintText="name@domain.com"
-                  type="email"
-                  maxLength="50"
-                  value={this.state.email}
-                  onChange={this.handleTextChange.bind(this, "email")}
-                  onBlur={this.validateEmail.bind(this)}
-                  errorText={this.state.emailErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="Home Phone"
-                  hintText="(416) 123-4567"
-                  type="tel"
-                  maxLength="14"
-                  value={this.state.homePhone}
-                  onChange={this.handleTextChange.bind(this, "homePhone")}
-                  onBlur={this.validateHomePhone.bind(this)}
-                  errorText={this.state.homePhoneErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  floatingLabelText="Cell Phone"
-                  hintText="(416) 123-4567"
-                  type="tel"
-                  maxLength="14"
-                  value={this.state.cellPhone}
-                  onChange={this.handleTextChange.bind(this, "cellPhone")}
-                  onBlur={this.validateCellPhone.bind(this)}
-                  errorText={this.state.cellPhoneErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="SQ Footage"
-                  hintText="3000"
-                  type="number"
-                  maxLength="5"
-                  min="0"
-                  max="99999"
-                  value={this.state.sqft}
-                  onChange={this.handleTextChange.bind(this, "sqft")}
-                  onBlur={this.validateSqft.bind(this)}
-                  errorText={this.state.sqftErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <TextField
-                  floatingLabelText="Bathrooms"
-                  hintText="3"
-                  type="number"
-                  maxLength="2"
-                  min="0"
-                  max="99"
-                  value={this.state.bathrooms}
-                  onChange={this.handleTextChange.bind(this, "bathrooms")}
-                  onBlur={this.validateBathrooms.bind(this)}
-                  errorText={this.state.bathroomsErr}
-                  errorStyle={{float: "left"}}
-                />
-                &nbsp;
-                &nbsp;
-                <TextField
-                  floatingLabelText="Residents"
-                  hintText="4"
-                  type="number"
-                  maxLength="2"
-                  min="0"
-                  max="99"
-                  value={this.state.residents}
-                  onChange={this.handleTextChange.bind(this, "residents")}
-                  onBlur={this.validateResidents.bind(this)}
-                  errorText={this.state.residentsErr}
-                  errorStyle={{float: "left"}}
-                />
-                <br />
-                <div className="radioActionText">
-                  <p className="radioRow">Pool</p>
-                  <RadioButtonGroup name="pool" className="radioGroup"
-                  valueSelected={this.state.pool}
-                  onChange={this.handleRadioChange.bind(this, "pool")}>
-                    <RadioButton
-                      className="radio"
-                      value="1"
-                      label="Yes"
-                    />
-                    <RadioButton
-                      className="radio"
-                      value="0"
-                      label="No"
-                    />
-                  </RadioButtonGroup>
-                  <br />
-                  <div style={{color:"red", float: "left"}}>{this.state.poolErr}</div>
-                </div>
-                <br />
+                <div style={{color:"red", float: "left"}}>{this.state.poolErr}</div>
+              </div>
+              <br />
 
-                <h2 className="headings">Program Installation</h2>
-                <Table
-                  onRowSelection={this.handleSelection}
-                  onCellClick={this.handleCellClick}
-                  height={this.state.height}
-                  fixedHeader={this.state.fixedHeader}
-                  fixedFooter={this.state.fixedFooter}
-                  selectable={this.state.selectable}
-                  multiSelectable={this.state.multiSelectable}
-                  style={{ maxWidth: '700px' }}
+              <h2 className="headings">Program Installation</h2>
+              <Table
+                onRowSelection={this.handleSelection}
+                onCellClick={this.handleCellClick}
+                height={this.state.height}
+                fixedHeader={this.state.fixedHeader}
+                fixedFooter={this.state.fixedFooter}
+                selectable={this.state.selectable}
+                multiSelectable={this.state.multiSelectable}
+                style={{ maxWidth: '700px' }}
+              >
+                <TableHeader
+                  displaySelectAll={this.state.showCheckboxes}
+                  adjustForCheckbox={this.state.showCheckboxes}
+                  enableSelectAll={this.state.enableSelectAll}
                 >
-                  <TableHeader
-                    displaySelectAll={this.state.showCheckboxes}
-                    adjustForCheckbox={this.state.showCheckboxes}
-                    enableSelectAll={this.state.enableSelectAll}
-                  >
-                    <TableRow className={'programTableRow'}>
-                      <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }} tooltip="Product Name">Product</TableHeaderColumn>
-                      <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }} tooltip="Product Number">Number</TableHeaderColumn>
-                      <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }} tooltip="Product Details">Details</TableHeaderColumn>
+                  <TableRow className={'programTableRow'}>
+                    <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }} tooltip="Product Name">Product</TableHeaderColumn>
+                    <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }} tooltip="Product Number">Number</TableHeaderColumn>
+                    <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }} tooltip="Product Details">Details</TableHeaderColumn>
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  displayRowCheckbox={this.state.showCheckboxes}
+                  deselectOnClickaway={this.state.deselectOnClickaway}
+                  showRowHover={this.state.showRowHover}
+                  stripedRows={this.state.stripedRows}
+                >
+                  {tableData.map( (row, index) => (
+                    <TableRow className={'programTableRow'} selected={index == this.state.selectedNum ? true : false}
+                    key={index}>
+                      <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }}>{row.name}</TableRowColumn>
+                      <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }}>{row.number}</TableRowColumn>
+                      <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }}>{row.details}</TableRowColumn>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody
-                    displayRowCheckbox={this.state.showCheckboxes}
-                    deselectOnClickaway={this.state.deselectOnClickaway}
-                    showRowHover={this.state.showRowHover}
-                    stripedRows={this.state.stripedRows}
-                  >
-                    {tableData.map( (row, index) => (
-                      <TableRow className={'programTableRow'} selected={index == this.state.selectedNum ? true : false}
-                      key={index}>
-                        <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }}>{row.name}</TableRowColumn>
-                        <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }}>{row.number}</TableRowColumn>
-                        <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }}>{row.details}</TableRowColumn>
-                      </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
+                    ))}
+                </TableBody>
+              </Table>
 
-                <h2 className="headings">Installation Checklist</h2>
-                <div className="radioActionText">
-                  <p className="radioRow">Bypass Installed</p>
-                  <RadioButtonGroup name="checklist" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
-                    <RadioButton
-                      className="radio"
-                      value="yes"
-                      label="Yes"
-                    />
-                    <RadioButton
-                      className="radio"
-                      value="no"
-                      label="No"
-                    />
-                  </RadioButtonGroup>
-                </div>
-                <div className="radioActionText">
-                  <p className="radioRow">Leak Check Equipment</p>
-                  <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
-                    <RadioButton
-                      className="radio"
-                      value="yes"
-                      label="Yes"
-                    />
-                    <RadioButton
-                      className="radio"
-                      value="no"
-                      label="No"
-                    />
-                  </RadioButtonGroup>
-                </div>
-                <div className="radioActionText">
-                  <p className="radioRow">System Flushed</p>
-                  <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
-                    <RadioButton
-                      className="radio"
-                      value="yes"
-                      label="Yes"
-                    />
-                    <RadioButton
-                      className="radio"
-                      value="no"
-                      label="No"
-                    />
-                  </RadioButtonGroup>
-                </div>
-                <div className="radioActionText">
-                  <p className="radioRow">Conservation System Explanation</p>
-                  <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
-                    <RadioButton
-                      className="radio"
-                      value="yes"
-                      label="Yes"
-                    />
-                    <RadioButton
-                      className="radio"
-                      value="no"
-                      label="No"
-                    />
-                  </RadioButtonGroup>
-                </div>
-                <div className="radioActionText">
-                  <p className="radioRow">Shut-off Valve Explanation</p>
-                  <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
-                    <RadioButton
-                      className="radio"
-                      value="yes"
-                      label="Yes"
-                    />
-                    <RadioButton
-                      className="radio"
-                      value="no"
-                      label="No"
-                    />
-                  </RadioButtonGroup>
-                </div>
-                <div className="radioActionText">
-                  <p className="radioRow">Filter Replacement Explanation</p>
-                  <RadioButtonGroup name="installationCheck" className="radioGroup"
-                  onChange={this.handleRadioChange.bind(this, "checklist")}>
-                    <RadioButton
-                      className="radio"
-                      value="yes"
-                      label="Yes"
-                    />
-                    <RadioButton
-                      className="radio"
-                      value="no"
-                      label="No"
-                    />
-                  </RadioButtonGroup>
-                </div>
-                <TextField
-                  hintText="Additional Notes"
-                  floatingLabelText="Notes"
-                  maxLength="300"
-                  multiLine={true}
-                  rows={1}
-                  rowsMax={10}
-                  value={this.state.notes}
-                  onChange={this.handleTextChange.bind(this, "notes")}
-                  className="full-width"
-                  errorText={this.state.checklistErr}
+              <h2 className="headings">Installation Checklist</h2>
+              <div className="radioActionText">
+                <p className="radioRow">Bypass Installed</p>
+                <RadioButtonGroup name="installationCheck" className="radioGroup"
+                onChange={this.handleTextChange.bind(this, "checklist1")}>
+                  <RadioButton
+                    className="radio"
+                    value="yes"
+                    label="Yes"
+                  />
+                  <RadioButton
+                    className="radio"
+                    value="no"
+                    label="No"
+                  />
+                </RadioButtonGroup>
+              </div>
+              <div className="radioActionText">
+                <p className="radioRow">Leak Check Equipment</p>
+                <RadioButtonGroup name="installationCheck" className="radioGroup"
+                onChange={this.handleTextChange.bind(this, "checklist2")}>
+                  <RadioButton
+                    className="radio"
+                    value="yes"
+                    label="Yes"
+                  />
+                  <RadioButton
+                    className="radio"
+                    value="no"
+                    label="No"
+                  />
+                </RadioButtonGroup>
+              </div>
+              <div className="radioActionText">
+                <p className="radioRow">System Flushed</p>
+                <RadioButtonGroup name="installationCheck" className="radioGroup"
+                onChange={this.handleTextChange.bind(this, "checklist3")}>
+                  <RadioButton
+                    className="radio"
+                    value="yes"
+                    label="Yes"
+                  />
+                  <RadioButton
+                    className="radio"
+                    value="no"
+                    label="No"
+                  />
+                </RadioButtonGroup>
+              </div>
+              <div className="radioActionText">
+                <p className="radioRow">Conservation System Explanation</p>
+                <RadioButtonGroup name="installationCheck" className="radioGroup"
+                onChange={this.handleTextChange.bind(this, "checklist4")}>
+                  <RadioButton
+                    className="radio"
+                    value="yes"
+                    label="Yes"
+                  />
+                  <RadioButton
+                    className="radio"
+                    value="no"
+                    label="No"
+                  />
+                </RadioButtonGroup>
+              </div>
+              <div className="radioActionText">
+                <p className="radioRow">Shut-off Valve Explanation</p>
+                <RadioButtonGroup name="installationCheck" className="radioGroup"
+                onChange={this.handleTextChange.bind(this, "checklist5")}>
+                  <RadioButton
+                    className="radio"
+                    value="yes"
+                    label="Yes"
+                  />
+                  <RadioButton
+                    className="radio"
+                    value="no"
+                    label="No"
+                  />
+                </RadioButtonGroup>
+              </div>
+              <div className="radioActionText">
+                <p className="radioRow">Filter Replacement Explanation</p>
+                <RadioButtonGroup name="installationCheck" className="radioGroup"
+                onChange={this.handleTextChange.bind(this, "checklist6")}>
+                  <RadioButton
+                    className="radio"
+                    value="yes"
+                    label="Yes"
+                  />
+                  <RadioButton
+                    className="radio"
+                    value="no"
+                    label="No"
+                  />
+                </RadioButtonGroup>
+              </div>
+              <TextField
+                hintText="Additional Notes"
+                floatingLabelText="Notes"
+                maxLength="300"
+                multiLine={true}
+                rows={1}
+                rowsMax={10}
+                value={this.state.notes}
+                onChange={this.handleTextChange.bind(this, "notes")}
+                className="full-width"
+                errorText={this.state.checklistErr}
+                errorStyle={{float: "left"}}
+              />
+
+              <h2 className="headings">Customer Acknowledgement</h2>
+              <div>
+                <p>I hereby confirm the following statements:</p>
+                <Checkbox
+                  label="Installation was completed to my satisfaction."
+                  value={this.state.acknowledgement1}
+                  onCheck={this.handleCheckboxChange.bind(this, "acknowledgement1")}
+                />
+                <Checkbox
+                  label="The technician explained how to by-pass the filter and change the pre-filter."
+                  value={this.state.acknowledgement2}
+                  onCheck={this.handleCheckboxChange.bind(this, "acknowledgement2")}
+                />
+                <Checkbox
+                  label="I recieved the bottling kit."
+                  value={this.state.acknowledgement3}
+                  onCheck={this.handleCheckboxChange.bind(this, "acknowledgement3")}
+                />
+                <Checkbox
+                  label="My savings are not guaranteed."
+                  value={this.state.acknowledgement4}
+                  onCheck={this.handleCheckboxChange.bind(this, "acknowledgement4")}
+                />
+              </div>
+              <div style={{color:"red"}}>{this.state.acknowledgementErr}</div>
+              <TextField
+                floatingLabelText="Homeowner's Signature"
+                hintText="Tap to add signature"
+                className="full-width"
+              />
+              <div>
+                <SelectField
+                  floatingLabelText="Installer"
+                  floatingLabelFixed={false}
+                  hintText="Select a Installer"
+                  value={this.state.installer}
+                  onChange={this.handleSelectChange.bind(this, "installer")}
+                  errorText={this.state.installerErr}
+                  errorStyle={{float: "left"}}
+                >
+                  {this.state.allInstallers ? this.state.allInstallers.map((installer, index) => (
+                    <MenuItem key={index} value={installer.employeeNumber} primaryText={installer.name} />
+                  ))
+                  : null }
+                </SelectField>
+                &nbsp;
+                &nbsp;
+                <DatePicker
+                  floatingLabelText="Installation Date"
+                  hintText="2017-08-20"
+                  container="inline"
+                  value={this.state.installedDate}
+                  onChange={this.handleDateChange.bind(this, "installedDate")}
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
+                  errorText={this.state.installedDateErr}
                   errorStyle={{float: "left"}}
                 />
-
-                <h2 className="headings">Customer Acknowledgement</h2>
-                <div>
-                  <p>I hereby confirm the following statements:</p>
-                  <Checkbox
-                    label="Installation was completed to my satisfaction."
-                  />
-                  <Checkbox
-                    label="The technician explained how to by-pass the filter and change the pre-filter."
-                  />
-                  <Checkbox
-                    label="I recieved the bottling kit."
-                  />
-                  <Checkbox
-                    label="My savings are not guaranteed."
-                  />
-                </div>
-                <div style={{color:"red"}}>{this.state.acknowledgementErr}</div>
-                <TextField
-                  floatingLabelText="Homeowner's Signature"
-                  hintText="Tap to add signature"
-                  className="full-width"
-                />
-                <div>
-                  <TextField
-                    floatingLabelText="Contractor ID"
-                    type="number"
-                    min="1"
-                    value={this.state.contractorId}
-                    style={{ width: '32%' }}
-                  />
-                  &nbsp;
-                  &nbsp;
-                  <TextField
-                    floatingLabelText="Technician's Signature"
-                    style={{ width: '32%' }}
-                  />
-                  &nbsp;
-                  &nbsp;
-                  <TextField
-                    floatingLabelText="Greenlife Water Rep. Name"
-                    value={this.state.installerName}
-                    style={{ width: '32%' }}
-                  />
-                  &nbsp;
-                  &nbsp;
-                  <DatePicker
-                    floatingLabelText="Installation Date"
-                    hintText="2017-08-20"
-                    container="inline"
-                    value={this.state.installedDate}
-                    onChange={this.handleDateChange.bind(this, "installedDate")}
-                    minDate={this.state.minDate}
-                    maxDate={this.state.maxDate}
-                    errorText={this.state.installedDateErr}
-                    errorStyle={{float: "left"}}
-                  />
-                </div>
-                <br />
-                <div>
-                  <RaisedButton label="Cancel" secondary={true} />
-                  &nbsp;
-                  &nbsp;
-                  <RaisedButton label="Save" onClick={this.validateAllFields.bind(this)} />
-                  &nbsp;
-                  &nbsp;
-                  <RaisedButton label="Proceed" primary={true} />
-                </div>
               </div>
             </div>
           </div>
-        : null }
-        { this.state.tabB ?
-          <div>
-            <h2>Installation Pictures</h2>
-            <p>
-              Pictures go here.
-            </p>
-          </div>
-        : null }
+        </div>
+        <div>
+          <RaisedButton
+            label={this.props.status === 'create' ? 'Back' : 'Cancel'}
+            secondary={this.props.status === 'create' ? false : true}
+            onTouchTap={this.props.handlePrev}
+          />
+          <RaisedButton
+            label={this.props.status === 'create' ? 'Next' : 'Update'}
+            primary={true}
+            onTouchTap={this.validateForm.bind(this)}
+          />
+        </div>
       </div>
     );
   }

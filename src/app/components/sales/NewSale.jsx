@@ -533,9 +533,9 @@ export default class NewSale extends React.Component {
       //TODO handle the case when users click 'Submit' multiple times
 
     } else {
-      this.validateAddress();
       this.validateFName();
       this.validateLName();
+      this.validateAddress();
       this.validateUnit();
       this.validateCity();
       this.validateProvince();
@@ -580,10 +580,10 @@ export default class NewSale extends React.Component {
       province: this.state.province,//address table
       postalCode: this.state.postalCode.replace(/\s/g,''),//address table
       enbridge: this.state.enbridge, //customer table
-      email: this.state.email, //customer table
       homePhone: this.state.homePhone, //customer table
       cellPhone: this.state.cellPhone, //customer table
-      dateSigned: dateSigned,
+      email: this.state.email, //customer table
+      dateSigned: this.state.dateSigned,
       //program type
       programType: this.state.programType, //sale table
 
@@ -911,11 +911,11 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
-                value={this.state.salesRepId}
-                onChange={this.handleSelectChange.bind(this, "salesRepId")}
                 floatingLabelText="Sales Representative"
                 floatingLabelFixed={false}
                 hintText="Select a Sales Representative"
+                value={this.state.salesRepId}
+                onChange={this.handleSelectChange.bind(this, "salesRepId")}
                 errorText={this.state.salesRepErr}
                 errorStyle={{float: "left"}}
               >
