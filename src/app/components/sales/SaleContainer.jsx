@@ -6,50 +6,26 @@ import DocuSignSale from './DocuSignSale.jsx';
 export default class SaleContainer extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      finished: false,
-      stepIndex: 0,
-    };
-  }
-
-  handleNext = (obj) => {
-    const {stepIndex} = this.state;
-    if(obj == undefined) {
-      var obj = {};
-    }
-
-    obj['stepIndex']=stepIndex + 1;
-    obj['finished']=stepIndex >= 2;
-
-    this.setState(obj);
-  }
-
-  handlePrev = () => {
-    const {stepIndex} = this.state;
-    if (stepIndex > 0) {
-      this.setState({stepIndex: stepIndex - 1});
-    }
   }
 
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <NewSale handleNext={this.handleNext} handlePrev={this.handlePrev} status={'create'} menuClickHandler={this.props.menuClickHandler} />;
+        return <NewSale handleSalePrev={this.handleSalePrev} status={'create'} menuClickHandler={this.props.menuClickHandler} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
       case 1:
         return <DocuSignSale />;
       case 2:
         return 'pictures'
       default:
-        return 'You\'re a long way from home sonny jim!';
+        return 'You messed up :)';
     }
   }
 
   render() {
-    const {finished, stepIndex} = this.state;
+    const {saleStepIndex} = this.props;
     return (
       <div style={{width: '100%', maxWidth: 900, margin: 'auto'}}>
-        <Stepper activeStep={stepIndex}>
+        <Stepper activeStep={saleStepIndex}>
           <Step>
             <StepLabel>Create a Sale</StepLabel>
           </Step>
@@ -61,23 +37,7 @@ export default class SaleContainer extends React.Component {
           </Step>
         </Stepper>
         <div>
-          {finished ? (
-            <p>
-              <a
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault();
-                  this.setState({stepIndex: 0, finished: false});
-                }}
-              >
-                Click here
-              </a> to return to beginning. Snackbar should go here instead.
-            </p>
-          ) : (
-            <div>
-              {this.getStepContent(stepIndex)}
-            </div>
-          )}
+          {this.getStepContent(saleStepIndex)}
         </div>
       </div>
     );

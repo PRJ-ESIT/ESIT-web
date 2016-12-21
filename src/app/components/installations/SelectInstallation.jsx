@@ -60,7 +60,7 @@ export default class SelectInstallation extends React.Component {
 
   validateSelected() {
     if (this.state.selectedNum != undefined) {
-      this.props.handleNext({selectedInstallationId: this.state.selectedInstallation.installationNumber});
+      this.props.handleInstallationNext({selectedInstallationId: this.state.selectedInstallation.installationNumber});
     }
   }
 
