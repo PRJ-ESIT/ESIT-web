@@ -660,7 +660,7 @@ app.post('/getembeddedurl', function(request, response) {
         "tabs" : {
           "textTabs" : [{
                tabLabel : "customerSalesNumber",
-               value : "123456789",
+               value : request.body.salesNumber,
                locked : "true"
               },
               {

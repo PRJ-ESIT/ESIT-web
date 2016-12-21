@@ -131,8 +131,6 @@ export default class NewSale extends React.Component {
               for (var employee in allSalesReps) {
                 allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
               }
-console.log(allSalesReps);
-console.log(allEmployees);
               // Format time
               var tempDateTime = new Date(sale.installationDateTime);
               var minDate = new Date(2000, 0, 1);
@@ -250,7 +248,6 @@ console.log(allEmployees);
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = value;
-    console.log(obj);
     this.setState(obj);
   }
 
@@ -565,7 +562,6 @@ console.log(allEmployees);
         this.state.installationDateValidated &&
         this.state.installationTimeValidated &&
         this.state.salesRepValidated) {
-
       //everything was validated, send an httpRequest to create a new sale
       this.createNewSale();
       //TODO handle the case when users click 'Submit' multiple times
@@ -631,13 +627,45 @@ console.log(allEmployees);
       //the rest
       salesRepId: this.state.salesRepId
     };
-
     var request = new XMLHttpRequest();
+    let _this = this;
     request.open('POST', "http://" + IP + '/newsale', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 201) {
         let saleObject = JSON.parse(request.responseText).sale;
+        // Get embedded URL
+        var date = new Date(saleObject.installationDateTime);
+        date = date.toLocaleDateString();
+        var time = new Date(saleObject.installationDateTime);
+        time = time.toLocaleTimeString();
+
+        let data = {
+          salesNumber: saleObject.salesNumber,
+          fname: saleObject.firstName,
+          lname: saleObject.lastName, //customer table
+          address: saleObject.address, //address table
+          unitNum: saleObject.unit,//address table
+          city: saleObject.city,//address table
+          province: saleObject.province,//address table
+          postalCode: saleObject.postalCode.replace(/\s/g,''),//address table
+          enbridge: saleObject.enbridgeNum, //customer table
+          email: saleObject.email, //customer table
+          homePhone: saleObject.homePhone, //customer table
+          cellPhone: saleObject.cellPhone, //customer table
+          dateSigned: dateSigned,
+          //program type
+          programType: saleObject.programId, //sale table
+
+          //Installation & Delivery
+          installationDate: date, //sale table
+          installationTime: time, //sale table
+          notes: saleObject.notes, //sale table
+          //the rest
+          salesRepId: saleObject.salesRepId,
+          salesRepName: _this.state.salesRepName
+        };
+        _this.props.getEmbeddedUrl(data);
       }
     };
 
@@ -933,7 +961,7 @@ console.log(allEmployees);
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.getEmbeddedUrl.bind(this)}/>
+              <RaisedButton label="Cancel" secondary={true} />
               &nbsp;
               &nbsp;
               &nbsp;
