@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var http = require("http");
+var https = require("https");
 //we need this to build our POST request
 var querystring = require('querystring');
 //added body-parser to grab information from the POST request
@@ -11,6 +12,9 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //end of body-parser
+
+// DocuSign base url
+var baseUrl;
 
 //webpack hot load
 var webpack = require('webpack');
@@ -28,6 +32,9 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, './src/client/index.html'));
 });
 
+app.get('/closesaleiframe', function(req, res) {
+    res.sendFile(path.join(__dirname + '/src/client/closesaleiframe.html'));
+});
 
 app.get('/dashboard', function(request, response) {
 
@@ -628,11 +635,257 @@ app.get('/getoneinstallation', function(request, response) {
           return response.status(200).json(obj);
       });
     });
-
     req.on('error', function(err) {
         //response.send('error: ' + err.message);
     });
+    req.end();
+});
 
+app.post('/getembeddedurl', function(request, response) {
+  var url = config.docusign.baseUrl + "/envelopes";
+  var recipientName = request.body.fname + ' ' +  request.body.lname;
+  // Prepare the request body
+  var body = JSON.stringify({
+      "emailSubject": "DocuSign API call - Embedded Sending Example",
+      "templateId": config.docusign.saleTemplateId,
+      "templateRoles": [{
+        "email": request.body.email,
+        "name": recipientName,
+        "roleName": "Customer",
+        "clientUserId": "1001",	// user-configurable
+        "tabs" : {
+          "textTabs" : [{
+               tabLabel : "customerSalesNumber",
+               value : request.body.salesNumber,
+               locked : "true"
+              },
+              {
+                tabLabel : "customerFName",
+                value : request.body.fname,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADFName",
+                value : request.body.fname,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerLName",
+                value : request.body.lname,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADLName",
+                value : request.body.lname,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADUnit",
+                value : request.body.unitNum,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerCity",
+                value : request.body.city,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADCity",
+                value : request.body.city,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerPostalCode",
+                value : request.body.postalCode,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADPostalCode",
+                value : request.body.postalCode,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerHomePhone",
+                value : request.body.homePhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADHomePhone",
+                value : request.body.homePhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerCellPhone",
+                value : request.body.cellPhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "PADCellPhone",
+                value : request.body.cellPhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerEnbridgeNumber",
+                value : request.body.enbridge,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerInstallationDate",
+                value : request.body.installationDate,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerInstallationTime",
+                value : request.body.installationTime,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerNotes",
+                value : request.body.notes,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerSalesRepId",
+                value : request.body.salesRepId,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerSalesRepName",
+                value: request.body.salesRepName,
+                locked : "true"
+              }
+          ],
+          "radioGroupTabs" : [{
+            "groupName" : "customerProgram",
+            "radios" : [{
+              "value" : "1",
+              "selected" : request.body.programType == "1",
+              locked : "true"
+            },
+            {
+              "value" : "2",
+              "selected" : request.body.programType == "2",
+              locked : "true"
+            },
+            {
+              "value" : "3",
+              "selected" : request.body.programType == "3",
+              locked : "true"
+            }]
+          }],
+          "listTabs" : [{
+            "tabLabel" : "customerProvince",
+            "value" : request.body.province,
+            locked : "true"
+          }]
+        }
+      }],
+      "status": "sent"
+    });
+  // Prepare DocuSign header
+  var dsAuthHeader = JSON.stringify({
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
+	});
+
+  var options = {
+    hostname: config.docusign.hostname,
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+
+  // Note HTTPS request here
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        var envelopeId = obj.envelopeId;
+
+        // Get embedded URL
+        var innerUrl = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
+
+        // Prepare the request body
+        var innerBody = JSON.stringify({
+            "returnUrl": "http://" + config.IP + "/closesaleiframe",
+            "authenticationMethod": "email",
+            "email": request.body.email,
+            "userName": recipientName,
+            "clientUserId": "1001",	// must match clientUserId in step 2!
+          });
+
+        var innerOptions = {
+          hostname: config.docusign.hostname,
+          path: innerUrl,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(innerBody),
+            'X-DocuSign-Authentication' : dsAuthHeader
+          }
+        };
+
+        // Inner request
+        var innerReq = https.request(innerOptions, function(innerRes)
+          {
+            var innerOutput = '';
+            innerRes.setEncoding('utf8');
+
+            innerRes.on('data', function (chunk) {
+              innerOutput += chunk;
+            });
+
+            innerRes.on('end', function() {
+              var innerObj = JSON.parse(innerOutput);
+
+              return response.status(200).json(innerObj);
+            });
+          });
+
+          innerReq.on('error', function(err) {
+            response.send('error: ' + err.message);
+          });
+
+          innerReq.write(innerBody);
+          innerReq.end();
+
+        // return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+      console.log(err);
+      response.send('error: ' + err.message);
+    });
+
+    req.write(body);
     req.end();
 });
 
