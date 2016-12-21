@@ -37,7 +37,7 @@ export default class InstallationContainer extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <SelectInstallation handleNext={this.handleNext} handlePrev={this.handlePrev} />;
+        return <SelectInstallation handleNext={this.handleNext} handlePrev={this.handlePrev} menuClickHandler={this.props.menuClickHandler} />;
       case 1:
         return <CompleteInstallation handleNext={this.handleNext} handlePrev={this.handlePrev} status={'create'} id={this.state.selectedInstallationId} />;
       case 2:

@@ -6,6 +6,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LoginDialog from './modals/LoginDialog.jsx';
 import LeftMenu from './LeftMenu.jsx';
 import Dashboard from './dashboard/Dashboard.jsx';
+import SaleContainer from './sales/SaleContainer.jsx';
 import NewSale from './sales/NewSale.jsx';
 import AllSales from './sales/AllSales.jsx';
 import InstallationContainer from './installations/InstallationContainer.jsx';
@@ -19,7 +20,8 @@ import Documents from './management/Documents.jsx';
 
 const defaultProps = {
   dashboard: Dashboard,
-  newSale: NewSale,
+  newSale: SaleContainer,
+  editSale: NewSale,
   allSales: AllSales,
   documents: Documents,
   completeInstallation: InstallationContainer,
@@ -133,7 +135,7 @@ export default class App extends React.Component {
             <LeftMenu clickHandler={this.menuClickHandler}/>
           </div>
           <div className="mainContent">
-            <CurrentContent editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler}/>
+            <CurrentContent editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler} />
           </div>
         </div>
         { this.state.loginDialog ?

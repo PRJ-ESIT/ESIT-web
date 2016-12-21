@@ -1088,7 +1088,7 @@ export default class CompleteInstallation extends React.Component {
             </div>
           </div>
         </div>
-        <div>
+        <div style={{margin: '50px'}}>
           <RaisedButton
             label={this.props.status === 'create' ? 'Back' : 'Cancel'}
             secondary={this.props.status === 'create' ? false : true}

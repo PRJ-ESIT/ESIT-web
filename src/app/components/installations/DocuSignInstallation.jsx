@@ -6,6 +6,6 @@ export default class DocuSignInstallation extends React.Component {
       <div>
         Hello World!
       </div>
-  );
+    );
   }
 }

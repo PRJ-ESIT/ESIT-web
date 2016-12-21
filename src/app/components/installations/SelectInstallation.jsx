@@ -23,7 +23,6 @@ export default class SelectInstallation extends React.Component {
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let installations = JSON.parse(httpRequest.responseText).installations;
-        console.log(installations);
         _this.setState({
           installations: installations
         });
@@ -99,7 +98,8 @@ export default class SelectInstallation extends React.Component {
         <div>
           <RaisedButton
             label="Cancel"
-            onTouchTap={this.props.handlePrev}
+            secondary={true}
+            onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
           />
           <RaisedButton
             label={'Next'}
