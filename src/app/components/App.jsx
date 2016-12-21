@@ -110,6 +110,7 @@ export default class App extends React.Component {
       this.setState({leftMenuOpen: true});
     }
   }
+
   editClickHandler(status, id, contentName) {
     console.log(status);
     console.log(id);
@@ -162,7 +163,7 @@ export default class App extends React.Component {
 
   getIframe() {
     return (
-      <iframe id='docusignIframe' src={"http://" + IP + "/testiframe"} frameBorder="0"
+      <iframe id='docusignIframe' src={this.state.docuSignURL} frameBorder="0"
         style={{ overflow: "hidden", height: "100%", width: "100%", position: "absolute" }}
         height="100%" width="100%">
       </iframe>

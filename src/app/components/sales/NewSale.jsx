@@ -183,40 +183,6 @@ export default class NewSale extends React.Component {
     }
   }
 
-  getEmbeddedUrl() {
-    var date = new Date(this.state.installationDate);
-    date = date.toLocaleDateString();
-    var time = new Date(this.state.installationTime);
-    time = time.toLocaleTimeString();
-
-    let data = {
-      fname: this.state.fname,
-      lname: this.state.lname, //customer table
-      address: this.state.address, //address table
-      unitNum: this.state.unitNum,//address table
-      city: this.state.city,//address table
-      province: this.state.province,//address table
-      postalCode: this.state.postalCode.replace(/\s/g,''),//address table
-      enbridge: this.state.enbridge, //customer table
-      email: this.state.email, //customer table
-      homePhone: this.state.homePhone, //customer table
-      cellPhone: this.state.cellPhone, //customer table
-      dateSigned: this.state.dateSigned,
-      //program type
-      programType: this.state.programType, //sale table
-
-      //Installation & Delivery
-      installationDate: date, //sale table
-      installationTime: time, //sale table
-      notes: this.state.notes, //sale table
-      //the rest
-      salesRepId: this.state.salesRepId,
-      salesRepName: this.state.salesRepName
-    };
-    // console.log(data);
-    this.props.getEmbeddedUrl(data);
-  }
-
   handleTabChange(value) {
     if (value == 'a') {
       this.setState({
@@ -665,6 +631,7 @@ export default class NewSale extends React.Component {
           salesRepId: saleObject.salesRepId,
           salesRepName: _this.state.salesRepName
         };
+
         _this.props.getEmbeddedUrl(data);
       }
     };
@@ -961,7 +928,7 @@ export default class NewSale extends React.Component {
               <br />
               <Divider />
               <br />
-              <RaisedButton label="Cancel" secondary={true} />
+              <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
               &nbsp;
               &nbsp;
               &nbsp;

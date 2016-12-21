@@ -32,12 +32,8 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, './src/client/index.html'));
 });
 
-app.get('/testiframe', function(req, res) {
-    res.sendFile(path.join(__dirname + '/src/client/iframe.html'));
-});
-
-app.get('/closeiframe', function(req, res) {
-    res.sendFile(path.join(__dirname + '/src/client/closeiframe.html'));
+app.get('/closesaleiframe', function(req, res) {
+    res.sendFile(path.join(__dirname + '/src/client/closesaleiframe.html'));
 });
 
 app.get('/dashboard', function(request, response) {
@@ -838,12 +834,12 @@ app.post('/getembeddedurl', function(request, response) {
 
         // Prepare the request body
         var innerBody = JSON.stringify({
-    				"returnUrl": "http://www.docusign.com/devcenter",
-    				"authenticationMethod": "email",
-    				"email": request.body.email,
-    				"userName": recipientName,
-    				"clientUserId": "1001",	// must match clientUserId in step 2!
-    			});
+            "returnUrl": "http://" + config.IP + "/closesaleiframe",
+            "authenticationMethod": "email",
+            "email": request.body.email,
+            "userName": recipientName,
+            "clientUserId": "1001",	// must match clientUserId in step 2!
+          });
 
         var innerOptions = {
           hostname: config.docusign.hostname,
