@@ -9,19 +9,19 @@ import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
-  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
-  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
-  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
-  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
-  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
-  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"AB"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"BC"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"MB"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"NB"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"NL"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"NS"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"ON"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"PE"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"QC"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"SK"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"NT"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"YT"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
 const tableData = [
@@ -102,7 +102,7 @@ export default class CompleteInstallation extends React.Component {
       acknowledgement4: false,
       installedDate: {},
       installerId: '',
-      installer: '',
+      installerName: '',
       minDate: minDate,
       maxDate: maxDate,
 
@@ -147,6 +147,9 @@ export default class CompleteInstallation extends React.Component {
       acknowledgementValidated: false,
       installerValidated: false,
       installedDateValidated: false,
+
+      //whole installation object needed for DocuSidg
+      installation: undefined,
 
       allInstallers: undefined,
 
@@ -202,9 +205,10 @@ export default class CompleteInstallation extends React.Component {
                 bathrooms: installation.bathrooms ? installation.bathrooms : '',
                 installedDate: tempDateTime ? tempDateTime : '',
                 installerId: installation.installerId ? installation.installerId : '',
-                installer: installation.installer ? installation.installer : '',
+                installerName: installation.installerName ? installation.installerName : '',
                 minDate: minDate,
                 allInstallers: allInstallers,
+                installation: installation,
               });
             }
           };
@@ -638,7 +642,30 @@ export default class CompleteInstallation extends React.Component {
 
   validateForm() {
     if (this.validateAllFields()) {
-      this.props.handleInstallationNext();
+      var obj = {
+        installationObj: {
+          customerFirstName: this.state.fname,
+          customerLastName: this.state.lname,
+          address: this.state.address,
+          unitNum: this.state.unitNum,
+          city: this.state.city,
+          province: this.state.province,
+          postalCode: this.state.postalCode,
+          enbridge: this.state.enbridge,
+          email: this.state.email,
+          homePhone: this.state.homePhone,
+          cellPhone: this.state.cellPhone,
+          sqft: this.state.sqft,
+          bathrooms: this.state.bathrooms,
+          residents: this.state.residents,
+          pool: this.state.pool,
+          notes: this.state.notes,
+          installedDate: this.state.installedDate,
+          installerId: this.state.installerId,
+          installerName: this.state.installerName,
+      }
+      };
+      this.props.handleInstallationNext(obj);
     }
   }
 

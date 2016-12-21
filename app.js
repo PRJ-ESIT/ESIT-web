@@ -889,6 +889,219 @@ app.post('/getembeddedurl', function(request, response) {
     req.end();
 });
 
+app.post('/getInstallationEmbeddedUrl', function(request, response) {
+  var url = config.docusign.baseUrl + "/envelopes";
+  var customerName = request.body.fname + ' ' +  request.body.lname;
+  console.log(request.body);
+  // Prepare the request body
+  var body = JSON.stringify({
+      "emailSubject": "DocuSign API call - Embedded Sending Example",
+      "templateId": config.docusign.installationTemplateId,
+      "templateRoles": [{ // Installer
+        "email": "installer@example.com",
+        "name": request.body.installerName,
+        "roleName": "Installer",
+        "clientUserId": "1002",	// user-configurable
+        "tabs" : {
+          "textTabs" : [{
+                tabLabel : "installerName",
+                value : request.body.installerName,
+                locked : "true"
+              },
+              {
+                tabLabel : "installerId",
+                value : request.body.contractorId,
+                locked : "true"
+              }
+          ]
+        }
+      },
+      { // Customer
+        "email": request.body.email,
+        "name": customerName,
+        "roleName": "Customer",
+        "clientUserId": "1001",	// user-configurable
+        "tabs" : {
+          "textTabs" : [{
+                tabLabel : "customerFName",
+                value : request.body.fname,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerLName",
+                value : request.body.lname,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerAddress",
+                value : request.body.address,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerUnit",
+                value : request.body.unitNum,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerCity",
+                value : request.body.city,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerPostalCode",
+                value : request.body.postalCode,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerHomePhone",
+                value : request.body.homePhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerCellPhone",
+                value : request.body.cellPhone,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerEmail",
+                value : request.body.email,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerEnbridgeNumber",
+                value : request.body.enbridge,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerSQFootage",
+                value: request.body.sqft,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerBathrooms",
+                value: request.body.bathrooms,
+                locked : "true"
+              },
+              {
+                tabLabel : "customerNumResidents",
+                value: request.body.residents,
+                locked : "true"
+              }
+          ],
+          "radioGroupTabs" : [{
+            "groupName" : "customerPool",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.pool == "1",
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.pool == "0",
+              locked : "true"
+            }]
+          }],
+          "listTabs" : [{
+            "tabLabel" : "customerProvince",
+            "value" : request.body.province,
+            locked : "true"
+          }]
+        }
+      }],
+      "status": "sent"
+    });
+  // Prepare DocuSign header
+  var dsAuthHeader = JSON.stringify({
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
+	});
+
+  var options = {
+    hostname: config.docusign.hostname,
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+
+  // Note HTTPS request here
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        var envelopeId = obj.envelopeId;
+
+        // Get embedded URL
+        var innerUrl = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
+
+        // Prepare the request body
+        var innerBody = JSON.stringify({
+            "returnUrl": "http://" + config.IP + "/closesaleiframe",
+            "authenticationMethod": "email",
+            "email": request.body.email,
+            "userName": customerName,
+            "clientUserId": "1001",	// must match clientUserId in step 2!
+          });
+
+        var innerOptions = {
+          hostname: config.docusign.hostname,
+          path: innerUrl,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(innerBody),
+            'X-DocuSign-Authentication' : dsAuthHeader
+          }
+        };
+
+        // Inner request
+        var innerReq = https.request(innerOptions, function(innerRes)
+          {
+            var innerOutput = '';
+            innerRes.setEncoding('utf8');
+
+            innerRes.on('data', function (chunk) {
+              innerOutput += chunk;
+            });
+
+            innerRes.on('end', function() {
+              var innerObj = JSON.parse(innerOutput);
+
+              return response.status(200).json(innerObj);
+            });
+          });
+
+          innerReq.on('error', function(err) {
+            response.send('error: ' + err.message);
+          });
+
+          innerReq.write(innerBody);
+          innerReq.end();
+
+        // return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+      console.log(err);
+      response.send('error: ' + err.message);
+    });
+
+    req.write(body);
+    req.end();
+});
+
 app.listen(3000, function(err) {
   console.log('Listening at http://... 3000');
 });

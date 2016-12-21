@@ -16,7 +16,7 @@ export default class InstallationContainer extends React.Component {
       case 1:
         return <CompleteInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} status={'create'} id={this.props.selectedInstallationId} />;
       case 2:
-        return <DocuSignInstallation />;
+        return <DocuSignInstallation installation={this.props.installationObj} getInstallationEmbeddedUrl={this.props.getInstallationEmbeddedUrl}/>;
       case 3:
         return 'pictures'
       default:
