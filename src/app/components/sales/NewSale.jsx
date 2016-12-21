@@ -9,19 +9,19 @@ import { IP } from '../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
-  <MenuItem key={1} value={"Alberta"} primaryText="Alberta" />,
-  <MenuItem key={2} value={"British Columbia"} primaryText="British Columbia" />,
-  <MenuItem key={3} value={"Manitoba"} primaryText="Manitoba" />,
-  <MenuItem key={4} value={"New Brunswick"} primaryText="New Brunswick" />,
-  <MenuItem key={5} value={"Newfoundland and Labrador"} primaryText="Newfoundland and Labrador" />,
-  <MenuItem key={6} value={"Nova Scotia"} primaryText="Nova Scotia" />,
-  <MenuItem key={7} value={"Ontario"} primaryText="Ontario" />,
-  <MenuItem key={8} value={"Prince Edward Island"} primaryText="Prince Edward Island" />,
-  <MenuItem key={9} value={"Quebec"} primaryText="Quebec" />,
-  <MenuItem key={10} value={"Saskatchewan"} primaryText="Saskatchewan" />,
-  <MenuItem key={11} value={"Northwest Territories"} primaryText="Northwest Territories" />,
-  <MenuItem key={12} value={"Yukon"} primaryText="Yukon" />,
-  <MenuItem key={13} value={"Nunavut"} primaryText="Nunavut" />,
+  <MenuItem key={1} value={"AB"} primaryText="Alberta" />,
+  <MenuItem key={2} value={"BC"} primaryText="British Columbia" />,
+  <MenuItem key={3} value={"MB"} primaryText="Manitoba" />,
+  <MenuItem key={4} value={"NB"} primaryText="New Brunswick" />,
+  <MenuItem key={5} value={"NL"} primaryText="Newfoundland and Labrador" />,
+  <MenuItem key={6} value={"NS"} primaryText="Nova Scotia" />,
+  <MenuItem key={7} value={"ON"} primaryText="Ontario" />,
+  <MenuItem key={8} value={"PE"} primaryText="Prince Edward Island" />,
+  <MenuItem key={9} value={"QC"} primaryText="Quebec" />,
+  <MenuItem key={10} value={"SK"} primaryText="Saskatchewan" />,
+  <MenuItem key={11} value={"NT"} primaryText="Northwest Territories" />,
+  <MenuItem key={12} value={"YT"} primaryText="Yukon" />,
+  <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
 export default class NewSale extends React.Component {
@@ -51,11 +51,17 @@ export default class NewSale extends React.Component {
       installationTime: {},
       notes: '',
       salesRepId: '',
+      salesRepName: '',
       applicationNumber: '',
       programType: '',
       dateSigned: new Date(),
       minDate: minDate,
       maxDate: maxDate,
+
+      // DocuSign
+      baseUrl: '',
+      envelopeId: '',
+      embeddedUrl: '',
 
       // Unknown data
       homeownerSignature: '',
@@ -111,14 +117,18 @@ export default class NewSale extends React.Component {
       httpRequest.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           let sale = JSON.parse(httpRequest.responseText).sale;
-          // Format time
-          var tempDateTime = new Date(sale.installationDateTime);
-          var minDate = new Date(2000, 0, 1);
-
           var httpReq = new XMLHttpRequest();
           httpReq.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
               let allSalesReps = JSON.parse(httpReq.responseText).employees;
+              // Create employee object, indexed by employeeNumber
+              var allEmployees = {};
+              for (var employee in allSalesReps) {
+                allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
+              }
+              // Format time
+              var tempDateTime = new Date(sale.installationDateTime);
+              var minDate = new Date(2000, 0, 1);
 
               _this.setState({
                 fname: sale.firstName ? sale.firstName : '',
@@ -137,20 +147,18 @@ export default class NewSale extends React.Component {
                 installationTime: tempDateTime ? tempDateTime : '',
                 notes: sale.notes ? sale.notes : '',
                 salesRepId: sale.salesRepId ? sale.salesRepId : '',
-                salesRep: sale.salesRep ? sale.salesRep : '',
+                salesRepName: sale.salesRepId ? allEmployees[sale.salesRepId] : '',
                 minDate: minDate,
                 allSalesReps: allSalesReps,
               });
             }
           };
-
-          httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
+            httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
           httpReq.send(null);
         }
       };
-
       httpRequest.open('GET', "http://" + IP + "/existingsale?id="
-        + this.props.id, true);
+        + _this.props.id, true);
       httpRequest.send(null);
     } else if (this.props.status == 'create') {
       var httpRequest = new XMLHttpRequest();
@@ -182,6 +190,9 @@ export default class NewSale extends React.Component {
 
   handleSelectChange(fieldname, event, index, value) {
     var obj = {};
+    if(fieldname == "salesRepId") {
+      obj["salesRepName"] = this.state.allSalesReps[index].name;
+    }
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = value;
@@ -499,7 +510,6 @@ export default class NewSale extends React.Component {
         this.state.installationDateValidated &&
         this.state.installationTimeValidated &&
         this.state.salesRepValidated) {
-
       //everything was validated, send an httpRequest to create a new sale
       this.createNewSale();
       //TODO handle the case when users click 'Submit' multiple times
@@ -567,12 +577,44 @@ export default class NewSale extends React.Component {
     };
     let _this = this;
     var request = new XMLHttpRequest();
-    request.open('POST', 'http://' + IP + '/newsale', true);
-    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    request.open('POST', "http://" + IP + '/newsale', true);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 201) {
         let saleObject = JSON.parse(request.responseText).sale;
-        _this.props.handleNext();
+        // Get embedded URL
+        var date = new Date(saleObject.installationDateTime);
+        date = date.toLocaleDateString();
+        var time = new Date(saleObject.installationDateTime);
+        time = time.toLocaleTimeString();
+
+        let data = {
+          salesNumber: saleObject.salesNumber,
+          fname: saleObject.firstName,
+          lname: saleObject.lastName, //customer table
+          address: saleObject.address, //address table
+          unitNum: saleObject.unit,//address table
+          city: saleObject.city,//address table
+          province: saleObject.province,//address table
+          postalCode: saleObject.postalCode.replace(/\s/g,''),//address table
+          enbridge: saleObject.enbridgeNum, //customer table
+          email: saleObject.email, //customer table
+          homePhone: saleObject.homePhone, //customer table
+          cellPhone: saleObject.cellPhone, //customer table
+          dateSigned: dateSigned,
+          //program type
+          programType: saleObject.programId, //sale table
+
+          //Installation & Delivery
+          installationDate: date, //sale table
+          installationTime: time, //sale table
+          notes: saleObject.notes, //sale table
+          //the rest
+          salesRepId: saleObject.salesRepId,
+          salesRepName: _this.state.salesRepName
+        };
+
+        _this.props.getEmbeddedUrl(data);
       }
     };
 

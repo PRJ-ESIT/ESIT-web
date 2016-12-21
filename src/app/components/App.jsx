@@ -18,6 +18,8 @@ import AllEmployees from './management/AllEmployees.jsx';
 import AllCustomers from './management/AllCustomers.jsx';
 import Documents from './management/Documents.jsx';
 
+import { IP } from '../../../config/config.js';
+
 const defaultProps = {
   dashboard: Dashboard,
   newSale: SaleContainer,
@@ -42,9 +44,13 @@ export default class App extends React.Component {
       loginDialog: false,
       leftMenuOpen: false,
       currentContent: Dashboard,
+      saleStepIndex: 0,
+      installationStepIndex: 0,
+      selectedInstallationId: undefined,
 
       status: "",
       formId: undefined,
+      docuSignUrl: undefined,
     }
 
     this.handleLogin = this.handleLogin.bind(this);
@@ -52,6 +58,8 @@ export default class App extends React.Component {
     this.menuClickHandler = this.menuClickHandler.bind(this);
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
     this.editClickHandler = this.editClickHandler.bind(this);
+    this.getEmbeddedUrl = this.getEmbeddedUrl.bind(this);
+    this.closeIframe = this.closeIframe.bind(this);
   }
 
   getChildContext() {
@@ -69,7 +77,41 @@ export default class App extends React.Component {
     this.setState({
       loginDialog: true,
     });
-  };
+  }
+
+  handleSaleNext = (obj) => {
+    const {saleStepIndex} = this.state;
+    if(obj == undefined) {
+      var obj = {};
+    }
+
+    obj['saleStepIndex']=saleStepIndex + 1;
+
+    this.setState(obj);
+  }
+
+  handleSalePrev = () => {
+    const {saleStepIndex} = this.state;
+
+    this.setState({saleStepIndex: saleStepIndex - 1});
+  }
+
+  handleInstallationNext = (obj) => {
+    const {installationStepIndex} = this.state;
+    if(obj == undefined) {
+      var obj = {};
+    }
+
+    obj['installationStepIndex']=installationStepIndex + 1;
+
+    this.setState(obj);
+  }
+
+  handleInstallationPrev = () => {
+    const {installationStepIndex} = this.state;
+
+    this.setState({installationStepIndex: installationStepIndex - 1});
+  }
 
   getRightButtons() {
     var rightButtonsStyle = {
@@ -108,6 +150,7 @@ export default class App extends React.Component {
       this.setState({leftMenuOpen: true});
     }
   }
+
   editClickHandler(status, id, contentName) {
     console.log(status);
     console.log(id);
@@ -118,7 +161,56 @@ export default class App extends React.Component {
       id: id,
     });
   }
-  render() {
+
+  getEmbeddedUrl(data) {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let url = JSON.parse(httpRequest.responseText).url;
+        _this.setState({
+          docuSignURL: url,
+        });
+      }
+    };
+
+    httpRequest.open('POST', "http://" + IP + "/getembeddedurl", true);
+    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    httpRequest.send(JSON.stringify(data));
+  }
+
+  closeIframe(message) {
+    console.log(message);
+    console.log('I  AM HERE');
+    if(message == "Sale forms are signed") {
+      this.setState({
+        docuSignURL: undefined,
+      });
+    }
+  }
+
+  componentDidMount() {
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+    var _this = this;
+    eventer(messageEvent,function(e) {
+      var key = e.message ? "message" : "data";
+      var data = e[key];
+      _this.closeIframe(data);
+    },false);
+  }
+
+  getIframe() {
+    return (
+      <iframe id='docusignIframe' src={this.state.docuSignURL} frameBorder="0"
+        style={{ overflow: "hidden", height: "100%", width: "100%", position: "absolute" }}
+        height="100%" width="100%">
+      </iframe>
+    );
+  }
+
+  getApp() {
     var leftMenuStyles = this.state.leftMenuOpen ? {'' : ''} : { 'display': 'none' };
     var appBarStyles = {'backgroundColor': '#2F3C7D'};
     let CurrentContent = this.state.currentContent;
@@ -135,7 +227,12 @@ export default class App extends React.Component {
             <LeftMenu clickHandler={this.menuClickHandler}/>
           </div>
           <div className="mainContent">
-            <CurrentContent editClickHandler={this.editClickHandler}  status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler} />
+            <CurrentContent getEmbeddedUrl={this.getEmbeddedUrl} editClickHandler={this.editClickHandler}
+              status={this.state.status} id={this.state.id} menuClickHandler={this.menuClickHandler}
+              saleStepIndex={this.state.saleStepIndex} installationStepIndex={this.state.installationStepIndex}
+              handleSaleNext={this.handleSaleNext} handleSalePrev={this.handleSalePrev}
+              handleInstallationNext={this.handleInstallationNext} handleInstallationPrev={this.handleInstallationPrev}
+              selectedInstallationId={this.state.selectedInstallationId} />
           </div>
         </div>
         { this.state.loginDialog ?
@@ -146,6 +243,15 @@ export default class App extends React.Component {
         : null }
       </div>
     );
+  }
+
+  render() {
+    if (this.state.docuSignURL) {
+      return this.getIframe();
+    }
+    else {
+      return this.getApp();
+    }
   }
 }
 
