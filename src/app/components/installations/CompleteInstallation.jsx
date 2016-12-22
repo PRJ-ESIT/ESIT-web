@@ -24,45 +24,6 @@ const provinces = [
   <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
-const tableData = [
-  {
-    name: 'Whole Home Filter',
-    number: '012345',
-    details: 'The water filter',
-    selected: false,
-  },
-  {
-    name: 'Whole Home D-Scaler',
-    number: '012345',
-    details: 'The descaler',
-    selected: false,
-  },
-  {
-    name: 'Whole Home Combo',
-    number: '012345',
-    details: 'The water filter and descaler as a package',
-    selected: false,
-  },
-  {
-    name: 'Water Conservation System',
-    number: '012345',
-    details: 'Some product that conserves water',
-    selected: false,
-  },
-  {
-    name: 'Installation Kit',
-    number: '012345',
-    details: 'The kit required to install other products',
-    selected: false,
-  },
-  {
-    name: 'Bottling Kit',
-    number: '012345',
-    details: 'Water bottling kit for customer',
-    selected: false,
-  },
-];
-
 export default class CompleteInstallation extends React.Component {
 
   constructor(props) {
@@ -89,6 +50,12 @@ export default class CompleteInstallation extends React.Component {
       bathrooms: '',
       residents: '',
       pool: '',
+      program1: false,
+      program2: false,
+      program3: false,
+      program4: false,
+      program5: false,
+      program6: false,
       checklist1: '',
       checklist2: '',
       checklist3: '',
@@ -122,6 +89,7 @@ export default class CompleteInstallation extends React.Component {
       bathroomsErr: '',
       residentsErr: '',
       poolErr: '',
+      programErr: '',
       checklistErr: '',
       acknowledgementErr: '',
       installerErr: '',
@@ -143,6 +111,7 @@ export default class CompleteInstallation extends React.Component {
       bathroomsValidated: false,
       residentsValidated: false,
       poolValidated: false,
+      programValidated: false,
       checklistValidated: false,
       acknowledgementValidated: false,
       installerValidated: false,
@@ -152,22 +121,7 @@ export default class CompleteInstallation extends React.Component {
       installation: undefined,
 
       allInstallers: undefined,
-
-      // table properties
-      fixedHeader: true,
-      stripedRows: false,
-      showRowHover: false,
-      selectable: true,
-      multiSelectable: true,
-      enableSelectAll: true,
-      deselectOnClickaway: false,
-      showCheckboxes: true,
-      height: 'calc(40%)',
-
-      // This variable keeps the state of a current selected row
-      selectedNum: -1,
     };
-      this.handleSelection = this.handleSelection.bind(this);
   }
 
   componentDidMount() {
@@ -252,24 +206,20 @@ export default class CompleteInstallation extends React.Component {
     this.setState(obj);
   }
 
+  handleProgramCheckboxChange(fieldname1, fieldname2, fieldname3, event, isInputChecked) {
+    var obj = {};
+    obj[fieldname1] = isInputChecked;
+    obj[fieldname2] = !isInputChecked;
+    obj[fieldname3] = !isInputChecked;
+    this.setState(obj);
+  }
+
   handleDateChange(fieldname, event, date) {
     var obj = {};
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = date;
     this.setState(obj);
-  }
-
-  handleSelection(selectedRows) {
-    if(selectedRows.length == 1) {
-      this.setState({
-        selectedNum: selectedRows[0],
-      });
-    } else {
-      this.setState({
-        selectedNum: -1,
-      });
-    }
   }
 
   validateFName() {
@@ -512,6 +462,32 @@ export default class CompleteInstallation extends React.Component {
     }
   }
 
+  validateProgram() {
+    let program1 = this.state.program1;
+    let program2 = this.state.program2;
+    let program3 = this.state.program3;
+    let program4 = this.state.program4;
+    let program5 = this.state.program5;
+    let program6 = this.state.program6;
+
+    if ((validations.validateProgram(program1) ||
+          validations.validateProgram(program2) ||
+          validations.validateProgram(program3)) &&
+        (validations.validateProgram(program4) &&
+          validations.validateProgram(program5) &&
+          validations.validateProgram(program6))) {
+      this.setState({
+        programErr: '',
+        programValidated: true,
+      });
+    } else {
+      this.setState({
+        programErr: 'One program must be selected plus conservation system and both kits',
+        programValidated: false,
+      });
+    }
+  }
+
   validateChecklist() {
     let checklist1 = this.state.checklist1;
     let checklist2 = this.state.checklist2;
@@ -531,7 +507,7 @@ export default class CompleteInstallation extends React.Component {
       });
     } else {
       this.setState({
-        checklistErr: 'All options must be checked Yes',
+        checklistErr: 'All checklist options must be checked Yes',
         checklistValidated: false,
       });
     }
@@ -591,6 +567,27 @@ export default class CompleteInstallation extends React.Component {
 
 
   validateAllFields() {
+    console.log(this.state.fnameValidated,
+        this.state.lnameValidated,
+        this.state.addressValidated,
+        this.state.unitValidated,
+        this.state.cityValidated,
+        this.state.provinceValidated,
+        this.state.postalCodeValidated,
+        this.state.enbridgeValidated,
+        this.state.emailValidated,
+        this.state.homePhoneValidated,
+        this.state.cellPhoneValidated,
+        this.state.sqftValidated,
+        this.state.bathroomsValidated,
+        this.state.residentsValidated,
+        this.state.poolValidated,
+        this.state.programValidated,
+        this.state.checklistValidated,
+        this.state.acknowledgementValidated,
+        this.state.installerValidated,
+        this.state.installedDateValidated);
+
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
@@ -606,6 +603,7 @@ export default class CompleteInstallation extends React.Component {
         this.state.bathroomsValidated &&
         this.state.residentsValidated &&
         this.state.poolValidated &&
+        this.state.programValidated &&
         this.state.checklistValidated &&
         this.state.acknowledgementValidated &&
         this.state.installerValidated &&
@@ -631,6 +629,7 @@ export default class CompleteInstallation extends React.Component {
       this.validateBathrooms();
       this.validateResidents();
       this.validatePool();
+      this.validateProgram();
       this.validateChecklist();
       this.validateAcknowledgement();
       this.validateInstaller();
@@ -904,141 +903,183 @@ export default class CompleteInstallation extends React.Component {
               <br />
 
               <h2 className="headings">Program Installation</h2>
-              <Table
-                onRowSelection={this.handleSelection}
-                onCellClick={this.handleCellClick}
-                height={this.state.height}
-                fixedHeader={this.state.fixedHeader}
-                fixedFooter={this.state.fixedFooter}
-                selectable={this.state.selectable}
-                multiSelectable={this.state.multiSelectable}
-                style={{ maxWidth: '700px' }}
-              >
-                <TableHeader
-                  displaySelectAll={this.state.showCheckboxes}
-                  adjustForCheckbox={this.state.showCheckboxes}
-                  enableSelectAll={this.state.enableSelectAll}
-                >
-                  <TableRow className={'programTableRow'}>
-                    <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }} tooltip="Product Name">Product</TableHeaderColumn>
-                    <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }} tooltip="Product Number">Number</TableHeaderColumn>
-                    <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }} tooltip="Product Details">Details</TableHeaderColumn>
-                  </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={this.state.showCheckboxes}
-                  deselectOnClickaway={this.state.deselectOnClickaway}
-                  showRowHover={this.state.showRowHover}
-                  stripedRows={this.state.stripedRows}
-                >
-                  {tableData.map( (row, index) => (
-                    <TableRow className={'programTableRow'} selected={index == this.state.selectedNum ? true : false}
-                    key={index}>
-                      <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '35%' }}>{row.name}</TableRowColumn>
-                      <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '15%' }}>{row.number}</TableRowColumn>
-                      <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '50%' }}>{row.details}</TableRowColumn>
-                    </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+              <Checkbox
+                label="Whole Home Filter"
+                onCheck={this.handleProgramCheckboxChange.bind(this, "program1", "program2", "program3")}
+                checked={this.state.program1}
+                onBlur={this.validateProgram.bind(this)}
+              />
+              <Checkbox
+                label="Whole Home D-Scaler"
+                onCheck={this.handleProgramCheckboxChange.bind(this, "program2", "program1", "program3")}
+                checked={this.state.program2}
+                onBlur={this.validateProgram.bind(this)}
+              />
+              <Checkbox
+                label="Whole Home Combo"
+                onCheck={this.handleProgramCheckboxChange.bind(this, "program3", "program1", "program2")}
+                checked={this.state.program3}
+                onBlur={this.validateProgram.bind(this)}
+              />
+              <Checkbox
+                label="Water Conservation System"
+                onCheck={this.handleCheckboxChange.bind(this, "program4")}
+                onBlur={this.validateProgram.bind(this)}
+              />
+              <Checkbox
+                label="Installation Kit"
+                onCheck={this.handleCheckboxChange.bind(this, "program5")}
+                onBlur={this.validateProgram.bind(this)}
+              />
+              <Checkbox
+                label="Bottling Kit"
+                onCheck={this.handleCheckboxChange.bind(this, "program6")}
+                onBlur={this.validateProgram.bind(this)}
+              />
+              <TextField
+                floatingLabelText=" "
+                disabled={true}
+                className="full-width"
+                errorText={this.state.programErr}
+                errorStyle={{float: "left"}}
+                style={{height: '25px'}}
+              />
 
               <h2 className="headings">Installation Checklist</h2>
               <div className="radioActionText">
                 <p className="radioRow">Bypass Installed</p>
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleTextChange.bind(this, "checklist1")}>
+                <RadioButtonGroup
+                  name="installationCheck"
+                  className="radioGroup"
+                  onChange={this.handleTextChange.bind(this, "checklist1")}
+                >
                   <RadioButton
                     className="radio"
                     value="yes"
                     label="Yes"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
                     className="radio"
                     value="no"
                     label="No"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                 </RadioButtonGroup>
               </div>
               <div className="radioActionText">
                 <p className="radioRow">Leak Check Equipment</p>
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleTextChange.bind(this, "checklist2")}>
+                <RadioButtonGroup
+                  name="installationCheck"
+                  className="radioGroup"
+                  onChange={this.handleTextChange.bind(this, "checklist2")}
+                  >
                   <RadioButton
                     className="radio"
                     value="yes"
                     label="Yes"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
                     className="radio"
                     value="no"
                     label="No"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                 </RadioButtonGroup>
               </div>
               <div className="radioActionText">
                 <p className="radioRow">System Flushed</p>
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleTextChange.bind(this, "checklist3")}>
+                <RadioButtonGroup
+                  name="installationCheck"
+                  className="radioGroup"
+                  onChange={this.handleTextChange.bind(this, "checklist3")}
+                >
                   <RadioButton
                     className="radio"
                     value="yes"
                     label="Yes"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
                     className="radio"
                     value="no"
                     label="No"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                 </RadioButtonGroup>
               </div>
               <div className="radioActionText">
                 <p className="radioRow">Conservation System Explanation</p>
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleTextChange.bind(this, "checklist4")}>
+                <RadioButtonGroup
+                  name="installationCheck"
+                  className="radioGroup"
+                  onChange={this.handleTextChange.bind(this, "checklist4")}
+                >
                   <RadioButton
                     className="radio"
                     value="yes"
                     label="Yes"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
                     className="radio"
                     value="no"
                     label="No"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                 </RadioButtonGroup>
               </div>
               <div className="radioActionText">
                 <p className="radioRow">Shut-off Valve Explanation</p>
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleTextChange.bind(this, "checklist5")}>
+                <RadioButtonGroup
+                  name="installationCheck"
+                  className="radioGroup"
+                  onChange={this.handleTextChange.bind(this, "checklist5")}
+                >
                   <RadioButton
                     className="radio"
                     value="yes"
                     label="Yes"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
                     className="radio"
                     value="no"
                     label="No"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                 </RadioButtonGroup>
               </div>
               <div className="radioActionText">
                 <p className="radioRow">Filter Replacement Explanation</p>
-                <RadioButtonGroup name="installationCheck" className="radioGroup"
-                onChange={this.handleTextChange.bind(this, "checklist6")}>
+                <RadioButtonGroup
+                  name="installationCheck"
+                  className="radioGroup"
+                  onChange={this.handleTextChange.bind(this, "checklist6")}
+                >
                   <RadioButton
                     className="radio"
                     value="yes"
                     label="Yes"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
                     className="radio"
                     value="no"
                     label="No"
+                    onBlur={this.validateChecklist.bind(this)}
                   />
                 </RadioButtonGroup>
               </div>
+              <TextField
+                floatingLabelText=" "
+                disabled={true}
+                className="full-width"
+                errorText={this.state.checklistErr}
+                errorStyle={{float: "left"}}
+                style={{height: '25px'}}
+              />
               <TextField
                 hintText="Additional Notes"
                 floatingLabelText="Notes"
@@ -1049,8 +1090,6 @@ export default class CompleteInstallation extends React.Component {
                 value={this.state.notes}
                 onChange={this.handleTextChange.bind(this, "notes")}
                 className="full-width"
-                errorText={this.state.checklistErr}
-                errorStyle={{float: "left"}}
               />
 
               <h2 className="headings">Customer Acknowledgement</h2>
@@ -1060,28 +1099,34 @@ export default class CompleteInstallation extends React.Component {
                   label="Installation was completed to my satisfaction."
                   value={this.state.acknowledgement1}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement1")}
+                  onBlur={this.validateAcknowledgement.bind(this)}
                 />
                 <Checkbox
                   label="The technician explained how to by-pass the filter and change the pre-filter."
                   value={this.state.acknowledgement2}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement2")}
+                  onBlur={this.validateAcknowledgement.bind(this)}
                 />
                 <Checkbox
                   label="I recieved the bottling kit."
                   value={this.state.acknowledgement3}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement3")}
+                  onBlur={this.validateAcknowledgement.bind(this)}
                 />
                 <Checkbox
                   label="My savings are not guaranteed."
                   value={this.state.acknowledgement4}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement4")}
+                  onBlur={this.validateAcknowledgement.bind(this)}
                 />
               </div>
-              <div style={{color:"red"}}>{this.state.acknowledgementErr}</div>
               <TextField
-                floatingLabelText="Homeowner's Signature"
-                hintText="Tap to add signature"
+                floatingLabelText=" "
+                disabled={true}
                 className="full-width"
+                errorText={this.state.acknowledgementErr}
+                errorStyle={{float: "left"}}
+                style={{height: '25px'}}
               />
               <div>
                 <SelectField
@@ -1106,6 +1151,7 @@ export default class CompleteInstallation extends React.Component {
                   container="inline"
                   value={this.state.installedDate}
                   onChange={this.handleDateChange.bind(this, "installedDate")}
+                  onBlur={this.validateInstalledDate.bind(this)}
                   minDate={this.state.minDate}
                   maxDate={this.state.maxDate}
                   errorText={this.state.installedDateErr}

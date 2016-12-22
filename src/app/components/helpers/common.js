@@ -175,8 +175,8 @@ var validations = {
     }
   },
 
-  validateProgramType(programType) {
-    if(programType != '') {
+  validateProgram(program) {
+    if(program != false) {
       return true;
     } else {
       return false;
