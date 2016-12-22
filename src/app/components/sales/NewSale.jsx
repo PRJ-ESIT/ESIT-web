@@ -100,7 +100,7 @@ export default class NewSale extends React.Component {
       emailValidated: false,
       homePhoneValidated: false,
       cellPhoneValidated: false,
-      salesRepValidated: false,
+      salesRepIdValidated: false,
       applicationNumberValidated: false,
       programTypeValidated: false,
       installationDateValidated: false,
@@ -419,7 +419,7 @@ export default class NewSale extends React.Component {
 
   validateProgramType() {
     let programType = this.state.programType;
-    if(validations.validateProgramType(programType)) {
+    if(validations.validateProgram(programType)) {
       this.setState({
         programTypeErr: '',
         programTypeValidated: true,
@@ -468,12 +468,12 @@ export default class NewSale extends React.Component {
       this.setState({
         salesRepErr: '',
         salesRepId: salesRepId,
-        salesRepValidated: true,
+        salesRepIdValidated: true,
       });
     } else {
       this.setState({
         salesRepErr: 'Must select a salesperson',
-        salesRepValidated: false,
+        salesRepIdValidated: false,
       });
     }
   }
@@ -509,7 +509,7 @@ export default class NewSale extends React.Component {
         this.state.programTypeValidated &&
         this.state.installationDateValidated &&
         this.state.installationTimeValidated &&
-        this.state.salesRepValidated) {
+        this.state.salesRepIdValidated) {
       //everything was validated, send an httpRequest to create a new sale
       this.createNewSale();
       //TODO handle the case when users click 'Submit' multiple times
@@ -692,6 +692,7 @@ export default class NewSale extends React.Component {
               <SelectField
                 value={this.state.province}
                 onChange={this.handleSelectChange.bind(this, "province")}
+
                 floatingLabelText="Province"
                 floatingLabelFixed={false}
                 hintText="Select a Province"
@@ -780,7 +781,14 @@ export default class NewSale extends React.Component {
                     label="Whole Home Combo"
                   />
                 </RadioButtonGroup>
-                <div style={{color:"red"}}>{this.state.programTypeErr}</div>
+                <TextField
+                  floatingLabelText=" "
+                  disabled={true}
+                  className="full-width"
+                  errorText={this.state.programTypeErr}
+                  errorStyle={{float: "left"}}
+                  style={{height: '25px'}}
+                />
               </div>
               <h2 className="headings">Installation & Delivery</h2>
               <TextField
@@ -815,6 +823,7 @@ export default class NewSale extends React.Component {
                   maxDate={this.state.maxDate}
                   value={this.state.installationDate}
                   onChange={this.handleDateChange.bind(this, "installationDate")}
+                  onBlur={this.validateInstallationDate.bind(this)}
                   errorText={this.state.installationDateErr}
                   errorStyle={{float: "left"}}
                 />
@@ -828,6 +837,7 @@ export default class NewSale extends React.Component {
                   floatingLabelText="Installation Time"
                   value={this.state.installationTime}
                   onChange={this.handleTimeChange.bind(this, "installationTime")}
+                  onBlur={this.validateInstallationTime.bind(this)}
                   errorText={this.state.installationTimeErr}
                   errorStyle={{float: "left"}}
                 />
