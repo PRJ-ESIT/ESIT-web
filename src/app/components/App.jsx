@@ -52,6 +52,7 @@ export default class App extends React.Component {
       formId: undefined,
       docuSignUrl: undefined,
       installationObj: undefined,
+      saleObj: undefined,
       envelopeId: undefined,
     }
 
@@ -88,7 +89,6 @@ export default class App extends React.Component {
     if(obj == undefined) {
       var obj = {};
     }
-
     obj['saleStepIndex']=saleStepIndex + 1;
 
     this.setState(obj);
@@ -165,6 +165,7 @@ export default class App extends React.Component {
     });
   }
 
+  // For Sales Forms
   getEmbeddedUrl(data) {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
@@ -181,7 +182,8 @@ export default class App extends React.Component {
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(data));
   }
-// For customer
+
+  // For customer
   getInstallationEmbeddedUrl(data) {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
@@ -200,7 +202,8 @@ export default class App extends React.Component {
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(data));
   }
-// For installer
+
+  // For installer
   getInstallationEmbeddedUrl2(data) {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
@@ -224,6 +227,7 @@ export default class App extends React.Component {
     if(message == "Sale forms are signed") {
       this.setState({
         docuSignURL: undefined,
+        saleStepIndex: this.state.saleStepIndex + 1,
       });
     } else if(message == "First Installation form is signed") {
       this.setState({
@@ -284,7 +288,7 @@ export default class App extends React.Component {
               handleInstallationNext={this.handleInstallationNext} handleInstallationPrev={this.handleInstallationPrev}
               selectedInstallationId={this.state.selectedInstallationId} installationObj={this.state.installationObj}
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
-              getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} />
+              getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj} />
           </div>
         </div>
         { this.state.loginDialog ?

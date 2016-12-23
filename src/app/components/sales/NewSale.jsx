@@ -548,6 +548,7 @@ export default class NewSale extends React.Component {
       + "-" + dateHelpers.twoDigits(dateSigned.getDate());
 
     let data = {
+      // Homeowner Information
       fname: this.state.fname,
       lname: this.state.lname, //customer table
       address: this.state.address, //address table
@@ -560,55 +561,31 @@ export default class NewSale extends React.Component {
       cellPhone: this.state.cellPhone, //customer table
       email: this.state.email, //customer table
       dateSigned: dateSigned,
-      //program type
+
+      // Program
       programType: this.state.programType, //sale table
 
-      //Installation & Delivery
+      // Installation & Delivery
       installationDateTime: dateHelpers.toMysqlFormat(finalDate), //sale table
       notes: this.state.notes, //sale table
-      //the rest
+
+      // The rest
       salesRepId: this.state.salesRepId
     };
+
     let _this = this;
     var request = new XMLHttpRequest();
     request.open('POST', "http://" + IP + '/newsale', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 201) {
-        let saleObject = JSON.parse(request.responseText).sale;
-        // Get embedded URL
-        var date = new Date(saleObject.installationDateTime);
-        date = date.toLocaleDateString();
-        var time = new Date(saleObject.installationDateTime);
-        time = time.toLocaleTimeString();
-
-        let data = {
-          salesNumber: saleObject.salesNumber,
-          fname: saleObject.firstName,
-          lname: saleObject.lastName, //customer table
-          address: saleObject.address, //address table
-          unitNum: saleObject.unit,//address table
-          city: saleObject.city,//address table
-          province: saleObject.province,//address table
-          postalCode: saleObject.postalCode.replace(/\s/g,''),//address table
-          enbridge: saleObject.enbridgeNum, //customer table
-          email: saleObject.email, //customer table
-          homePhone: saleObject.homePhone, //customer table
-          cellPhone: saleObject.cellPhone, //customer table
-          dateSigned: dateSigned,
-          //program type
-          programType: saleObject.programId, //sale table
-
-          //Installation & Delivery
-          installationDate: date, //sale table
-          installationTime: time, //sale table
-          notes: saleObject.notes, //sale table
-          //the rest
-          salesRepId: saleObject.salesRepId,
-          salesRepName: _this.state.salesRepName
-        };
-
-        _this.props.getEmbeddedUrl(data);
+        let saleObject = {
+            saleObj: JSON.parse(request.responseText).sale
+        }
+        // Alternatively return sales rep name in newly created sale object
+        saleObject.saleObj["salesRepName"] = _this.state.salesRepName;
+        // Passing the new sale object to the next component (DocuSign form)
+        _this.props.handleSaleNext(saleObject);
       }
     };
 
