@@ -199,6 +199,14 @@ var validations = {
     }
   },
 
+  validateHireDate(hireDate) {
+    if (hireDate instanceof Date) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   validateSalesRep(salesRep) {
     if(salesRep != '') {
       return true;
