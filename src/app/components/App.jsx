@@ -51,6 +51,8 @@ export default class App extends React.Component {
       status: "",
       formId: undefined,
       docuSignUrl: undefined,
+      installationObj: undefined,
+      envelopeId: undefined,
     }
 
     this.handleLogin = this.handleLogin.bind(this);
@@ -59,6 +61,8 @@ export default class App extends React.Component {
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
     this.editClickHandler = this.editClickHandler.bind(this);
     this.getEmbeddedUrl = this.getEmbeddedUrl.bind(this);
+    this.getInstallationEmbeddedUrl = this.getInstallationEmbeddedUrl.bind(this);
+    this.getInstallationEmbeddedUrl2 = this.getInstallationEmbeddedUrl2.bind(this);
     this.closeIframe = this.closeIframe.bind(this);
   }
 
@@ -101,7 +105,6 @@ export default class App extends React.Component {
     if(obj == undefined) {
       var obj = {};
     }
-
     obj['installationStepIndex']=installationStepIndex + 1;
 
     this.setState(obj);
@@ -178,6 +181,42 @@ export default class App extends React.Component {
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(data));
   }
+// For customer
+  getInstallationEmbeddedUrl(data) {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let url = JSON.parse(httpRequest.responseText).url;
+        let eId = JSON.parse(httpRequest.responseText).envelopeId;
+        _this.setState({
+          docuSignURL: url,
+          envelopeId: eId,
+        });
+      }
+    };
+
+    httpRequest.open('POST', "http://" + IP + "/getInstallationEmbeddedUrl", true);
+    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    httpRequest.send(JSON.stringify(data));
+  }
+// For installer
+  getInstallationEmbeddedUrl2(data) {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let url = JSON.parse(httpRequest.responseText).url;
+        _this.setState({
+          docuSignURL: url,
+        });
+      }
+    };
+
+    httpRequest.open('POST', "http://" + IP + "/getInstallationEmbeddedUrl2", true);
+    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    httpRequest.send(JSON.stringify(data));
+  }
 
   closeIframe(message) {
     console.log(message);
@@ -185,6 +224,17 @@ export default class App extends React.Component {
     if(message == "Sale forms are signed") {
       this.setState({
         docuSignURL: undefined,
+      });
+    } else if(message == "First Installation form is signed") {
+      this.setState({
+        docuSignURL: undefined,
+        installationStepIndex: this.state.installationStepIndex + 1,
+      });
+    } else if(message == "Second Installation form is signed") {
+      this.setState({
+        docuSignURL: undefined,
+        envelopeId: undefined,
+        installationStepIndex: this.state.installationStepIndex + 1,
       });
     }
   }
@@ -232,7 +282,9 @@ export default class App extends React.Component {
               saleStepIndex={this.state.saleStepIndex} installationStepIndex={this.state.installationStepIndex}
               handleSaleNext={this.handleSaleNext} handleSalePrev={this.handleSalePrev}
               handleInstallationNext={this.handleInstallationNext} handleInstallationPrev={this.handleInstallationPrev}
-              selectedInstallationId={this.state.selectedInstallationId} />
+              selectedInstallationId={this.state.selectedInstallationId} installationObj={this.state.installationObj}
+              getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
+              getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} />
           </div>
         </div>
         { this.state.loginDialog ?

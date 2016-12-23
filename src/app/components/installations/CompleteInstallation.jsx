@@ -69,7 +69,7 @@ export default class CompleteInstallation extends React.Component {
       acknowledgement4: false,
       installedDate: {},
       installerId: '',
-      installer: '',
+      installerName: '',
       minDate: minDate,
       maxDate: maxDate,
 
@@ -117,6 +117,9 @@ export default class CompleteInstallation extends React.Component {
       installerValidated: false,
       installedDateValidated: false,
 
+      //whole installation object needed for DocuSidg
+      installation: undefined,
+
       allInstallers: undefined,
     };
   }
@@ -156,9 +159,10 @@ export default class CompleteInstallation extends React.Component {
                 bathrooms: installation.bathrooms ? installation.bathrooms : '',
                 installedDate: tempDateTime ? tempDateTime : '',
                 installerId: installation.installerId ? installation.installerId : '',
-                installer: installation.installer ? installation.installer : '',
+                installerName: installation.installerName ? installation.installerName : '',
                 minDate: minDate,
                 allInstallers: allInstallers,
+                installation: installation,
               });
             }
           };
@@ -182,6 +186,10 @@ export default class CompleteInstallation extends React.Component {
 
   handleSelectChange(fieldname, event, index, value) {
     var obj = {};
+    // Special case for installers
+    if(fieldname == "installerId") {
+      obj["installerName"] = this.state.allInstallers[index].name;
+    }
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = value;
@@ -643,7 +651,46 @@ export default class CompleteInstallation extends React.Component {
 
   validateForm() {
     if (this.validateAllFields()) {
-      this.props.handleInstallationNext();
+      var obj = {
+        installationObj: {
+          customerFirstName: this.state.fname,
+          customerLastName: this.state.lname,
+          address: this.state.address,
+          unitNum: this.state.unitNum,
+          city: this.state.city,
+          province: this.state.province,
+          postalCode: this.state.postalCode,
+          enbridge: this.state.enbridge,
+          email: this.state.email,
+          homePhone: this.state.homePhone,
+          cellPhone: this.state.cellPhone,
+          sqft: this.state.sqft,
+          bathrooms: this.state.bathrooms,
+          residents: this.state.residents,
+          pool: this.state.pool,
+          program1: this.state.program1,
+          program2: this.state.program2,
+          program3: this.state.program3,
+          program4: this.state.program4,
+          program5: this.state.program5,
+          program6: this.state.program6,
+          checklist1: this.state.checklist1,
+          checklist2: this.state.checklist2,
+          checklist3: this.state.checklist3,
+          checklist4: this.state.checklist4,
+          checklist5: this.state.checklist5,
+          checklist6: this.state.checklist6,
+          acknowledgement1: this.state.acknowledgement1,
+          acknowledgement2: this.state.acknowledgement2,
+          acknowledgement3: this.state.acknowledgement3,
+          acknowledgement4: this.state.acknowledgement4,
+          notes: this.state.notes,
+          installedDate: this.state.installedDate,
+          installerId: this.state.installerId,
+          installerName: this.state.installerName,
+      }
+      };
+      this.props.handleInstallationNext(obj);
     }
   }
 
@@ -1129,9 +1176,9 @@ export default class CompleteInstallation extends React.Component {
                 <SelectField
                   floatingLabelText="Installer"
                   floatingLabelFixed={false}
-                  hintText="Select a Installer"
-                  value={this.state.installer}
-                  onChange={this.handleSelectChange.bind(this, "installer")}
+                  hintText="Select an Installer"
+                  value={this.state.installerId}
+                  onChange={this.handleSelectChange.bind(this, "installerId")}
                   errorText={this.state.installerErr}
                   errorStyle={{float: "left"}}
                 >
