@@ -11,9 +11,9 @@ export default class SaleContainer extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <NewSale handleSalePrev={this.handleSalePrev} status={'create'} menuClickHandler={this.props.menuClickHandler} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
+        return <NewSale handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} status={'create'} menuClickHandler={this.props.menuClickHandler} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
       case 1:
-        return <DocuSignSale />;
+        return <DocuSignSale sale={this.props.saleObj} handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
       case 2:
         return 'pictures'
       default:
