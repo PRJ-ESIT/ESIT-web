@@ -105,8 +105,6 @@ export default class App extends React.Component {
     if(obj == undefined) {
       var obj = {};
     }
-    console.log("App.jsx");
-    console.log(obj);
     obj['installationStepIndex']=installationStepIndex + 1;
 
     this.setState(obj);
@@ -191,7 +189,6 @@ export default class App extends React.Component {
       if (this.readyState == 4 && this.status == 200) {
         let url = JSON.parse(httpRequest.responseText).url;
         let eId = JSON.parse(httpRequest.responseText).envelopeId;
-        console.log(url);
         _this.setState({
           docuSignURL: url,
           envelopeId: eId,
@@ -210,7 +207,6 @@ export default class App extends React.Component {
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let url = JSON.parse(httpRequest.responseText).url;
-        console.log(url);
         _this.setState({
           docuSignURL: url,
         });

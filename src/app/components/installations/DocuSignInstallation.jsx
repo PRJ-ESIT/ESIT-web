@@ -2,8 +2,6 @@ import React from 'react';
 
 export default class DocuSignInstallation extends React.Component {
   componentDidMount() {
-    console.log("HEY, I got the installation");
-    console.log(this.props);
     let _this = this;
     let data = {
       // Homeowner Information
@@ -51,7 +49,6 @@ export default class DocuSignInstallation extends React.Component {
       installerName: this.props.installation.installerName,
       installedDate: this.props.installation.installedDate,
     };
-console.log(data);
     this.props.getInstallationEmbeddedUrl(data);
   }
 

@@ -121,8 +121,6 @@ export default class CompleteInstallation extends React.Component {
       installation: undefined,
 
       allInstallers: undefined,
-      // All installers indexed by employee number
-      installers: {},
     };
   }
 
@@ -141,11 +139,6 @@ export default class CompleteInstallation extends React.Component {
           httpReq.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
               let allInstallers = JSON.parse(httpReq.responseText).employees;
-              // var temp = {};
-              //
-              // for(var installer in allInstallers){
-              //     temp[allInstallers[installer].employeeNumber] = allInstallers[installer].name;
-              // }
 
               _this.setState({
                 // salesNumber: sale.salesNumber,
@@ -170,7 +163,6 @@ export default class CompleteInstallation extends React.Component {
                 minDate: minDate,
                 allInstallers: allInstallers,
                 installation: installation,
-                // installers: temp,
               });
             }
           };
