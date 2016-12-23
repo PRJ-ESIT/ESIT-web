@@ -44,11 +44,7 @@ export default class LeftMenu extends React.Component {
   render() {
     var fontStyle = {'color': 'white'};
     return (
-      <List
-        style={{
-          'backgroundColor': '#2F3C7D'
-        }}
-      >
+      <List className='headings'>
         <ListItem
           onClick={this.props.clickHandler.bind(null, "dashboard")}
           primaryText="Dashboard"

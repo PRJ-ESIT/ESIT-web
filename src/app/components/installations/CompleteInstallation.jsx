@@ -204,9 +204,15 @@ export default class CompleteInstallation extends React.Component {
 
   handleProgramCheckboxChange(fieldname1, fieldname2, fieldname3, event, isInputChecked) {
     var obj = {};
-    obj[fieldname1] = isInputChecked;
-    obj[fieldname2] = !isInputChecked;
-    obj[fieldname3] = !isInputChecked;
+    if (!isInputChecked) {
+      obj[fieldname1] = isInputChecked;
+      obj[fieldname2] = isInputChecked;
+      obj[fieldname3] = isInputChecked;
+    } else {
+      obj[fieldname1] = isInputChecked;
+      obj[fieldname2] = !isInputChecked;
+      obj[fieldname3] = !isInputChecked;
+    }
     this.setState(obj);
   }
 
@@ -260,7 +266,7 @@ export default class CompleteInstallation extends React.Component {
       });
     } else {
       this.setState({
-        addressErr: 'Can contain characters, numbers, spaces and hyphens only',
+        addressErr: 'Only characters, numbers, spaces and hyphens',
         addressValidated: false,
       });
     }
@@ -744,8 +750,10 @@ export default class CompleteInstallation extends React.Component {
                 hintText="Select a Province"
                 value={this.state.province}
                 onChange={this.handleSelectChange.bind(this, "province")}
+                onBlur={this.validateProvince.bind(this)}
                 errorText={this.state.provinceErr}
                 errorStyle={{float: "left"}}
+                tabIndex={0}
               >
                 {provinces}
               </SelectField>
@@ -856,9 +864,12 @@ export default class CompleteInstallation extends React.Component {
               <br />
               <div className="radioActionText">
                 <p className="radioRow">Pool</p>
-                <RadioButtonGroup name="pool" className="radioGroup"
-                valueSelected={this.state.pool}
-                onChange={this.handleRadioChange.bind(this, "pool")}>
+                <RadioButtonGroup
+                  name="pool"
+                  className="radioGroup"
+                  valueSelected={this.state.pool}
+                  onChange={this.handleRadioChange.bind(this, "pool")}
+                >
                   <RadioButton
                     className="radio"
                     value="1"
@@ -871,7 +882,14 @@ export default class CompleteInstallation extends React.Component {
                   />
                 </RadioButtonGroup>
                 <br />
-                <div style={{color:"red", float: "left"}}>{this.state.poolErr}</div>
+                <TextField
+                  floatingLabelText=" "
+                  disabled={true}
+                  className="full-width"
+                  errorText={this.state.poolErr}
+                  errorStyle={{float: "left"}}
+                  style={{height: '25px'}}
+                />
               </div>
               <br />
 
@@ -924,6 +942,7 @@ export default class CompleteInstallation extends React.Component {
                 <RadioButtonGroup
                   name="installationCheck"
                   className="radioGroup"
+                  valueSelected={this.state.checklist1}
                   onChange={this.handleTextChange.bind(this, "checklist1")}
                 >
                   <RadioButton
@@ -945,6 +964,7 @@ export default class CompleteInstallation extends React.Component {
                 <RadioButtonGroup
                   name="installationCheck"
                   className="radioGroup"
+                  valueSelected={this.state.checklist2}
                   onChange={this.handleTextChange.bind(this, "checklist2")}
                   >
                   <RadioButton
@@ -966,6 +986,7 @@ export default class CompleteInstallation extends React.Component {
                 <RadioButtonGroup
                   name="installationCheck"
                   className="radioGroup"
+                  valueSelected={this.state.checklist3}
                   onChange={this.handleTextChange.bind(this, "checklist3")}
                 >
                   <RadioButton
@@ -987,6 +1008,7 @@ export default class CompleteInstallation extends React.Component {
                 <RadioButtonGroup
                   name="installationCheck"
                   className="radioGroup"
+                  valueSelected={this.state.checklist4}
                   onChange={this.handleTextChange.bind(this, "checklist4")}
                 >
                   <RadioButton
@@ -1008,6 +1030,7 @@ export default class CompleteInstallation extends React.Component {
                 <RadioButtonGroup
                   name="installationCheck"
                   className="radioGroup"
+                  valueSelected={this.state.checklist5}
                   onChange={this.handleTextChange.bind(this, "checklist5")}
                 >
                   <RadioButton
@@ -1029,6 +1052,7 @@ export default class CompleteInstallation extends React.Component {
                 <RadioButtonGroup
                   name="installationCheck"
                   className="radioGroup"
+                  valueSelected={this.state.checklist6}
                   onChange={this.handleTextChange.bind(this, "checklist6")}
                 >
                   <RadioButton
