@@ -1,5 +1,4 @@
 import React from 'react';
-import { IP } from '../../../../config/config.js';
 
 export default class DocuSignInstallation extends React.Component {
   componentDidMount() {
@@ -25,13 +24,26 @@ export default class DocuSignInstallation extends React.Component {
       pool: this.props.installation.pool,
 
       // Program Installation
-      // TODO
+      program1: this.props.installation.program1,
+      program2: this.props.installation.program2,
+      program3: this.props.installation.program3,
+      program4: this.props.installation.program4,
+      program5: this.props.installation.program5,
+      program6: this.props.installation.program6,
 
       // Installation Checklist
-      // TODO
+      checklist1: this.props.installation.checklist1,
+      checklist2: this.props.installation.checklist2,
+      checklist3: this.props.installation.checklist3,
+      checklist4: this.props.installation.checklist4,
+      checklist5: this.props.installation.checklist5,
+      checklist6: this.props.installation.checklist6,
 
       // Customer Acknowledgement
-      // TODO
+      acknowledgement1: this.props.installation.acknowledgement1,
+      acknowledgement2: this.props.installation.acknowledgement2,
+      acknowledgement3: this.props.installation.acknowledgement3,
+      acknowledgement4: this.props.installation.acknowledgement4,
 
       // The rest
       notes: this.props.installation.notes,
@@ -41,28 +53,12 @@ export default class DocuSignInstallation extends React.Component {
     };
 console.log(data);
     this.props.getInstallationEmbeddedUrl(data);
-
-    // var httpRequest = new XMLHttpRequest();
-    // let _this = this;
-    // httpRequest.onreadystatechange = function() {
-    //   if (this.readyState == 4 && this.status == 200) {
-    //     let url = JSON.parse(httpRequest.responseText).url;
-    //     console.log(url);
-    //     // _this.setState({
-    //     //   docuSignURL: url,
-    //     // });
-    //   }
-    // };
-    //
-    // httpRequest.open('POST', "http://" + IP + "/getInstallationEmbeddedUrl", true);
-    // httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    // httpRequest.send(JSON.stringify(data));
   }
 
   render() {
     return (
       <div>
-        Hello World!
+        Generating DocuSign Form
       </div>
     );
   }

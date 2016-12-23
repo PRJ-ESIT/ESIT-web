@@ -36,6 +36,14 @@ app.get('/closesaleiframe', function(req, res) {
     res.sendFile(path.join(__dirname + '/src/client/closesaleiframe.html'));
 });
 
+app.get('/closeinstallationoneiframe', function(req, res) {
+    res.sendFile(path.join(__dirname + '/src/client/closeinstallationoneiframe.html'));
+});
+
+app.get('/closeinstallationtwoiframe', function(req, res) {
+    res.sendFile(path.join(__dirname + '/src/client/closeinstallationtwoiframe.html'));
+});
+
 app.get('/dashboard', function(request, response) {
 
   var options = {
@@ -519,7 +527,7 @@ app.post('/newinstallation', function(request, response) {
     installerId: request.body.installer,
     installationDateTime: request.body.installationDateTime
   });
-  console.log(jsonObj);
+  // console.log(jsonObj);
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -644,6 +652,7 @@ app.get('/getoneinstallation', function(request, response) {
 app.post('/getembeddedurl', function(request, response) {
   var url = config.docusign.baseUrl + "/envelopes";
   var recipientName = request.body.fname + ' ' +  request.body.lname;
+  var returnUrl = "http://" + config.IP + "/closesaleiframe";
   // Prepare the request body
   var body = JSON.stringify({
       "emailSubject": "DocuSign API call - Embedded Sending Example",
@@ -830,53 +839,9 @@ app.post('/getembeddedurl', function(request, response) {
         var envelopeId = obj.envelopeId;
 
         // Get embedded URL
-        var innerUrl = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
-
-        // Prepare the request body
-        var innerBody = JSON.stringify({
-            "returnUrl": "http://" + config.IP + "/closesaleiframe",
-            "authenticationMethod": "email",
-            "email": request.body.email,
-            "userName": recipientName,
-            "clientUserId": "1001",	// must match clientUserId in step 2!
-          });
-
-        var innerOptions = {
-          hostname: config.docusign.hostname,
-          path: innerUrl,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(innerBody),
-            'X-DocuSign-Authentication' : dsAuthHeader
-          }
-        };
-
-        // Inner request
-        var innerReq = https.request(innerOptions, function(innerRes)
-          {
-            var innerOutput = '';
-            innerRes.setEncoding('utf8');
-
-            innerRes.on('data', function (chunk) {
-              innerOutput += chunk;
-            });
-
-            innerRes.on('end', function() {
-              var innerObj = JSON.parse(innerOutput);
-
-              return response.status(200).json(innerObj);
-            });
-          });
-
-          innerReq.on('error', function(err) {
-            response.send('error: ' + err.message);
-          });
-
-          innerReq.write(innerBody);
-          innerReq.end();
-
-        // return response.status(200).json(obj);
+        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, recipientName, "1001", function(urlObj) {
+          return response.status(200).json(urlObj);
+        });
       });
     });
 
@@ -892,7 +857,8 @@ app.post('/getembeddedurl', function(request, response) {
 app.post('/getInstallationEmbeddedUrl', function(request, response) {
   var url = config.docusign.baseUrl + "/envelopes";
   var customerName = request.body.fname + ' ' +  request.body.lname;
-  console.log(request.body);
+  var returnUrl = "http://" + config.IP + "/closeinstallationoneiframe";
+
   // Prepare the request body
   var body = JSON.stringify({
       "emailSubject": "DocuSign API call - Embedded Sending Example",
@@ -901,7 +867,7 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
         "email": "installer@example.com",
         "name": request.body.installerName,
         "roleName": "Installer",
-        "clientUserId": "1002",	// user-configurable
+        "clientUserId": request.body.contractorId,	// user-configurable
         "tabs" : {
           "textTabs" : [{
                 tabLabel : "installerName",
@@ -986,6 +952,11 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
                 tabLabel : "customerNumResidents",
                 value: request.body.residents,
                 locked : "true"
+              },
+              {
+                tabLabel : "customerNotes",
+                value: request.body.notes,
+                locked : "true"
               }
           ],
           "radioGroupTabs" : [{
@@ -1000,16 +971,177 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
               "selected" : request.body.pool == "0",
               locked : "true"
             }]
+          },
+          {
+            "groupName" : "customerChecklist1",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.checklist1 == "yes",
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.checklist1 == "no",
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerChecklist2",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.checklist2 == "yes",
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.checklist2 == "no",
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerChecklist3",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.checklist3 == "yes",
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.checklist3 == "no",
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerChecklist4",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.checklist4 == "yes",
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.checklist4 == "no",
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerChecklist5",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.checklist5 == "yes",
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.checklist5 == "no",
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerChecklist6",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.checklist6 == "yes",
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.checklist6 == "no",
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerAcknowledgement1",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.acknowledgement1 == true,
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.acknowledgement1 == false,
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerAcknowledgement2",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.acknowledgement2 == true,
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.acknowledgement2 == false,
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerAcknowledgement3",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.acknowledgement3 == true,
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.acknowledgement3 == false,
+              locked : "true"
+            }]
+          },
+          {
+            "groupName" : "customerAcknowledgement4",
+            "radios" : [{
+              "value" : "Yes",
+              "selected" : request.body.acknowledgement4 == true,
+              locked : "true"
+            },
+            {
+              "value" : "No",
+              "selected" : request.body.acknowledgement4 == false,
+              locked : "true"
+            }]
           }],
           "listTabs" : [{
             "tabLabel" : "customerProvince",
             "value" : request.body.province,
+            locked : "true"
+          }],
+          "checkboxTabs" : [{
+            "tabLabel" : "customerProgram1",
+            "selected" : request.body.program1,
+            locked : "true"
+          },
+          {
+            "tabLabel" : "customerProgram2",
+            "selected" : request.body.program2,
+            locked : "true"
+          },
+          {
+            "tabLabel" : "customerProgram3",
+            "selected" : request.body.program3,
+            locked : "true"
+          },
+          {
+            "tabLabel" : "customerProgram4",
+            "selected" : request.body.program4,
+            locked : "true"
+          },
+          {
+            "tabLabel" : "customerProgram5",
+            "selected" : request.body.program5,
+            locked : "true"
+          },
+          {
+            "tabLabel" : "customerProgram6",
+            "selected" : request.body.program6,
             locked : "true"
           }]
         }
       }],
       "status": "sent"
     });
+
   // Prepare DocuSign header
   var dsAuthHeader = JSON.stringify({
 		'Username': config.docusign.email,
@@ -1042,54 +1174,11 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
         var obj = JSON.parse(output);
         var envelopeId = obj.envelopeId;
 
-        // Get embedded URL
-        var innerUrl = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
-
-        // Prepare the request body
-        var innerBody = JSON.stringify({
-            "returnUrl": "http://" + config.IP + "/closesaleiframe",
-            "authenticationMethod": "email",
-            "email": request.body.email,
-            "userName": customerName,
-            "clientUserId": "1001",	// must match clientUserId in step 2!
-          });
-
-        var innerOptions = {
-          hostname: config.docusign.hostname,
-          path: innerUrl,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(innerBody),
-            'X-DocuSign-Authentication' : dsAuthHeader
-          }
-        };
-
-        // Inner request
-        var innerReq = https.request(innerOptions, function(innerRes)
-          {
-            var innerOutput = '';
-            innerRes.setEncoding('utf8');
-
-            innerRes.on('data', function (chunk) {
-              innerOutput += chunk;
-            });
-
-            innerRes.on('end', function() {
-              var innerObj = JSON.parse(innerOutput);
-
-              return response.status(200).json(innerObj);
-            });
-          });
-
-          innerReq.on('error', function(err) {
-            response.send('error: ' + err.message);
-          });
-
-          innerReq.write(innerBody);
-          innerReq.end();
-
-        // return response.status(200).json(obj);
+        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
+          // Add envelopeId to object
+          urlObj["envelopeId"] = envelopeId;
+          return response.status(200).json(urlObj);
+        });
       });
     });
 
@@ -1101,6 +1190,73 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
     req.write(body);
     req.end();
 });
+
+app.post('/getInstallationEmbeddedUrl2', function(request, response) {
+  var installerName = request.body.installerName;
+  var installerId = request.body.contractorId;
+  var envelopeId = request.body.envelopeId;
+  var installerEmail = "installer@example.com";
+  var returnUrl = "http://" + config.IP + "/closeinstallationtwoiframe";
+
+  return getDocuSignUrl(envelopeId, returnUrl, installerEmail, installerName, installerId, function(urlObj) {
+    return response.status(200).json(urlObj);
+  });
+});
+
+var getDocuSignUrl = function(envelopeId, returnUrl, email, userName, clientUserId, callback) {
+  // Prepare DocuSign header
+  var dsAuthHeader = JSON.stringify({
+		'Username': config.docusign.email,
+		'Password': config.docusign.password,
+		'IntegratorKey': config.docusign.integratorKey
+	});
+
+  // Get embedded URL
+  var url = config.docusign.baseUrl + "/envelopes/" + envelopeId + "/views/recipient";
+
+  // Prepare the request body
+  var body = JSON.stringify({
+      "returnUrl": returnUrl,
+      "authenticationMethod": "email",
+      "email": email,
+      "userName": userName,
+      "clientUserId": clientUserId,	// must match clientUserId in step 2!
+    });
+
+  var options = {
+    hostname: config.docusign.hostname,
+    path: url,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-DocuSign-Authentication' : dsAuthHeader
+    }
+  };
+
+  // Inner request
+  var req = https.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var innerObj = JSON.parse(output);
+        callback(innerObj);
+      });
+    });
+
+    req.on('error', function(err) {
+      response.send('error: ' + err.message);
+    });
+
+    req.write(body);
+    req.end();
+}
 
 app.listen(3000, function(err) {
   console.log('Listening at http://... 3000');

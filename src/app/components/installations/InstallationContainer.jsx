@@ -3,6 +3,7 @@ import { Step, Stepper, StepLabel, } from 'material-ui';
 import CompleteInstallation from './CompleteInstallation.jsx';
 import SelectInstallation from './SelectInstallation.jsx';
 import DocuSignInstallation from './DocuSignInstallation.jsx';
+import DocuSignInstallation2 from './DocuSignInstallation2.jsx';
 
 export default class InstallationContainer extends React.Component {
   constructor(props) {
@@ -18,6 +19,8 @@ export default class InstallationContainer extends React.Component {
       case 2:
         return <DocuSignInstallation installation={this.props.installationObj} getInstallationEmbeddedUrl={this.props.getInstallationEmbeddedUrl}/>;
       case 3:
+        return <DocuSignInstallation2 envelopeId={this.props.envelopeId} installation={this.props.installationObj} getInstallationEmbeddedUrl2={this.props.getInstallationEmbeddedUrl2} />;
+      case 4:
         return 'pictures'
       default:
         return 'You messed up :)';
@@ -36,7 +39,10 @@ export default class InstallationContainer extends React.Component {
             <StepLabel>Complete the Installation</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Sign the Documents</StepLabel>
+            <StepLabel>Customer Sign the Documents</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Installer Sign the Documents</StepLabel>
           </Step>
           <Step>
             <StepLabel>Take Installation Photos</StepLabel>
