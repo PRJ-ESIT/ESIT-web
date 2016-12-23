@@ -1,5 +1,8 @@
 import React from 'react';
-import { Toolbar, ToolbarTitle, TextField, MenuItem, RaisedButton, SelectField } from 'material-ui';
+import {
+  Toolbar, ToolbarTitle, TextField, MenuItem,
+  RaisedButton, SelectField, DatePicker,
+} from 'material-ui';
 import { validations } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
 import { dateHelpers } from '../helpers/common.js';
@@ -25,9 +28,17 @@ export default class NewEmployee extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const minDate = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
     this.state = {
       //state variables below keep the values of each field
       employeeType: '',
+      hireDate: {},
+      minDate: minDate,
+      maxDate: maxDate,
       fname: '',
       lname: '',
       address: '',
@@ -40,11 +51,11 @@ export default class NewEmployee extends React.Component {
       cellPhone: '',
       password: '',
       repeatPassword: '',
-      hireDate: {},
       isActive: true,
 
       //error messages for each input field
       employeeTypeErr: '',
+      hireDateErr: '',
       fnameErr: '',
       lnameErr: '',
       addressErr: '',
@@ -60,6 +71,7 @@ export default class NewEmployee extends React.Component {
 
       // Validation fields
       employeeTypeValidated: false,
+      hireDateValidated: false,
       fnameValidated: false,
       lnameValidated: false,
       addressValidated: false,
@@ -82,9 +94,12 @@ export default class NewEmployee extends React.Component {
       httpRequest.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           let employee = JSON.parse(httpRequest.responseText).employee;
+          // Format time
+          var tempDateTime = new Date(employee.hireDate);
 
           _this.setState({
             employeeType: employee.role ? employee.role : '',
+            hireDate: tempDateTime ? tempDateTime : '',
             fname: employee.firstName ? employee.firstName : '',
             lname: employee.lastName ? employee.lastName : '',
             email: employee.email ? employee.email : '',
@@ -113,6 +128,14 @@ export default class NewEmployee extends React.Component {
     this.setState(obj);
   }
 
+  handleDateChange(fieldname, event, date) {
+    var obj = {};
+    obj[fieldname + "Err"] = '';
+    obj[fieldname + "Validated"] = true;
+    obj[fieldname] = date;
+    this.setState(obj);
+  }
+
   handleTextChange(fieldname, event) {
     var obj = {};
     obj[fieldname] = event.target.value;
@@ -121,7 +144,7 @@ export default class NewEmployee extends React.Component {
 
   validateEmployeeType() {
     let employeeType = this.state.employeeType;
-    if(validations.validateEmployeeType(employeeType)) {
+    if (validations.validateEmployeeType(employeeType)) {
       this.setState({
         employeeTypeErr: '',
         employeeType: employeeType,
@@ -135,9 +158,24 @@ export default class NewEmployee extends React.Component {
     }
   }
 
+  validateHireDate() {
+    let hireDate = this.state.hireDate;
+    if (validations.validateHireDate(hireDate)) {
+      this.setState({
+        hireDateErr: '',
+        hireDateValidated: true,
+      });
+    } else {
+      this.setState({
+        hireDateErr: 'Must set a hire date',
+        hireDateValidated: false,
+      });
+    }
+  }
+
   validateFName() {
     let fname = this.state.fname.trim();
-    if(validations.validateFName(fname)) {
+    if (validations.validateFName(fname)) {
       this.setState({
         fnameErr: '',
         fname: fname,
@@ -153,7 +191,7 @@ export default class NewEmployee extends React.Component {
 
   validateLName() {
     let lname = this.state.lname.trim();
-    if(validations.validateLName(lname)) {
+    if (validations.validateLName(lname)) {
       this.setState({
         lnameErr: '',
         lname: lname,
@@ -169,7 +207,7 @@ export default class NewEmployee extends React.Component {
 
   validateAddress() {
     let address = this.state.address.trim();
-    if(validations.validateAddress(address)) {
+    if (validations.validateAddress(address)) {
       this.setState({
         addressErr: '',
         address: address,
@@ -177,7 +215,7 @@ export default class NewEmployee extends React.Component {
       });
     } else {
       this.setState({
-        addressErr: 'Can contain characters, numbers, spaces and hyphens only',
+        addressErr: 'Only characters, numbers, spaces and hyphens',
         addressValidated: false,
       });
     }
@@ -185,7 +223,7 @@ export default class NewEmployee extends React.Component {
 
   validateUnit() {
     let unitNum = this.state.unitNum.trim();
-    if(validations.validateUnit(unitNum)) {
+    if (validations.validateUnit(unitNum)) {
       this.setState({
         unitNumErr: '',
         unitNum: unitNum,
@@ -201,7 +239,7 @@ export default class NewEmployee extends React.Component {
 
   validateCity() {
     let city = this.state.city.trim();
-    if(validations.validateCity(city)) {
+    if (validations.validateCity(city)) {
       this.setState({
         cityErr: '',
         city: city,
@@ -217,7 +255,7 @@ export default class NewEmployee extends React.Component {
 
   validateProvince() {
     let province = this.state.province;
-    if(validations.validateProvince(province)) {
+    if (validations.validateProvince(province)) {
       this.setState({
         provinceErr: '',
         province: province,
@@ -234,7 +272,7 @@ export default class NewEmployee extends React.Component {
   validatePostalCode() {
     let postalCode = this.state.postalCode.trim();
     postalCode = postalCode.toUpperCase();
-    if(validations.validatePostalCode(postalCode)) {
+    if (validations.validatePostalCode(postalCode)) {
       this.setState({
         postalCodeErr: '',
         postalCode: postalCode,
@@ -250,7 +288,7 @@ export default class NewEmployee extends React.Component {
 
   validateEmail() {
     let email = this.state.email.trim();
-    if(validations.validateEmail(email)) {
+    if (validations.validateEmail(email)) {
       this.setState({
         emailErr: '',
         email: email,
@@ -266,7 +304,7 @@ export default class NewEmployee extends React.Component {
 
   validateHomePhone() {
     let homePhone = this.state.homePhone.trim();
-    if(validations.validateHomePhone(homePhone)) {
+    if (validations.validateHomePhone(homePhone)) {
       this.setState({
         homePhoneErr: '',
         homePhone: homePhone,
@@ -282,7 +320,7 @@ export default class NewEmployee extends React.Component {
 
   validateCellPhone() {
     let cellPhone = this.state.cellPhone.trim();
-    if(validations.validateCellPhone(cellPhone)) {
+    if (validations.validateCellPhone(cellPhone)) {
       this.setState({
         cellPhoneErr: '',
         cellPhone: cellPhone,
@@ -297,14 +335,14 @@ export default class NewEmployee extends React.Component {
   }
 
   validatePassword() {
-    if(validations.isPassword(this.state.password) &&
+    if (validations.isPassword(this.state.password) &&
       validations.maxLength(this.state.password, 20)) {
 
       let repeatPswd = this.state.repeatPassword;
       let repeatPasswordErr = '';
       let validated = true;
 
-      if(!(validations.isExisty(repeatPswd) &&
+      if (!(validations.isExisty(repeatPswd) &&
         !validations.isEmpty(repeatPswd) &&
         repeatPswd == this.state.password)) {
 
@@ -319,7 +357,7 @@ export default class NewEmployee extends React.Component {
       });
     } else {
       this.setState({
-        passwordErr: 'At least 1 character, 1 number, one of the special characters !@#$%^&* and have at least 8 characters',
+        passwordErr: 'Minimum 8 characters and 1 character, 1 number, 1 special character (!@#$%^&*)',
         passwordValidated: false,
       });
     }
@@ -327,24 +365,27 @@ export default class NewEmployee extends React.Component {
 
   validatePasswordRepeat() {
     let repeatPswd = this.state.repeatPassword;
-    if(validations.isExisty(repeatPswd) &&
+    if (validations.isExisty(repeatPswd) &&
       !validations.isEmpty(repeatPswd) &&
       repeatPswd == this.state.password) {
 
       this.setState({
         repeatPasswordErr: '',
         passwordRepeatValidated: true,
+        passwordValidated: true,
       });
     } else {
       this.setState({
         repeatPasswordErr: 'Doesn\'t match the password entered',
         passwordRepeatValidated: false,
+        passwordValidated: false,
       });
     }
   }
 
   validateAllFields() {
     if (this.state.employeeTypeValidated &&
+        this.state.hireDateValidated &&
         this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
@@ -357,12 +398,12 @@ export default class NewEmployee extends React.Component {
         this.state.cellPhoneValidated &&
         this.state.passwordValidated &&
         this.state.passwordRepeatValidated) {
-
       //everything is validated, creating a new Employee
       this.createNewEmployee();
 
     } else {
       this.validateEmployeeType();
+      this.validateHireDate();
       this.validateFName();
       this.validateLName();
       this.validateAddress();
@@ -379,8 +420,11 @@ export default class NewEmployee extends React.Component {
   }
 
   createNewEmployee() {
-    var date = new Date();
-    date = date.getFullYear() + "-" + dateHelpers.twoDigits(1 + date.getMonth()) + "-" + dateHelpers.twoDigits(date.getDate());
+    var date = this.state.hireDate;
+    date = date.getFullYear()
+      + "-" + dateHelpers.twoDigits(1 + date.getMonth())
+      + "-" + dateHelpers.twoDigits(date.getDate());
+
     let data = {
       fname: this.state.fname,
       lname: this.state.lname,
@@ -398,10 +442,14 @@ export default class NewEmployee extends React.Component {
       employeeType: this.state.employeeType,
     };
 
+    var _this = this;
     var request = new XMLHttpRequest();
     request.open('POST', "http://" + IP + '/newemployee', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 201) {
+        _this.props.menuClickHandler("dashboard");
+      }
       //#TODO add error check and display `Snackbar` in both success or fail cases
     };
 
@@ -430,6 +478,17 @@ export default class NewEmployee extends React.Component {
                 <MenuItem key={2} value={"installer"} primaryText="Installer" />
                 <MenuItem key={3} value={"admin"} primaryText="Administrator" />
               </SelectField>
+              <DatePicker
+                hintText="2017-08-20" container="inline"
+                floatingLabelText="Hire Date"
+                minDate={this.state.minDate}
+                maxDate={this.state.maxDate}
+                value={this.state.hireDate}
+                onChange={this.handleDateChange.bind(this, "hireDate")}
+                onBlur={this.validateHireDate.bind(this)}
+                errorText={this.state.hireDateErr}
+                errorStyle={{float: "left"}}
+              />
               <br />
               <TextField
                 floatingLabelText="First Name"
@@ -494,8 +553,10 @@ export default class NewEmployee extends React.Component {
                 hintText="Select a Province"
                 value={this.state.province}
                 onChange={this.handleSelectChange.bind(this, "province")}
+                onBlur={this.validateProvince.bind(this)}
                 errorText={this.state.provinceErr}
                 errorStyle={{float: "left"}}
+                tabIndex={0}
               >
                 {provinces}
               </SelectField>

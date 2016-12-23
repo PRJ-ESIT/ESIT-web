@@ -64,8 +64,6 @@ export default class NewSale extends React.Component {
       embeddedUrl: '',
 
       // Unknown data
-      homeownerSignature: '',
-      salesRepSignature: '',
       deliveryCharges: '150',
       installationCharges: '',
       totalCharges: '',
@@ -178,10 +176,6 @@ export default class NewSale extends React.Component {
     }
   }
 
-  formatDate(date){
-    return date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
-  }
-
   handleTextChange(fieldname, event) {
     var obj = {};
     obj[fieldname] = event.target.value;
@@ -282,7 +276,7 @@ export default class NewSale extends React.Component {
       });
     } else {
       this.setState({
-        addressErr: 'Can contain characters, numbers, spaces and hyphens only',
+        addressErr: 'Only characters, numbers, spaces and hyphens',
         addressValidated: false,
       });
     }
@@ -690,14 +684,15 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
-                value={this.state.province}
-                onChange={this.handleSelectChange.bind(this, "province")}
-
                 floatingLabelText="Province"
                 floatingLabelFixed={false}
                 hintText="Select a Province"
+                value={this.state.province}
+                onChange={this.handleSelectChange.bind(this, "province")}
+                onBlur={this.validateProvince.bind(this)}
                 errorText={this.state.provinceErr}
                 errorStyle={{float: "left"}}
+                tabIndex={0}
               >
                 {provinces}
               </SelectField>
@@ -855,19 +850,6 @@ export default class NewSale extends React.Component {
                 className="full-width"
               />
               <h2 className="headings">Authorization</h2>
-              <Checkbox
-                label="Homeowner Signature"
-                labelPosition="left"
-                labelStyle={{width:"auto"}}
-                style={{display:"inline-block", width:"256px"}}
-                checked={true}
-                disabled={true}
-                value={this.state.homeownerSignature}
-                onCheck={this.handleTextChange.bind(this, "homeownerSignature")}
-              />
-              &nbsp;
-              &nbsp;
-              &nbsp;
               <TextField
                 floatingLabelText="Date Signed"
                 value={
@@ -876,17 +858,6 @@ export default class NewSale extends React.Component {
                   this.state.dateSigned.getFullYear()
                 }
                 disabled={true}
-              />
-              <br />
-              <Checkbox
-                label="Sales Rep Signature&nbsp;&nbsp;&nbsp;"
-                labelPosition="left"
-                labelStyle={{width:"auto"}}
-                style={{display:"inline-block", width:"256px"}}
-                checked={true}
-                disabled={true}
-                value={this.state.salesRepSignature}
-                onCheck={this.handleTextChange.bind(this, "salesRepSignature")}
               />
               &nbsp;
               &nbsp;
