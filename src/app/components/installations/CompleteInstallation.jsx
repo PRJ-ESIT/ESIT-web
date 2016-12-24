@@ -101,7 +101,7 @@ export default class CompleteInstallation extends React.Component {
       addressValidated: false,
       unitValidated: false,
       cityValidated: false,
-      proviceValidated: false,
+      provinceValidated: false,
       postalCodeValidated: false,
       enbridgeValidated: false,
       emailValidated: false,
@@ -163,6 +163,24 @@ export default class CompleteInstallation extends React.Component {
                 minDate: minDate,
                 allInstallers: allInstallers,
                 installation: installation,
+
+                fnameValidated: installation.customerFirstName ? true : false,
+                lnameValidated: installation.customerLastName ? true : false,
+                addressValidated: installation.address ? true : false,
+                unitValidated: installation.unit ? true : false,
+                cityValidated: installation.city ? true : false,
+                provinceValidated: installation.province ? true : false,
+                postalCodeValidated: installation.postalCode ? true : false,
+                enbridgeValidated: installation.enbridgeNum ? true : false,
+                emailValidated: installation.email ? true : false,
+                homePhoneValidated: installation.homePhone ? true : false,
+                cellPhoneValidated: installation.cellPhone ? true : false,
+                sqftValidated: installation.sqFootage ? true : false,
+                residentsValidated: installation.residents ? true : false,
+                poolValidated: installation.hasPool ? true : false,
+                bathroomsValidated: installation.bathrooms ? true : false,
+                installedDateValidated: tempDateTime ? true : false,
+                installerValidated: installation.installerName ? true : false,
               });
             }
           };
@@ -492,7 +510,7 @@ export default class CompleteInstallation extends React.Component {
       });
     } else {
       this.setState({
-        programErr: 'One program must be selected plus conservation system and both kits',
+        programErr: 'One program must be selected plus water conservation system, installation kit, and bottling kit',
         programValidated: false,
       });
     }
@@ -517,7 +535,7 @@ export default class CompleteInstallation extends React.Component {
       });
     } else {
       this.setState({
-        checklistErr: 'All checklist options must be checked Yes',
+        checklistErr: 'All checklist options must be selected \'Yes\'',
         checklistValidated: false,
       });
     }
@@ -577,27 +595,6 @@ export default class CompleteInstallation extends React.Component {
 
 
   validateAllFields() {
-    console.log(this.state.fnameValidated,
-        this.state.lnameValidated,
-        this.state.addressValidated,
-        this.state.unitValidated,
-        this.state.cityValidated,
-        this.state.provinceValidated,
-        this.state.postalCodeValidated,
-        this.state.enbridgeValidated,
-        this.state.emailValidated,
-        this.state.homePhoneValidated,
-        this.state.cellPhoneValidated,
-        this.state.sqftValidated,
-        this.state.bathroomsValidated,
-        this.state.residentsValidated,
-        this.state.poolValidated,
-        this.state.programValidated,
-        this.state.checklistValidated,
-        this.state.acknowledgementValidated,
-        this.state.installerValidated,
-        this.state.installedDateValidated);
-
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
@@ -1209,7 +1206,7 @@ export default class CompleteInstallation extends React.Component {
           <RaisedButton
             label={this.props.status === 'create' ? 'Back' : 'Cancel'}
             secondary={this.props.status === 'create' ? false : true}
-            onTouchTap={this.props.handleInstallationPrev}
+            onTouchTap={this.props.status === 'create' ? this.props.handleInstallationPrev : this.props.menuClickHandler.bind(null, "dashboard")}
           />
           <RaisedButton
             label={this.props.status === 'create' ? 'Next' : 'Update'}
