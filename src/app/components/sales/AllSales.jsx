@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  TextField, MenuItem, DropDownMenu, RaisedButton
+  TextField, MenuItem, DropDownMenu, RaisedButton, Dialog, FlatButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
@@ -35,6 +35,12 @@ export default class AllSales extends React.Component {
 
       //an array to keep the data for the sales table
       allSales: undefined,
+
+      // Modal state variable
+      open: false,
+      // Modal content - sale details
+      saleDetails: undefined,
+      installationDate: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
@@ -53,6 +59,43 @@ export default class AllSales extends React.Component {
 
     httpRequest.open('GET', "http://" + IP + "/allsales", true);
     httpRequest.send(null);
+  }
+
+  handleOpen = () => {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let sale = JSON.parse(httpRequest.responseText).sale;
+
+        // Format and save installation date for details modal
+        var tempDateTime;
+        if (sale.installationDateTime) {
+          tempDateTime = new Date(sale.installationDateTime);
+          tempDateTime = tempDateTime.toLocaleString();
+        } else {
+          tempDateTime = null;
+        }
+
+        _this.setState({
+          saleDetails: sale,
+          installationDate: tempDateTime,
+        });
+      } else {
+        _this.setState({
+          open: true
+        });
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/existingsale?id=" + this.state.selectedId, true);
+    httpRequest.send(null);
+  }
+
+  handleClose = () => {
+    this.setState({
+      open: false
+    });
   }
 
   handleDropdownChange(event, index, value) {
@@ -82,6 +125,18 @@ export default class AllSales extends React.Component {
   }
 
   render() {
+    const actions = [
+          <FlatButton
+            label="Close"
+            primary={true}
+            onTouchTap={this.handleClose}
+          />,
+          <FlatButton
+            label="Edit"
+            primary={true}
+            onTouchTap={this.props.editClickHandler.bind(null, "edit", this.state.selectedId, "editSale")}
+          />,
+        ];
     return (
       <div className="allCustomers">
         <Toolbar className="allCustomersToolbar">
@@ -104,7 +159,8 @@ export default class AllSales extends React.Component {
                 <RaisedButton label="Edit" primary={true}
                   onClick={this.props.editClickHandler.bind(null,
                     "edit", this.state.selectedId, "editSale")}/>
-                <RaisedButton label="Details" primary={true} />
+                <RaisedButton label="Details" primary={true}
+                  onClick={this.handleOpen.bind(this)}/>
                 <RaisedButton label="Delete" primary={true} />
               </ToolbarGroup>
             : null }
@@ -150,6 +206,30 @@ export default class AllSales extends React.Component {
             : null }
           </TableBody>
         </Table>
+        <Dialog
+          title="Installation Details"
+          actions={actions}
+          modal={true}
+          open={this.state.open}
+        >
+          {this.state.saleDetails ?
+            <div>
+              <strong>First Name</strong>: {this.state.saleDetails.firstName} <br />
+              <strong>Last Name</strong>: {this.state.saleDetails.lastName} <br />
+              <strong>Address</strong>: {this.state.saleDetails.address} <br />
+              <strong>City</strong>: {this.state.saleDetails.city} <br />
+              <strong>Province</strong>: {this.state.saleDetails.province} <br />
+              <strong>Postal Code</strong>: {this.state.saleDetails.postalCode} <br />
+              <strong>Enbridge Gas #</strong>: {this.state.saleDetails.enbridgeNum} <br />
+              <strong>Email</strong>: {this.state.saleDetails.email} <br />
+              <strong>Home Phone</strong>: {this.state.saleDetails.homePhone} <br />
+              <strong>Cell Phone</strong>: {this.state.saleDetails.cellPhone} <br />
+              <strong>Program</strong>: {this.state.saleDetails.product} <br />
+              <strong>Installation Date</strong>: {this.state.installationDate} <br />
+              <strong>Sales Representative</strong>: {this.state.saleDetails.salesRepId} <br />
+              <strong>Notes</strong>: {this.state.saleDetails.notes} <br />
+            </div> : null}
+        </Dialog>
       </div>
     );
   }
