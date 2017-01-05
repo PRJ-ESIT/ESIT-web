@@ -867,7 +867,7 @@ app.post('/getembeddedurl', function(request, response) {
       }],
       "status": "sent",
       "eventNotification": {
-        "url": "https://esit-docusign-webhook.herokuapp.com",
+        "url": "http://myvmlab.senecacollege.ca:5521/",
         "loggingEnabled": "true",
         "requireAcknowledgment": "true",
         "useSoapInterface": "false",
@@ -1443,7 +1443,7 @@ console.log("to send: " + envelopeId);
 }
 
 // DocuSign webhook listener
-app.post('/webhook', bodyParser.text({
+app.post('/', bodyParser.text({
 	limit: '50mb',
 	type: '*/xml'
 }), function(request, response) {

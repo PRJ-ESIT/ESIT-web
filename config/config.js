@@ -1,7 +1,7 @@
-var IP = "192.168.224.128:3000"
-var crudIP = "192.168.224.128"
-var authIP = "192.168.224.128"
-var docMgrIP = "192.168.224.128"
+var IP = "myvmlab.senecacollege.ca:5521"
+var crudIP = "10.10.192.145"
+var authIP = "10.10.192.145"
+var docMgrIP = "10.10.192.145"
 
 var docusign = {
   email: "esit.project.prj@gmail.com",				// your account email
