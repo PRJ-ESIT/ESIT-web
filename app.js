@@ -1430,7 +1430,16 @@ console.log("to send: " + envelopeId);
 			console.log("output: " + output);
 			var obj = JSON.parse(output);
 			console.log("added: " + JSON.stringify(obj));
-			callback(obj);
+      var folderId = obj.folderId;
+      adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
+        console.log('uploadFile');
+        if(err) {
+          console.log('box err:' + err);
+          callback(err);
+        }
+        console.log(response);
+        callback();
+      });
     });
 
   });
@@ -1570,15 +1579,16 @@ webhook = function(data) {
 					// 	}
 					// });
 					getFolderIdByEnvelopeId(envelopeId, function(folderId) {
-						adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
-							console.log('uploadFile: ' + i++);
-							if(err) {
-								console.log('box err:' + err);
-								callback(err);
-							}
-							console.log(response);
-							callback();
-						});
+						// adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
+						// 	console.log('uploadFile: ' + i++);
+						// 	if(err) {
+						// 		console.log('box err:' + err);
+						// 		callback(err);
+						// 	}
+						// 	console.log(response);
+						// 	callback();
+						// });
+            console.log(folderId);
 					});
 				} catch (ex) {
 					// Couldn't write the file! Alert the humans!
