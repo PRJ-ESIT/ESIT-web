@@ -5,6 +5,7 @@ var app = express();
 var path = require('path');
 var http = require("http");
 var https = require("https");
+const async = require('async');
 //we need this to build our POST request
 var querystring = require('querystring');
 //added body-parser to grab information from the POST request
