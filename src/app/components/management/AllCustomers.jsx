@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  TextField, MenuItem, DropDownMenu, RaisedButton
+  TextField, MenuItem, RaisedButton, Dialog, FlatButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
@@ -13,8 +13,6 @@ export default class AllCustomers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //dropdown state variable
-      dropdownValue: 1,
       //table state variables
       fixedHeader: true,
       stripedRows: false,
@@ -23,18 +21,18 @@ export default class AllCustomers extends React.Component {
       multiSelectable: false,
       enableSelectAll: false,
       deselectOnClickaway: true,
-      showCheckboxes: false,
+      showCheckboxes: true,
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
       //end of table state variables
 
       //this variable keeps the state of a current selected row
+      currentSelected: false,
       selectedNum: -1,
       //an array to keep the data for the AllCustomers table
       allCustomers: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
-    this.handleDropdownChange = this.handleDropdownChange.bind(this);
   }
 
   componentDidMount() {
@@ -51,20 +49,15 @@ export default class AllCustomers extends React.Component {
     httpRequest.send(null);
   }
 
-  handleDropdownChange(event, index, value) {
-    console.log(index);
-    console.log(value);
-    this.setState({dropdownValue: value});
-  }
-
-
   handleSelection(selectedRows) {
     if(selectedRows.length == 1) {
       this.setState({
+        currentSelected: true,
         selectedNum: selectedRows[0],
       });
     } else {
       this.setState({
+        currentSelected: false,
         selectedNum: -1,
       });
     }
@@ -77,17 +70,13 @@ export default class AllCustomers extends React.Component {
         <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Customers" className="mainFont" />
-            <ToolbarSeparator />
-            <DropDownMenu
-              iconStyle={{fill: 'rgb(0, 0, 0)'}}
-              value={this.state.dropdownValue}
-              onChange={this.handleDropdownChange}
-            >
-              <MenuItem value={1} primaryText="Show 10" />
-              <MenuItem value={2} primaryText="Show 25" />
-              <MenuItem value={3} primaryText="Show 50" />
-              <MenuItem value={4} primaryText="Show 100" />
-            </DropDownMenu>
+            {this.state.currentSelected ?
+              <ToolbarGroup>
+                <ToolbarSeparator />
+                <RaisedButton label="Details" primary={true} />
+                <RaisedButton label="Delete" primary={true} />
+              </ToolbarGroup>
+            : null }
           </ToolbarGroup>
         </Toolbar>
         <Table
