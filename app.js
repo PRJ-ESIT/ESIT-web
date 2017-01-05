@@ -1407,7 +1407,7 @@ console.log("to send: " + jsonObj);
   req.end();
 }
 
-var getFolderIdByEnvelopeId = function(envelopeId, callback) {
+var getFolderIdByEnvelopeId = function(envelopeId, pdf, filename, callback) {
 console.log("to send: " + envelopeId);
   var options = {
     host: config.crudIP,
@@ -1578,7 +1578,7 @@ webhook = function(data) {
 					// 		// });
 					// 	}
 					// });
-					getFolderIdByEnvelopeId(envelopeId, function(folderId) {
+					getFolderIdByEnvelopeId(envelopeId, pdf, filename, function(folderId) {
 						// adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
 						// 	console.log('uploadFile: ' + i++);
 						// 	if(err) {
