@@ -1428,7 +1428,7 @@ console.log("to send: " + envelopeId);
 
     res.on('end', function() {
 			console.log("output: " + output);
-			var obj = JSON.parse(output);
+			var obj = JSON.parse(output).sale;
 			console.log("added: " + JSON.stringify(obj));
       var folderId = obj.folderId;
       adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
@@ -1438,7 +1438,7 @@ console.log("to send: " + envelopeId);
           callback(err);
         }
         console.log(response);
-        callback();
+        callback(folderId);
       });
     });
 
@@ -1578,6 +1578,7 @@ webhook = function(data) {
 					// 		// });
 					// 	}
 					// });
+          envelopeId = envelopeId.replace(/[-]/g, "");
 					getFolderIdByEnvelopeId(envelopeId, pdf, filename, function(folderId) {
 						// adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
 						// 	console.log('uploadFile: ' + i++);
