@@ -1427,7 +1427,7 @@ console.log("to send: " + envelopeId);
     });
 
     res.on('end', function() {
-			console.log("output: " + output);
+			// console.log("output: " + output);
 			var obj = JSON.parse(output).sale;
 			console.log("added: " + JSON.stringify(obj));
       var folderId = obj.folderId;
@@ -1437,7 +1437,8 @@ console.log("to send: " + envelopeId);
           console.log('box err:' + err);
           callback(err);
         }
-        console.log(response);
+				console.log("uploaded successfully");
+        // console.log(response);
         callback(folderId);
       });
     });
@@ -1479,7 +1480,7 @@ webhook = function(data) {
 		console.log("Connect data parsed!");
 		var envelopeStatus = xml.DocuSignEnvelopeInformation.EnvelopeStatus;
 		var envelopeId = envelopeStatus[0].EnvelopeID[0];
-		console.log(envelopeStatus);
+		// console.log(envelopeStatus);
 		console.log(envelopeId);
 		// var timeGenerated = envelopeStatus[0].TimeGenerated[0];
 
@@ -1578,7 +1579,7 @@ webhook = function(data) {
 					// 		// });
 					// 	}
 					// });
-          envelopeId = envelopeId.replace(/[-]/g, "");
+          // envelopeId = envelopeId.replace(/[-]/g, "");
 					getFolderIdByEnvelopeId(envelopeId, pdf, filename, function(folderId) {
 						// adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
 						// 	console.log('uploadFile: ' + i++);
