@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  TextField, MenuItem, DropDownMenu, RaisedButton, Dialog, FlatButton
+  TextField, MenuItem, RaisedButton, Dialog, FlatButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
@@ -13,8 +13,6 @@ export default class AllEmployees extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //dropdown state variable
-      dropdownValue: 1,
       //table state variables
       fixedHeader: true,
       fixedFooter: false,
@@ -43,7 +41,6 @@ export default class AllEmployees extends React.Component {
       hireDate: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
-    this.handleDropdownChange = this.handleDropdownChange.bind(this);
   }
 
   componentDidMount() {
@@ -98,15 +95,7 @@ export default class AllEmployees extends React.Component {
     });
   }
 
-  handleDropdownChange(event, index, value) {
-    console.log(index);
-    console.log(value);
-    this.setState({dropdownValue: value});
-  }
-
   handleSelection(selectedRows) {
-    console.log(selectedRows);
-    console.log(this.state);
     if(selectedRows.length == 1) {
       this.setState({
         currentSelected: true,
@@ -141,17 +130,6 @@ export default class AllEmployees extends React.Component {
         <Toolbar className="allEmployeesToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Employees" className="mainFont" />
-            <ToolbarSeparator />
-            <DropDownMenu
-              iconStyle={{fill: 'rgb(0, 0, 0)'}}
-              value={this.state.dropdownValue}
-              onChange={this.handleDropdownChange}
-            >
-              <MenuItem value={1} primaryText="Show 10" />
-              <MenuItem value={2} primaryText="Show 25" />
-              <MenuItem value={3} primaryText="Show 50" />
-              <MenuItem value={4} primaryText="Show 100" />
-            </DropDownMenu>
             {this.state.currentSelected ?
               <ToolbarGroup>
                 <ToolbarSeparator />
