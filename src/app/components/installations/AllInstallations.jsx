@@ -6,6 +6,7 @@ import {
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
+import { camelize } from '../helpers/common.js';
 
 export default class AllInstallations extends React.Component {
 
@@ -37,6 +38,11 @@ export default class AllInstallations extends React.Component {
       // Modal content - installation details
       installationDetails: undefined,
       installationDate: undefined,
+
+      // Sorting variables
+      filteredDataList: undefined,
+      sortBy: 'id',
+      sortDir: null,
     }
     this.handleSelection = this.handleSelection.bind(this);
   }
@@ -47,7 +53,10 @@ export default class AllInstallations extends React.Component {
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let allInstallations = JSON.parse(httpRequest.responseText).installations;
-        _this.setState({allInstallations: allInstallations});
+        _this.setState({
+          allInstallations: allInstallations,
+          filteredDataList: allInstallations,
+        });
       }
     };
 
@@ -97,7 +106,7 @@ export default class AllInstallations extends React.Component {
       this.setState({
         currentSelected: true,
         selectedNum: selectedRows[0],
-        selectedId: this.state.allInstallations[selectedRows].installationNumber,
+        selectedId: this.state.filteredDataList[selectedRows].installationNumber,
       });
     } else {
       this.setState({
@@ -111,6 +120,42 @@ export default class AllInstallations extends React.Component {
   handleRowClick(rowId) {
     this.setState({
       selectedId: rowId,
+    });
+  }
+
+  sortRowsBy(cellDataKey) {
+    cellDataKey = camelize(cellDataKey);
+    var sortDir = this.state.sortDir;
+    var sortBy = cellDataKey;
+    if (sortBy === this.state.sortBy) {
+      sortDir = this.state.sortDir === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      sortDir = 'DESC';
+    }
+    var rows = this.state.filteredDataList.slice();
+
+    rows.sort((a, b) => {
+      var sortVal = 0;
+      if (a[sortBy] > b[sortBy]) {
+        sortVal = 1;
+      }
+      if (a[sortBy] < b[sortBy]) {
+        sortVal = -1;
+      }
+
+      if (sortDir === 'DESC') {
+        sortVal = sortVal * -1;
+      }
+      return sortVal;
+    });
+
+    this.setState({
+      sortBy,
+      sortDir,
+      filteredDataList : rows,
+      currentSelected: false,
+      selectedNum: -1,
+      selectedId: '',
     });
   }
 
@@ -157,12 +202,12 @@ export default class AllInstallations extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow className={'trow'}>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
+            <TableRow className={'trow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Customer's Name">Customer Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Product Installed">Product</TableHeaderColumn>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Installation Date">Date</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Installation Date">Installation Date</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '70px' }} tooltip="Customer's Address">Address</TableHeaderColumn>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '80px' }} tooltip="Installer's Name">Installer</TableHeaderColumn>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '80px' }} tooltip="Installer's Name">Installer Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Installation Status">Status</TableHeaderColumn>
             </TableRow>
           </TableHeader>
@@ -172,7 +217,7 @@ export default class AllInstallations extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {this.state.allInstallations ? this.state.allInstallations.map( (row, index) => (
+            {this.state.filteredDataList ? this.state.filteredDataList.map( (row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.customerName}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }}>{row.product}</TableRowColumn>

@@ -6,6 +6,7 @@ import {
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
+import { camelize } from '../helpers/common.js';
 
 
 export default class AllCustomers extends React.Component {
@@ -37,6 +38,11 @@ export default class AllCustomers extends React.Component {
       open: false,
       // Modal content - customer details
       customerDetails: undefined,
+
+      // Sorting variables
+      filteredDataList: undefined,
+      sortBy: 'id',
+      sortDir: null,
     }
     this.handleSelection = this.handleSelection.bind(this);
   }
@@ -47,7 +53,10 @@ export default class AllCustomers extends React.Component {
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let allCustomers = JSON.parse(httpRequest.responseText).customers;
-        _this.setState({allCustomers: allCustomers});
+        _this.setState({
+          allCustomers: allCustomers,
+          filteredDataList: allCustomers,
+        });
       }
     };
 
@@ -87,7 +96,7 @@ export default class AllCustomers extends React.Component {
       this.setState({
         currentSelected: true,
         selectedNum: selectedRows[0],
-        selectedId: this.state.allCustomers[selectedRows].customerId,
+        selectedId: this.state.filteredDataList[selectedRows].customerId,
       });
     } else {
       this.setState({
@@ -98,6 +107,42 @@ export default class AllCustomers extends React.Component {
     }
   }
 
+  sortRowsBy(cellDataKey) {
+    cellDataKey = camelize(cellDataKey);
+    var sortDir = this.state.sortDir;
+    var sortBy = cellDataKey;
+    if (sortBy === this.state.sortBy) {
+      sortDir = this.state.sortDir === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      sortDir = 'DESC';
+    }
+    var rows = this.state.filteredDataList.slice();
+
+    rows.sort((a, b) => {
+      var sortVal = 0;
+      if (a[sortBy] > b[sortBy]) {
+        sortVal = 1;
+      }
+      if (a[sortBy] < b[sortBy]) {
+        sortVal = -1;
+      }
+
+      if (sortDir === 'DESC') {
+        sortVal = sortVal * -1;
+      }
+      return sortVal;
+    });
+
+    this.setState({
+      sortBy,
+      sortDir,
+      filteredDataList : rows,
+      currentSelected: false,
+      selectedNum: -1,
+      selectedId: '',
+    });
+  }
+
   render() {
     const actions = [
           <FlatButton
@@ -106,8 +151,8 @@ export default class AllCustomers extends React.Component {
             onTouchTap={this.handleClose}
           />
         ];
-    return (
 
+    return (
       <div className="allCustomers">
         <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
@@ -117,7 +162,6 @@ export default class AllCustomers extends React.Component {
                 <ToolbarSeparator />
                 <RaisedButton label="Details" primary={true}
                   onClick={this.handleOpen.bind(this)} />
-                <RaisedButton label="Delete" primary={true} />
               </ToolbarGroup>
             : null }
           </ToolbarGroup>
@@ -135,7 +179,7 @@ export default class AllCustomers extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow className={'trow'}>
+            <TableRow className={'trow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Email">Email</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Home Phone</TableHeaderColumn>
@@ -149,7 +193,7 @@ export default class AllCustomers extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {this.state.allCustomers ? this.state.allCustomers.map( (row, index) => (
+            {this.state.filteredDataList ? this.state.filteredDataList.map( (row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.email}</TableRowColumn>
