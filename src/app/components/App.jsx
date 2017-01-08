@@ -16,7 +16,7 @@ import ScheduleInstallation from './management/ScheduleInstallation.jsx';
 import NewEmployee from './management/NewEmployee.jsx';
 import AllEmployees from './management/AllEmployees.jsx';
 import AllCustomers from './management/AllCustomers.jsx';
-import Documents from './management/Documents.jsx';
+import Documents from './sales/Documents.jsx';
 
 import { IP } from '../../../config/config.js';
 
