@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  SelectField, MenuItem, DatePicker, RaisedButton, TimePicker,
+  SelectField, MenuItem, DatePicker, RaisedButton, TimePicker, Paper,
 } from 'material-ui';
 import { validations, dateHelpers } from '../helpers/common.js';
 import { IP } from '../../../../config/config.js';
@@ -211,18 +211,19 @@ export default class ScheduleInstallation extends React.Component {
           <TableBody deselectOnClickaway={false}>
             {this.state.allSales? this.state.allSales.map( (row, index) => (
               <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.address}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.product}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} >{row.installationDateTime}</TableRowColumn>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.installationDateTime}</TableRowColumn>
+                <TableRowColumn>{row.salesNumber}</TableRowColumn>
+                <TableRowColumn>{row.name}</TableRowColumn>
+                <TableRowColumn>{row.address}</TableRowColumn>
+                <TableRowColumn>{row.product}</TableRowColumn>
+                <TableRowColumn>{row.installationDateTime}</TableRowColumn>
+                <TableRowColumn>{row.installationDateTime}</TableRowColumn>
               </TableRow>
               ))
             : null }
           </TableBody>
         </Table>
 
+        <Paper zDepth={2} rounded={false}>
         <SelectField
           floatingLabelText="Installer"
           floatingLabelFixed={false}
@@ -257,6 +258,7 @@ export default class ScheduleInstallation extends React.Component {
           errorText={this.state.installationTimeErr}
           errorStyle={{float: "left"}}
         />
+        </Paper>
         <br />
         <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
         &nbsp;
