@@ -6,6 +6,7 @@ import {
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
+import { camelize } from '../helpers/common.js';
 
 
 export default class AllSales extends React.Component {
@@ -39,6 +40,11 @@ export default class AllSales extends React.Component {
       // Modal content - sale details
       saleDetails: undefined,
       installationDate: undefined,
+
+      // Sorting variables
+      filteredDataList: undefined,
+      sortBy: 'id',
+      sortDir: null,
     }
     this.handleSelection = this.handleSelection.bind(this);
   }
@@ -49,7 +55,10 @@ export default class AllSales extends React.Component {
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let allSales = JSON.parse(httpRequest.responseText).sales;
-        _this.setState({allSales: allSales});
+        _this.setState({
+          allSales: allSales,
+          filteredDataList: allSales,
+        });
 
       }
     };
@@ -100,7 +109,7 @@ export default class AllSales extends React.Component {
       this.setState({
         currentSelected: true,
         selectedNum: selectedRows[0],
-        selectedId: this.state.allSales[selectedRows].salesNumber,
+        selectedId: this.state.filteredDataList[selectedRows].salesNumber,
       });
     } else {
       this.setState({
@@ -114,6 +123,42 @@ export default class AllSales extends React.Component {
   handleRowClick(rowId){
     this.setState({
       selectedId: rowId,
+    });
+  }
+
+  sortRowsBy(cellDataKey) {
+    cellDataKey = camelize(cellDataKey);
+    var sortDir = this.state.sortDir;
+    var sortBy = cellDataKey;
+    if (sortBy === this.state.sortBy) {
+      sortDir = this.state.sortDir === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      sortDir = 'DESC';
+    }
+    var rows = this.state.filteredDataList.slice();
+
+    rows.sort((a, b) => {
+      var sortVal = 0;
+      if (a[sortBy] > b[sortBy]) {
+        sortVal = 1;
+      }
+      if (a[sortBy] < b[sortBy]) {
+        sortVal = -1;
+      }
+
+      if (sortDir === 'DESC') {
+        sortVal = sortVal * -1;
+      }
+      return sortVal;
+    });
+
+    this.setState({
+      sortBy,
+      sortDir,
+      filteredDataList : rows,
+      currentSelected: false,
+      selectedNum: -1,
+      selectedId: '',
     });
   }
 
@@ -160,8 +205,8 @@ export default class AllSales extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Sale Number">#</TableHeaderColumn>
+            <TableRow onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Sale Number">Sales Number</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Product Sold">Product</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Date">Date</TableHeaderColumn>
@@ -175,7 +220,7 @@ export default class AllSales extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {this.state.allSales? this.state.allSales.map( (row, index) => (
+            {this.state.filteredDataList? this.state.filteredDataList.map( (row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
