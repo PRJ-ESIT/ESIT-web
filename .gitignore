@@ -10,3 +10,4 @@ ios/www/js/bundle.js
 ios/platforms/ios/www/js/
 
 npm-debug.log
+*.pem

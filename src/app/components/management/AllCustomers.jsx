@@ -15,13 +15,14 @@ export default class AllCustomers extends React.Component {
     this.state = {
       //table state variables
       fixedHeader: true,
+      fixedFooter: false,
       stripedRows: false,
       showRowHover: false,
       selectable: true,
       multiSelectable: false,
       enableSelectAll: false,
-      deselectOnClickaway: true,
       showCheckboxes: true,
+      selectedId: '',
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
       //end of table state variables
@@ -31,6 +32,11 @@ export default class AllCustomers extends React.Component {
       selectedNum: -1,
       //an array to keep the data for the AllCustomers table
       allCustomers: undefined,
+
+      // Modal state variable
+      open: false,
+      // Modal content - customer details
+      customerDetails: undefined,
     }
     this.handleSelection = this.handleSelection.bind(this);
   }
@@ -49,21 +55,57 @@ export default class AllCustomers extends React.Component {
     httpRequest.send(null);
   }
 
+  handleOpen = () => {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let customer = JSON.parse(httpRequest.responseText).customer;
+
+        _this.setState({
+          customerDetails: customer,
+        });
+      } else {
+        _this.setState({
+          open: true
+        });
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/getonecustomer?id=" + this.state.selectedId, true);
+    httpRequest.send(null);
+  }
+
+  handleClose = () => {
+    this.setState({
+      open: false
+    });
+  }
+
   handleSelection(selectedRows) {
     if(selectedRows.length == 1) {
       this.setState({
         currentSelected: true,
         selectedNum: selectedRows[0],
+        selectedId: this.state.allCustomers[selectedRows].customerId,
       });
     } else {
       this.setState({
         currentSelected: false,
         selectedNum: -1,
+        selectedId: '',
       });
     }
   }
 
   render() {
+    const actions = [
+          <FlatButton
+            label="Close"
+            primary={true}
+            onTouchTap={this.handleClose}
+          />
+        ];
     return (
 
       <div className="allCustomers">
@@ -73,7 +115,8 @@ export default class AllCustomers extends React.Component {
             {this.state.currentSelected ?
               <ToolbarGroup>
                 <ToolbarSeparator />
-                <RaisedButton label="Details" primary={true} />
+                <RaisedButton label="Details" primary={true}
+                  onClick={this.handleOpen.bind(this)} />
                 <RaisedButton label="Delete" primary={true} />
               </ToolbarGroup>
             : null }
@@ -83,6 +126,7 @@ export default class AllCustomers extends React.Component {
           onRowSelection={this.handleSelection}
           wrapperStyle={{height: this.state.height}}
           fixedHeader={this.state.fixedHeader}
+          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >
@@ -101,7 +145,7 @@ export default class AllCustomers extends React.Component {
           </TableHeader>
           <TableBody
             displayRowCheckbox={this.state.showCheckboxes}
-            deselectOnClickaway={this.state.deselectOnClickaway}
+            deselectOnClickaway={false}
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
@@ -117,6 +161,22 @@ export default class AllCustomers extends React.Component {
             : null }
           </TableBody>
         </Table>
+        <Dialog
+          title="Customer Details"
+          actions={actions}
+          modal={true}
+          open={this.state.open}
+        >
+          {this.state.customerDetails ?
+            <div>
+              <strong>First Name</strong>: {this.state.customerDetails.firstName} <br />
+              <strong>Last Name</strong>: {this.state.customerDetails.lastName} <br />
+              <strong>Email</strong>: {this.state.customerDetails.email} <br />
+              <strong>Home Phone</strong>: {this.state.customerDetails.homePhone} <br />
+              <strong>Cell Phone</strong>: {this.state.customerDetails.cellPhone} <br />
+              <strong>Enbridge Number</strong>: {this.state.customerDetails.enbridgeNumber} <br />
+            </div> : null}
+        </Dialog>
       </div>
     );
   }
