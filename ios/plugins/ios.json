@@ -20,6 +20,9 @@
         },
         "cordova-plugin-dialogs": {
             "PACKAGE_NAME": "com.esit"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.esit"
         }
     },
     "dependent_plugins": {
