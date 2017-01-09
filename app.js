@@ -1387,7 +1387,7 @@ var createBoxFolder = function(name, callback) {
       // Default to root folder
       callback('0');
 		} else {
-			console.log('folder was created: ' + JSON.stringify(response));
+			console.log('folder was created: ' + JSON.stringify(response.id));
       // Return fodler id
       callback(response.id);
 		}
@@ -1625,7 +1625,7 @@ var webhook = function(data) {
 								// Create box folder
 								createBoxFolder(customerFName + "_" + customerLName + "_" + saleId + "_", function (folderId) {
 									console.log("folderId: ", folderId);
-									uploadFile(id, filename, new Buffer(pdf.PDFBytes[0], 'base64'),function(message) {
+									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'),function(message) {
 										console.log("file uploaded");
 										if (message == "0") {
 											console.log("error uploading file", JSON.stringify(message));
