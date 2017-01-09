@@ -1617,7 +1617,7 @@ var webhook = function(data) {
           // envelopeId = envelopeId.replace(/[-]/g, "");
 					getFolderIdByEnvelopeId(envelopeId, pdf, filename, function(obj) {
 						// Check if envelopeId exists - if not it's an offline case
-						if(obj.envelopeId != "0") {
+						if(obj.saleId != "0") {
 							console.log("envelopeId found");
 							if(obj.folderId == "0") {
 								console.log("folderId not found");
