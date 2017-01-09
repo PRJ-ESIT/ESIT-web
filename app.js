@@ -1384,6 +1384,7 @@ var createBoxFolder = function(name, callback) {
   adminAPIClient.folders.create('0', name, function(err, response) {
 		if(err) {
 			console.log('could not create folder');
+			console.log(JSON.stringify(err));
       // Default to root folder
       callback('0');
 		} else {
@@ -1436,6 +1437,8 @@ var setEnvelopeId = function(envelopeId, saleId, callback) {
   req.end();
 }
 
+// Need to create setFolderId function
+
 var getFolderIdByEnvelopeId = function(envelopeId, callback) {
 	console.log("to send: " + envelopeId);
   var options = {
@@ -1487,7 +1490,7 @@ var uploadFile = function(folderId, filename, file, callback) {
 	adminAPIClient.files.uploadFile(folderId, filename, file, function(err, response) {
 		console.log('attempt to uploadFile: ');
 		if(err) {
-			console.log('box err:' + err);
+			console.log('box err:' + JSON.stringify(err));
 			callback("0");
 		}
 		console.log(JSON.stringify(response));
@@ -1623,7 +1626,7 @@ var webhook = function(data) {
 								console.log("folderId not found");
 								// Box folder doesn't exist - new sale - online scenario
 								// Create box folder
-								createBoxFolder(customerFName + "_" + customerLName + "_" + saleId + "_", function (folderId) {
+								createBoxFolder(customerFName + "_" + customerLName + "_" + saleId, function (folderId) {
 									console.log("folderId: ", folderId);
 									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'),function(message) {
 										console.log("file uploaded");
