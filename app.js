@@ -1436,7 +1436,7 @@ var setEnvelopeId = function(envelopeId, saleId, callback) {
   req.end();
 }
 
-var getFolderIdByEnvelopeId = function(envelopeId, pdf, filename, callback) {
+var getFolderIdByEnvelopeId = function(envelopeId, callback) {
 	console.log("to send: " + envelopeId);
   var options = {
     host: config.crudIP,
@@ -1458,7 +1458,7 @@ var getFolderIdByEnvelopeId = function(envelopeId, pdf, filename, callback) {
     res.on('end', function() {
 			// console.log("output: " + output);
 			var obj = JSON.parse(output).sale;
-			console.log("envelopeId/folderId found: " + JSON.stringify(obj));
+			console.log("folderId found: " + JSON.stringify(obj));
 			callback(obj);
       // var folderId = obj.folderId;
       // adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
@@ -1615,7 +1615,7 @@ var webhook = function(data) {
 					// 	}
 					// });
           // envelopeId = envelopeId.replace(/[-]/g, "");
-					getFolderIdByEnvelopeId(envelopeId, pdf, filename, function(obj) {
+					getFolderIdByEnvelopeId(envelopeId, function(obj) {
 						// Check if envelopeId exists - if not it's an offline case
 						if(obj.salesNumber != "0") {
 							console.log("envelopeId found");
