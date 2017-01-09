@@ -122,8 +122,6 @@ app.get('/dashboard', function(request, response) {
                     }
                   };
 
-                  // var box = sdk.getAppAuthClient('user', APP_USER_ID);
-
                   // Get some of that sweet, sweet data!
                   adminAPIClient.users.get(adminAPIClient.CURRENT_USER_ID, null, function(err, currentUser) {
                     if(err) throw err;
@@ -136,22 +134,7 @@ app.get('/dashboard', function(request, response) {
                     console.log(response);
                   });
 
-                  // box.collections.getAll(function(err, response) {
-                  //   if(err) throw err;
-                  //   console.log(response);
-                  // });
-                  // var fullFilename = "example.js";
-                  // var pdfBytes = new Buffer('this is a test');
-                  // adminAPIClient.files.uploadFile('0', fullFilename, pdfBytes, function(err, response) {
-        					// 	if(err) throw err;
-        					// 	console.log(response);
-        					// });
 									response.status(200).json(entry);
-
-                  // return setEnvelopeId('1234567890132456', '24', function(data) {
-									// 	console.log(data);
-									// 	response.status(200).json(entry);
-									// });
               });
             });
 
@@ -169,7 +152,6 @@ app.get('/dashboard', function(request, response) {
 
     req.end();
 });
-
 
 app.get('/allsales', function(request, response) {
 
@@ -380,7 +362,6 @@ app.get('/allcustomers', function(request, response) {
     req.end();
 });
 
-
 app.get('/allemployees', function(request, response) {
 
   var options = {
@@ -517,68 +498,94 @@ app.get('/getoneemployee', function(request, response) {
 
 //POST http://localhost:3000/newsale
 app.post('/newsale', function(request, response) {
-  createBoxFolder(request.body.fname + request.body.lname, function(folderId) {
-    console.log(folderId);
-    // Create sale with folder id
-    var jsonObj = querystring.stringify({
-      //homeowner's info
-      fname: request.body.fname,
-      lname: request.body.lname,
-      address: request.body.address,
-      unitNum: request.body.unitNum,
-      city: request.body.city,
-      province: request.body.province,
-      postalCode: request.body.postalCode,
-      enbridge: request.body.enbridge,
-      email: request.body.email,
-      homePhone: request.body.homePhone,
-      cellPhone: request.body.cellPhone,
-      //program type
-      programType: request.body.programType,
-      //Installation & Delivery
-      installationDateTime: request.body.installationDateTime,
-      notes: request.body.notes,
+  // // Create sale
+  // var jsonObj = querystring.stringify({
+  //   //homeowner's info
+  //   fname: request.body.fname,
+  //   lname: request.body.lname,
+  //   address: request.body.address,
+  //   unitNum: request.body.unitNum,
+  //   city: request.body.city,
+  //   province: request.body.province,
+  //   postalCode: request.body.postalCode,
+  //   enbridge: request.body.enbridge,
+  //   email: request.body.email,
+  //   homePhone: request.body.homePhone,
+  //   cellPhone: request.body.cellPhone,
+  //   //program type
+  //   programType: request.body.programType,
+  //   //Installation & Delivery
+  //   installationDateTime: request.body.installationDateTime,
+  //   notes: request.body.notes,
+	//
+  //   //the rest
+  //   dateSigned: request.body.dateSigned,
+  //   salesRepId: request.body.salesRepId,
+  // });
+	// console.log(jsonObj);
+  // var options = {
+  //   host: config.crudIP,
+  //   port: 8080,
+  //   method: 'POST',
+  //   path: '/crud/SaleService/createNewSale',
+  //   headers: {
+  //     'Content-Type': 'application/x-www-form-urlencoded',
+  //     'Content-Length': Buffer.byteLength(jsonObj)
+  //   }
+  // };
+	//
+  // var req = http.request(options, function(res) {
+  //   var output = '';
+  //   res.setEncoding('utf8');
+  //   res.on('data', function (chunk) {
+  //       output += chunk;
+  //   });
+	//
+  //   res.on('end', function() {
+  //     var saleObj = JSON.parse(output);
+  //     console.log(saleObj);
+  //     return response.status(201).json(saleObj);
+  //   });
+  // });
+	//
+  // req.on('error', function(err) {
+  //   console.log('error message');
+  //   //response.send('error: ' + err.message);
+  // });
+	//
+  // req.write(jsonObj);
+  // req.end();
+	var jsonObj = querystring.stringify({
+    //homeowner's info
+    fname: request.body.fname,
+    lname: request.body.lname,
+    address: request.body.address,
+    unitNum: request.body.unitNum,
+    city: request.body.city,
+    province: request.body.province,
+    postalCode: request.body.postalCode,
+    enbridge: request.body.enbridge,
+    email: request.body.email,
+    homePhone: request.body.homePhone,
+    cellPhone: request.body.cellPhone,
+    //program type
+    programType: request.body.programType,
+    //Installation & Delivery
+    installationDateTime: request.body.installationDateTime,
+    notes: request.body.notes,
 
-      //the rest
-      dateSigned: request.body.dateSigned,
-      salesRepId: request.body.salesRepId,
-
-      folderId: folderId
-    });
-console.log(jsonObj);
-    var options = {
-      host: config.crudIP,
-      port: 8080,
-      method: 'POST',
-      path: '/crud/SaleService/createNewSale',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(jsonObj)
-      }
-    };
-
-    var req = http.request(options, function(res) {
-      var output = '';
-      res.setEncoding('utf8');
-      res.on('data', function (chunk) {
-          output += chunk;
-      });
-
-      res.on('end', function() {
-        var saleObj = JSON.parse(output);
-        console.log(saleObj);
-        return response.status(201).json(saleObj);
-      });
-    });
-
-    req.on('error', function(err) {
-      console.log('error message');
-      //response.send('error: ' + err.message);
-    });
-
-    req.write(jsonObj);
-    req.end();
+    //the rest
+    dateSigned: request.body.dateSigned,
+    salesRepId: request.body.salesRepId,
   });
+
+	createSale(jsonObj, function (saleObj) {
+		if(saleObj) {
+			return response.status(201).json(saleObj);
+		} else {
+			return response.status(400);
+		}
+	})
 });
 
 //POST http://localhost:3000/newinstallation
@@ -866,35 +873,7 @@ app.post('/getembeddedurl', function(request, response) {
           }]
         }
       }],
-      "status": "sent",
-      "eventNotification": {
-        "url": "http://myvmlab.senecacollege.ca:5521/",
-        "loggingEnabled": "true",
-        "requireAcknowledgment": "true",
-        "useSoapInterface": "false",
-    		"includeCertificateWithSoap": "false",
-    		"signMessageWithX509Cert": "false",
-    		"includeDocuments": "true",
-    		"includeEnvelopeVoidReason": "true",
-    		"includeTimeZone": "true",
-    		"includeSenderAccountAsCustomField": "true",
-    		"includeDocumentFields": "true",
-    		"includeCertificateOfCompletion": "true",
-	      "envelopeEvents": [ // for this recipe, we're requesting notifications
-		      // for all envelope and recipient events
-    			{"envelopeEventStatusCode": "sent"},
-  		  	{"envelopeEventStatusCode": "delivered"},
-  		  	{"envelopeEventStatusCode": "completed"},
-    			{"envelopeEventStatusCode": "declined"},
-    			{"envelopeEventStatusCode": "voided"}],
-        "recipientEvents": [
-    			{"recipientEventStatusCode": "Sent"},
-    			{"recipientEventStatusCode": "Delivered"},
-    			{"recipientEventStatusCode": "Completed"},
-    			{"recipientEventStatusCode": "Declined"},
-    			{"recipientEventStatusCode": "AuthenticationFailed"},
-    			{"recipientEventStatusCode": "AutoResponded"}]
-      }
+      "status": "sent"
     });
   // Prepare DocuSign header
   var dsAuthHeader = JSON.stringify({
@@ -1266,7 +1245,7 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
       res.on('end', function() {
         var obj = JSON.parse(output);
         var envelopeId = obj.envelopeId;
-console.log(envelopeId);
+				console.log(envelopeId);
         return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
           // Add envelopeId to object
           urlObj["envelopeId"] = envelopeId;
@@ -1295,6 +1274,56 @@ app.post('/getInstallationEmbeddedUrl2', function(request, response) {
     return response.status(200).json(urlObj);
   });
 });
+
+// DocuSign webhook listener
+app.post('/', bodyParser.text({
+	limit: '50mb',
+	type: '*/xml'
+	}), function(request, response) {
+		var contentType = request.headers['content-type'] || '',
+			mime = contentType.split(';')[0];
+		// console.log(mime);
+		// console.log("webhook request body: " + JSON.stringify(request.body));
+		webhook(request.body);
+		response.send("Received!");
+});
+
+var createSale = function (requestBody, callback) {
+	// Create sale
+	console.log(requestBody);
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'POST',
+    path: '/crud/SaleService/createNewSale',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(requestBody)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      var saleObj = JSON.parse(output);
+      console.log(saleObj);
+			callback(saleObj);
+    });
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(requestBody);
+  req.end();
+}
 
 var getDocuSignUrl = function(envelopeId, returnUrl, email, userName, clientUserId, callback) {
   // Prepare DocuSign header
@@ -1370,7 +1399,7 @@ var setEnvelopeId = function(envelopeId, saleId, callback) {
     // Envelope Id
     envelopeId: envelopeId
   });
-console.log("to send: " + jsonObj);
+	console.log("to send: " + jsonObj);
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -1408,7 +1437,7 @@ console.log("to send: " + jsonObj);
 }
 
 var getFolderIdByEnvelopeId = function(envelopeId, pdf, filename, callback) {
-console.log("to send: " + envelopeId);
+	console.log("to send: " + envelopeId);
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -1429,18 +1458,19 @@ console.log("to send: " + envelopeId);
     res.on('end', function() {
 			// console.log("output: " + output);
 			var obj = JSON.parse(output).sale;
-			console.log("added: " + JSON.stringify(obj));
-      var folderId = obj.folderId;
-      adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
-        console.log('uploadFile');
-        if(err) {
-          console.log('box err:' + err);
-          callback(err);
-        }
-				console.log("uploaded successfully");
-        // console.log(response);
-        callback(folderId);
-      });
+			console.log("envelopeId/folderId found: " + JSON.stringify(obj));
+			callback(obj);
+      // var folderId = obj.folderId;
+      // adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
+      //   console.log('uploadFile');
+      //   if(err) {
+      //     console.log('box err:' + err);
+      //     callback(err);
+      //   }
+			// 	console.log("uploaded successfully");
+      //   // console.log(response);
+      //   callback(folderId);
+      // });
     });
 
   });
@@ -1453,20 +1483,19 @@ console.log("to send: " + envelopeId);
   req.end();
 }
 
-// DocuSign webhook listener
-app.post('/', bodyParser.text({
-	limit: '50mb',
-	type: '*/xml'
-}), function(request, response) {
-	var contentType = request.headers['content-type'] || '',
-		mime = contentType.split(';')[0];
-	// console.log(mime);
-	// console.log("webhook request body: " + JSON.stringify(request.body));
-	webhook(request.body);
-	response.send("Received!");
-});
+var uploadFile = function(folderId, filename, file, callback) {
+	adminAPIClient.files.uploadFile(folderId, filename, file, function(err, response) {
+		console.log('attempt to uploadFile: ');
+		if(err) {
+			console.log('box err:' + err);
+			callback("0");
+		}
+		console.log(JSON.stringify(response));
+		callback(response);
+	});
+}
 
-webhook = function(data) {
+var webhook = function(data) {
 	// An incoming call from the DocuSign platform
 	// See the Connect guide:
 	// https://www.docusign.com/sites/default/files/connect-guide_0.pdf
@@ -1480,6 +1509,11 @@ webhook = function(data) {
 		console.log("Connect data parsed!");
 		var envelopeStatus = xml.DocuSignEnvelopeInformation.EnvelopeStatus;
 		var envelopeId = envelopeStatus[0].EnvelopeID[0];
+		// var customerFName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].FormData[0].xfdf[0].fields[0].field["customerFName"].value;
+		var customerFName = "James";
+		var customerLName = "Johnson";
+		var saleId = "20";
+
 		// console.log(envelopeStatus);
 		console.log(envelopeId);
 		// var timeGenerated = envelopeStatus[0].TimeGenerated[0];
@@ -1517,9 +1551,10 @@ webhook = function(data) {
 			// Loop through the DocumentPDFs element, storing each document.
 			nodeList = xml.DocuSignEnvelopeInformation.DocumentPDFs[0].DocumentPDF;
 			var i = 0;
-			async.forEachSeries(nodeList, function(node, callback) {
+			async.forEachSeries(nodeList, function(node, cb) {
 				var pdf = node;
 				filename = "doc_" + (pdf.DocumentID ? pdf.DocumentID[0] : "") + ".pdf";
+				// var folderId = "0"; // Root folder id
 				// var fullFilename = path.resolve(__filename + "/../../" + self.xmlFileDir + "E" + envelopeId + "/" + filename);
 				// console.log('file' + ':' + fullFilename);
 
@@ -1580,7 +1615,33 @@ webhook = function(data) {
 					// 	}
 					// });
           // envelopeId = envelopeId.replace(/[-]/g, "");
-					getFolderIdByEnvelopeId(envelopeId, pdf, filename, function(folderId) {
+					getFolderIdByEnvelopeId(envelopeId, pdf, filename, function(obj) {
+						// Check if envelopeId exists - if not it's an offline case
+						if(obj.envelopeId != "0") {
+							console.log("envelopeId found");
+							if(obj.folderId == "0") {
+								console.log("folderId not found");
+								// Box folder doesn't exist - new sale - online scenario
+								// Create box folder
+								createBoxFolder(customerFName + "_" + customerLName + "_" + saleId + "_", function (folderId) {
+									console.log("folderId: ", folderId);
+									uploadFile(id, filename, new Buffer(pdf.PDFBytes[0], 'base64'),function(message) {
+										console.log("file uploaded");
+										if (message == "0") {
+											console.log("error uploading file", JSON.stringify(message));
+											cb(error);
+										} else {
+											console.log("file uploaded successfully", JSON.stringify(message));
+											cb();
+										}
+									});
+								});
+							} else {
+								console.log("folderId found - installation scenario");
+							}
+						} else {
+							console.log("envelopeId not found, offline scenario");
+						}
 						// adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
 						// 	console.log('uploadFile: ' + i++);
 						// 	if(err) {
@@ -1590,11 +1651,11 @@ webhook = function(data) {
 						// 	console.log(response);
 						// 	callback();
 						// });
-            console.log(folderId);
+            console.log(obj);
 					});
 				} catch (ex) {
 					// Couldn't write the file! Alert the humans!
-					console.error("!!!!!! PROBLEM DocuSign Webhook: Couldn't store pdf " + filename + " !");
+					console.error("!!!!!! PROBLEM DocuSign Webhook: Couldn't upload pdf " + filename + " !");
 					return;
 				}
 			}, function(err) {
@@ -1610,7 +1671,6 @@ webhook = function(data) {
 		return;
 	});
 }
-
 
 app.listen(3000, function(err) {
   console.log('Listening at http://... 3000');
