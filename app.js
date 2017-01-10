@@ -1545,13 +1545,17 @@ var webhook = function(data) {
 		console.log("Connect data parsed!");
 		var envelopeStatus = xml.DocuSignEnvelopeInformation.EnvelopeStatus;
 		var envelopeId = envelopeStatus[0].EnvelopeID[0];
-		// var customerFName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].FormData[0].xfdf[0].fields[0].field["customerFName"].value;
-		var customerFName = "James";
-		var customerLName = "Johnson";
-		var saleId = "20";
+		var fields = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].FormData[0].xfdf[0].fields[0];
+		var userName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].UserName[0];
+		var userId = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].ClientUserId[0];
+		var customerName = userName.replace(" ", "_");
 
 		// console.log(envelopeStatus);
 		console.log(envelopeId);
+		console.log(userName);
+		console.log(userId);
+		console.log(customerName);
+
 		// var timeGenerated = envelopeStatus[0].TimeGenerated[0];
 
 		// Store the file. Create directories as needed
@@ -1589,7 +1593,7 @@ var webhook = function(data) {
 			var i = 0;
 			async.forEachSeries(nodeList, function(node, cb) {
 				var pdf = node;
-				filename = "doc_" + (pdf.DocumentID ? pdf.DocumentID[0] : "") + ".pdf";
+				filename = envelopeId + "_doc_" + (pdf.DocumentID ? pdf.DocumentID[0] : "") + ".pdf";
 				// var folderId = "0"; // Root folder id
 				// var fullFilename = path.resolve(__filename + "/../../" + self.xmlFileDir + "E" + envelopeId + "/" + filename);
 				// console.log('file' + ':' + fullFilename);
@@ -1659,7 +1663,7 @@ var webhook = function(data) {
 								console.log("folderId not found");
 								// Box folder doesn't exist - new sale - online scenario
 								// Create box folder
-								createBoxFolder(customerFName + "_" + customerLName + "_" + saleId, function (folderId) {
+								createBoxFolder(customerName + "_" + userId, function (folderId) {
 									console.log("folderId: ", folderId);
 									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'),function(message) {
 										console.log("file uploaded");
