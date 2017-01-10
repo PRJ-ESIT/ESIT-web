@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatButton } from 'material-ui';
+import { FlatButton, RaisedButton } from 'material-ui';
 
 export default class CameraComponent extends React.Component {
 
@@ -11,6 +11,7 @@ export default class CameraComponent extends React.Component {
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
+    this.uploadClickHandler = this.uploadClickHandler.bind(this);
   }
 
   cameraClickHandler() {
@@ -211,26 +212,43 @@ export default class CameraComponent extends React.Component {
     isCameraPresent();
   }
 
+  uploadClickHandler() {
+    this.props.handleSaleNext();
+  }
+
   render() {
     var rightButtonsStyle = {
       'height': '40px',
+      'width': '160px',
       'marginRight': '5px',
       'marginLeft': '5px',
-      'marginTop': '4px',
-      'marginBottom': '4px',
+      'marginTop': '40px',
+      'marginBottom': '40px',
     };
     return (
-      <div>
-        <img id="myImage"/>
-        <FlatButton
-          labelStyle={{ color: "#2f3c7d" }}
-          backgroundColor="white"
-          hoverColor="$light-gray"
-          style={rightButtonsStyle}
-          onTouchTap={this.cameraClickHandler}
-          label="New Image"
-        />
-      </div>
+      <div className="cameraWrapper">
+        <div className="buttonWrapper">
+          <FlatButton
+            labelStyle={{ color: "#2f3c7d" }}
+            backgroundColor="white"
+            hoverColor="$light-gray"
+            style={rightButtonsStyle}
+            onTouchTap={this.cameraClickHandler}
+            label="New Image"
+          />
+        </div>
+        <div className="pictureWrapper">
+          <img className="imageBox" id="myImage"/>
+        </div>
+        <div className="finishWrapper">
+          <RaisedButton
+            className="finishButton"
+            label={'Upload'}
+            primary={true}
+            onTouchTap={this.uploadClickHandler}
+          />
+        </div>
+       </div>
     );
   }
 }

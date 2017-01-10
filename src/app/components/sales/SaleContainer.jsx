@@ -3,6 +3,7 @@ import { Step, Stepper, StepLabel, } from 'material-ui';
 import NewSale from './NewSale.jsx';
 import DocuSignSale from './DocuSignSale.jsx';
 import CameraComponent from './CameraComponent.jsx';
+import CompletedSale from './CompletedSale.jsx';
 
 export default class SaleContainer extends React.Component {
   constructor(props) {
@@ -16,7 +17,9 @@ export default class SaleContainer extends React.Component {
       case 1:
         return <DocuSignSale sale={this.props.saleObj} handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
       case 2:
-        return <CameraComponent />
+        return <CameraComponent handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} />
+      case 3:
+        return <CompletedSale />;
       default:
         return 'You messed up :)';
     }
