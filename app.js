@@ -1736,7 +1736,7 @@ var webhook = function(data) {
 							}
 						} else {
 							console.log("envelopeId not found, offline scenario");
-							uploadFile("0", filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+							uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
 								console.log("file uploaded");
 								if (message == "0") {
 									console.log("error uploading file", JSON.stringify(message));
