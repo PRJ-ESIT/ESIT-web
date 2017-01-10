@@ -4,6 +4,7 @@ import CompleteInstallation from './CompleteInstallation.jsx';
 import SelectInstallation from './SelectInstallation.jsx';
 import DocuSignInstallation from './DocuSignInstallation.jsx';
 import DocuSignInstallation2 from './DocuSignInstallation2.jsx';
+import CameraComponent from './CameraComponent.jsx';
 
 export default class InstallationContainer extends React.Component {
   constructor(props) {
@@ -15,13 +16,15 @@ export default class InstallationContainer extends React.Component {
       case 0:
         return <SelectInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} menuClickHandler={this.props.menuClickHandler} />;
       case 1:
-        return <CompleteInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} status={'create'} id={this.props.selectedInstallationId} />;
+        return <CameraComponent handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} /> 
       case 2:
-        return <DocuSignInstallation installation={this.props.installationObj} getInstallationEmbeddedUrl={this.props.getInstallationEmbeddedUrl}/>;
+        return <CompleteInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} status={'create'} id={this.props.selectedInstallationId} />;
       case 3:
-        return <DocuSignInstallation2 envelopeId={this.props.envelopeId} installation={this.props.installationObj} getInstallationEmbeddedUrl2={this.props.getInstallationEmbeddedUrl2} />;
+        return <DocuSignInstallation installation={this.props.installationObj} getInstallationEmbeddedUrl={this.props.getInstallationEmbeddedUrl}/>;
       case 4:
-        return 'pictures'
+        return <DocuSignInstallation2 envelopeId={this.props.envelopeId} installation={this.props.installationObj} getInstallationEmbeddedUrl2={this.props.getInstallationEmbeddedUrl2} />;
+      case 5:
+        return 'Installation Completed!'
       default:
         return 'You messed up :)';
     }
@@ -30,8 +33,8 @@ export default class InstallationContainer extends React.Component {
   render() {
     const {installationStepIndex} = this.props;
     return (
-      <div style={{width: '100%', maxWidth: 900, margin: 'auto'}}>
-        <Stepper activeStep={installationStepIndex}>
+      <div style={{width: '100%', height: '100%', maxWidth: 900, margin: 'auto'}}>
+        <Stepper style={{height: '10%'}} activeStep={installationStepIndex}>
           <Step>
             <StepLabel>Choose a Installation</StepLabel>
           </Step>
@@ -48,7 +51,7 @@ export default class InstallationContainer extends React.Component {
             <StepLabel>Take Installation Photos</StepLabel>
           </Step>
         </Stepper>
-        <div>
+        <div style={{height: '90%'}}>
           {this.getStepContent(installationStepIndex)}
         </div>
       </div>
