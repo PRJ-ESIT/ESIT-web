@@ -185,7 +185,7 @@ export default class AllInstallations extends React.Component {
                   onClick={this.props.editClickHandler.bind(null, "edit", this.state.selectedId, "editInstallation")}/>
                 <RaisedButton label="Details" primary={true}
                   onClick={this.handleOpen.bind(this)}/>
-                <RaisedButton label="Delete" primary={true} />
+                <RaisedButton label="Cancel" primary={true} />
               </ToolbarGroup>
             : null }
           </ToolbarGroup>

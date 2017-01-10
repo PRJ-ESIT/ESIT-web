@@ -183,7 +183,7 @@ export default class AllEmployees extends React.Component {
                   "edit", this.state.selectedId, "newEmployee")} />
                 <RaisedButton label="Details" primary={true}
                   onClick={this.handleOpen.bind(this)}/>
-                <RaisedButton label="Delete" primary={true} />
+                <RaisedButton label="Deactivate" primary={true} />
               </ToolbarGroup>
             : null }
           </ToolbarGroup>
