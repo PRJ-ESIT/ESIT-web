@@ -342,3 +342,77 @@ h2 {
 //*****************************************//
 //End of Complete Installations page styles//
 //*****************************************//
+
+//**********************************************//
+//Start of the Styling for the Camera Components//
+//**********************************************//
+
+.cameraWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.buttonWrapper {
+  order: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.pictureWrapper {
+  order: 2;
+  display: flex;
+  justify-content: center;
+  border: 2px solid black;
+  border-radius: 5px;
+  border-style: dashed;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-bottom: 5%;
+  width: 90%;
+  height: 90%;
+}
+
+.installPictureWrapper {
+  order: 2;
+  position: relative;
+  border: 2px solid black;
+  border-radius: 5px;
+  border-style: dashed;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-bottom: 5%;
+  width: 90%;
+  height: 90%;
+  overflow: auto;
+}
+
+.imageBox {
+  margin: 10px;
+  background-color: green;
+}
+
+.installImageBox {
+  margin: 10px;
+  background-color: green;
+  height: 20%;
+  width: 30%;
+}
+
+.finishWrapper {
+  order: 3;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.finishButton {
+  order: 1;
+  width: 200px;
+  margin-bottom: 5%;
+  margin-right: 5%;
+}
+
+//********************************************//
+//End of the Styling for the Camera Components//
+//********************************************//

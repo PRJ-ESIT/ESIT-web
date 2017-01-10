@@ -7,7 +7,7 @@ export default class CameraComponent extends React.Component {
     super(props);
 
     this.state = {
-      picturePath: undefined,
+      installationPictures: [],
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
@@ -15,6 +15,7 @@ export default class CameraComponent extends React.Component {
   }
 
   cameraClickHandler() {
+    var _this = this;
     var userMessages = {
       noCamera: "The device doesn't have a working camera",
       cameraUnauthorized:{
@@ -41,9 +42,9 @@ export default class CameraComponent extends React.Component {
     // Called on successful authorisation of camera/camera roll
     function onCameraAuthorised(){
       function onSuccess(imageURI) {
-        var image = document.getElementById('myImage');
-        console.log(imageURI);
-        image.src = imageURI;
+        var pictures = _this.state.installationPictures;
+        pictures.push(imageURI);
+        _this.setState({installationPictures: pictures});
       }
 
       function onFail(message) {
@@ -213,7 +214,7 @@ export default class CameraComponent extends React.Component {
   }
 
   uploadClickHandler() {
-    this.props.handleSaleNext();
+    this.props.handleInstallationNext();
   }
 
   render() {
@@ -237,8 +238,10 @@ export default class CameraComponent extends React.Component {
             label="New Image"
           />
         </div>
-        <div className="pictureWrapper">
-          <img className="imageBox" id="myImage"/>
+        <div className="installPictureWrapper">
+          {this.state.installationPictures.map((imgSrc, index) => (
+            <img key={index} src={imgSrc} className="installImageBox"/>
+          ))}
         </div>
         <div className="finishWrapper">
           <RaisedButton
@@ -248,7 +251,7 @@ export default class CameraComponent extends React.Component {
             onTouchTap={this.uploadClickHandler}
           />
         </div>
-       </div>
+      </div>
     );
   }
 }
