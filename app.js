@@ -1708,9 +1708,9 @@ var webhook = function(data) {
 								console.log("folderId not found");
 								// Box folder doesn't exist - new sale - online scenario
 								// Create box folder
-								createBoxFolder(customerName + "_" + userId, obj.salesNumber, function (folderId) {
+								createBoxFolder(customerName + "_" + userId, obj.salesNumber, function(folderId) {
 									console.log("folderId: ", folderId);
-									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'),function(message) {
+									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
 										console.log("file uploaded");
 										if (message == "0") {
 											console.log("error uploading file", JSON.stringify(message));
@@ -1722,7 +1722,17 @@ var webhook = function(data) {
 									});
 								});
 							} else {
-								console.log("folderId found - installation scenario");
+								console.log("folderId found - a file has already been uploaded to the folder");
+								uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+									console.log("file uploaded");
+									if (message == "0") {
+										console.log("error uploading file", JSON.stringify(message));
+										cb(error);
+									} else {
+										console.log("file uploaded successfully", JSON.stringify(message));
+										cb();
+									}
+								});
 							}
 						} else {
 							console.log("envelopeId not found, offline scenario");
