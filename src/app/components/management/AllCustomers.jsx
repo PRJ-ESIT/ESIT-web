@@ -2,10 +2,11 @@ import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  TextField, MenuItem, DropDownMenu, RaisedButton
+  TextField, MenuItem, RaisedButton, Dialog, FlatButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
+import { camelize } from '../helpers/common.js';
 
 
 export default class AllCustomers extends React.Component {
@@ -13,28 +14,37 @@ export default class AllCustomers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //dropdown state variable
-      dropdownValue: 1,
       //table state variables
       fixedHeader: true,
+      fixedFooter: false,
       stripedRows: false,
       showRowHover: false,
       selectable: true,
       multiSelectable: false,
       enableSelectAll: false,
-      deselectOnClickaway: true,
-      showCheckboxes: false,
+      showCheckboxes: true,
+      selectedId: '',
       //100% minus Toolbar minus 2px border
       height: 'calc(100% - 72px)',
       //end of table state variables
 
       //this variable keeps the state of a current selected row
+      currentSelected: false,
       selectedNum: -1,
       //an array to keep the data for the AllCustomers table
       allCustomers: undefined,
+
+      // Modal state variable
+      open: false,
+      // Modal content - customer details
+      customerDetails: undefined,
+
+      // Sorting variables
+      filteredDataList: undefined,
+      sortBy: 'id',
+      sortDir: null,
     }
     this.handleSelection = this.handleSelection.bind(this);
-    this.handleDropdownChange = this.handleDropdownChange.bind(this);
   }
 
   componentDidMount() {
@@ -43,7 +53,10 @@ export default class AllCustomers extends React.Component {
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let allCustomers = JSON.parse(httpRequest.responseText).customers;
-        _this.setState({allCustomers: allCustomers});
+        _this.setState({
+          allCustomers: allCustomers,
+          filteredDataList: allCustomers,
+        });
       }
     };
 
@@ -51,49 +64,113 @@ export default class AllCustomers extends React.Component {
     httpRequest.send(null);
   }
 
-  handleDropdownChange(event, index, value) {
-    console.log(index);
-    console.log(value);
-    this.setState({dropdownValue: value});
+  handleOpen = () => {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let customer = JSON.parse(httpRequest.responseText).customer;
+
+        _this.setState({
+          customerDetails: customer,
+        });
+      } else {
+        _this.setState({
+          open: true
+        });
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/getonecustomer?id=" + this.state.selectedId, true);
+    httpRequest.send(null);
   }
 
+  handleClose = () => {
+    this.setState({
+      open: false
+    });
+  }
 
   handleSelection(selectedRows) {
     if(selectedRows.length == 1) {
       this.setState({
+        currentSelected: true,
         selectedNum: selectedRows[0],
+        selectedId: this.state.filteredDataList[selectedRows].customerId,
       });
     } else {
       this.setState({
+        currentSelected: false,
         selectedNum: -1,
+        selectedId: '',
       });
     }
   }
 
-  render() {
-    return (
+  sortRowsBy(cellDataKey) {
+    cellDataKey = camelize(cellDataKey);
+    var sortDir = this.state.sortDir;
+    var sortBy = cellDataKey;
+    if (sortBy === this.state.sortBy) {
+      sortDir = this.state.sortDir === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      sortDir = 'DESC';
+    }
+    var rows = this.state.filteredDataList.slice();
 
+    rows.sort((a, b) => {
+      var sortVal = 0;
+      if (a[sortBy] > b[sortBy]) {
+        sortVal = 1;
+      }
+      if (a[sortBy] < b[sortBy]) {
+        sortVal = -1;
+      }
+
+      if (sortDir === 'DESC') {
+        sortVal = sortVal * -1;
+      }
+      return sortVal;
+    });
+
+    this.setState({
+      sortBy,
+      sortDir,
+      filteredDataList : rows,
+      currentSelected: false,
+      selectedNum: -1,
+      selectedId: '',
+    });
+  }
+
+  render() {
+    const actions = [
+          <FlatButton
+            label="Close"
+            primary={true}
+            onTouchTap={this.handleClose}
+          />
+        ];
+
+    return (
       <div className="allCustomers">
         <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Customers" className="mainFont" />
-            <ToolbarSeparator />
-            <DropDownMenu
-              iconStyle={{fill: 'rgb(0, 0, 0)'}}
-              value={this.state.dropdownValue}
-              onChange={this.handleDropdownChange}
-            >
-              <MenuItem value={1} primaryText="Show 10" />
-              <MenuItem value={2} primaryText="Show 25" />
-              <MenuItem value={3} primaryText="Show 50" />
-              <MenuItem value={4} primaryText="Show 100" />
-            </DropDownMenu>
+            {this.state.currentSelected ?
+              <ToolbarGroup>
+                <ToolbarSeparator />
+                <RaisedButton label="Details" primary={true}
+                  onClick={this.handleOpen.bind(this)} />
+              </ToolbarGroup>
+            : null }
           </ToolbarGroup>
         </Toolbar>
         <Table
           onRowSelection={this.handleSelection}
           wrapperStyle={{height: this.state.height}}
           fixedHeader={this.state.fixedHeader}
+          fixedFooter={this.state.fixedFooter}
           selectable={this.state.selectable}
           multiSelectable={this.state.multiSelectable}
         >
@@ -102,7 +179,7 @@ export default class AllCustomers extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow className={'trow'}>
+            <TableRow className={'trow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Email">Email</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Home Phone</TableHeaderColumn>
@@ -112,11 +189,11 @@ export default class AllCustomers extends React.Component {
           </TableHeader>
           <TableBody
             displayRowCheckbox={this.state.showCheckboxes}
-            deselectOnClickaway={this.state.deselectOnClickaway}
+            deselectOnClickaway={false}
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {this.state.allCustomers ? this.state.allCustomers.map( (row, index) => (
+            {this.state.filteredDataList ? this.state.filteredDataList.map( (row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }}>{row.email}</TableRowColumn>
@@ -128,6 +205,22 @@ export default class AllCustomers extends React.Component {
             : null }
           </TableBody>
         </Table>
+        <Dialog
+          title="Customer Details"
+          actions={actions}
+          modal={true}
+          open={this.state.open}
+        >
+          {this.state.customerDetails ?
+            <div>
+              <strong>First Name</strong>: {this.state.customerDetails.firstName} <br />
+              <strong>Last Name</strong>: {this.state.customerDetails.lastName} <br />
+              <strong>Email</strong>: {this.state.customerDetails.email} <br />
+              <strong>Home Phone</strong>: {this.state.customerDetails.homePhone} <br />
+              <strong>Cell Phone</strong>: {this.state.customerDetails.cellPhone} <br />
+              <strong>Enbridge Number</strong>: {this.state.customerDetails.enbridgeNumber} <br />
+            </div> : null}
+        </Dialog>
       </div>
     );
   }

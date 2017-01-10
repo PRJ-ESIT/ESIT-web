@@ -82,6 +82,13 @@ export default class LeftMenu extends React.Component {
               primaryText="View All Sales"
               leftIcon={<TrendingUp color="white"/>}
               style={fontStyle}
+            />,
+            <ListItem
+              onClick={this.props.clickHandler.bind(null, "documents")}
+              key={3}
+              primaryText="Documents"
+              leftIcon={<Folder color="white" />}
+              style={fontStyle}
             />
           ]}
         />
@@ -163,13 +170,6 @@ export default class LeftMenu extends React.Component {
               onClick={this.props.clickHandler.bind(null, "allCustomers")}
               primaryText="View All Customers"
               leftIcon={<TagFaces color="white" />}
-              style={fontStyle}
-            />,
-            <ListItem
-              onClick={this.props.clickHandler.bind(null, "documents")}
-              key={5}
-              primaryText="Documents"
-              leftIcon={<Folder color="white" />}
               style={fontStyle}
             />
           ]}

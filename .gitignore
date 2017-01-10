@@ -9,4 +9,5 @@ ios/.DS_Store
 ios/www/js/bundle.js
 ios/platforms/ios/www/js/
 
+npm-debug.log
 *.pem

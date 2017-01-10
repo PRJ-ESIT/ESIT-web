@@ -2,10 +2,11 @@ import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  TextField, MenuItem, DropDownMenu, RaisedButton
+  TextField, MenuItem, RaisedButton, Dialog, FlatButton
 } from 'material-ui';
 import Search from 'material-ui/svg-icons/action/search';
 import { IP } from '../../../../config/config.js';
+import { camelize } from '../helpers/common.js';
 
 
 export default class AllSales extends React.Component {
@@ -13,8 +14,6 @@ export default class AllSales extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //dropdown state variable
-      dropdownValue: 1,
       // table state variable
       fixedHeader: true,
       stripedRows: false,
@@ -35,9 +34,19 @@ export default class AllSales extends React.Component {
 
       //an array to keep the data for the sales table
       allSales: undefined,
+
+      // Modal state variable
+      open: false,
+      // Modal content - sale details
+      saleDetails: undefined,
+      installationDate: undefined,
+
+      // Sorting variables
+      filteredDataList: undefined,
+      sortBy: 'id',
+      sortDir: null,
     }
     this.handleSelection = this.handleSelection.bind(this);
-    this.handleDropdownChange = this.handleDropdownChange.bind(this);
   }
 
   componentDidMount() {
@@ -46,7 +55,10 @@ export default class AllSales extends React.Component {
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let allSales = JSON.parse(httpRequest.responseText).sales;
-        _this.setState({allSales: allSales});
+        _this.setState({
+          allSales: allSales,
+          filteredDataList: allSales,
+        });
 
       }
     };
@@ -55,8 +67,41 @@ export default class AllSales extends React.Component {
     httpRequest.send(null);
   }
 
-  handleDropdownChange(event, index, value) {
-    this.setState({dropdownValue: value});
+  handleOpen = () => {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let sale = JSON.parse(httpRequest.responseText).sale;
+
+        // Format and save installation date for details modal
+        var tempDateTime;
+        if (sale.installationDateTime) {
+          tempDateTime = new Date(sale.installationDateTime);
+          tempDateTime = tempDateTime.toLocaleString();
+        } else {
+          tempDateTime = null;
+        }
+
+        _this.setState({
+          saleDetails: sale,
+          installationDate: tempDateTime,
+        });
+      } else {
+        _this.setState({
+          open: true
+        });
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/existingsale?id=" + this.state.selectedId, true);
+    httpRequest.send(null);
+  }
+
+  handleClose = () => {
+    this.setState({
+      open: false
+    });
   }
 
   handleSelection(selectedRows) {
@@ -64,7 +109,7 @@ export default class AllSales extends React.Component {
       this.setState({
         currentSelected: true,
         selectedNum: selectedRows[0],
-        selectedId: this.state.allSales[selectedRows].salesNumber,
+        selectedId: this.state.filteredDataList[selectedRows].salesNumber,
       });
     } else {
       this.setState({
@@ -81,30 +126,68 @@ export default class AllSales extends React.Component {
     });
   }
 
+  sortRowsBy(cellDataKey) {
+    cellDataKey = camelize(cellDataKey);
+    var sortDir = this.state.sortDir;
+    var sortBy = cellDataKey;
+    if (sortBy === this.state.sortBy) {
+      sortDir = this.state.sortDir === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      sortDir = 'DESC';
+    }
+    var rows = this.state.filteredDataList.slice();
+
+    rows.sort((a, b) => {
+      var sortVal = 0;
+      if (a[sortBy] > b[sortBy]) {
+        sortVal = 1;
+      }
+      if (a[sortBy] < b[sortBy]) {
+        sortVal = -1;
+      }
+
+      if (sortDir === 'DESC') {
+        sortVal = sortVal * -1;
+      }
+      return sortVal;
+    });
+
+    this.setState({
+      sortBy,
+      sortDir,
+      filteredDataList : rows,
+      currentSelected: false,
+      selectedNum: -1,
+      selectedId: '',
+    });
+  }
+
   render() {
+    const actions = [
+          <FlatButton
+            label="Close"
+            primary={true}
+            onTouchTap={this.handleClose}
+          />,
+          <FlatButton
+            label="Edit"
+            primary={true}
+            onTouchTap={this.props.editClickHandler.bind(null, "edit", this.state.selectedId, "editSale")}
+          />,
+        ];
     return (
       <div className="allCustomers">
         <Toolbar className="allCustomersToolbar">
           <ToolbarGroup>
             <ToolbarTitle text="View All Sales" className="mainFont" />
-            <ToolbarSeparator />
-            <DropDownMenu
-              iconStyle={{fill: 'rgb(0, 0, 0)'}}
-              value={this.state.dropdownValue}
-              onChange={this.handleDropdownChange}
-            >
-              <MenuItem value={1} primaryText="Show 10" />
-              <MenuItem value={2} primaryText="Show 25" />
-              <MenuItem value={3} primaryText="Show 50" />
-              <MenuItem value={4} primaryText="Show 100" />
-            </DropDownMenu>
             {this.state.currentSelected ?
               <ToolbarGroup>
                 <ToolbarSeparator />
                 <RaisedButton label="Edit" primary={true}
                   onClick={this.props.editClickHandler.bind(null,
                     "edit", this.state.selectedId, "editSale")}/>
-                <RaisedButton label="Details" primary={true} />
+                <RaisedButton label="Details" primary={true}
+                  onClick={this.handleOpen.bind(this)}/>
                 <RaisedButton label="Delete" primary={true} />
               </ToolbarGroup>
             : null }
@@ -122,8 +205,8 @@ export default class AllSales extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Sale Number">#</TableHeaderColumn>
+            <TableRow onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
+              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Sale Number">Sales Number</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Product Sold">Product</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Date">Date</TableHeaderColumn>
@@ -137,7 +220,7 @@ export default class AllSales extends React.Component {
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {this.state.allSales? this.state.allSales.map( (row, index) => (
+            {this.state.filteredDataList? this.state.filteredDataList.map( (row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
@@ -150,6 +233,30 @@ export default class AllSales extends React.Component {
             : null }
           </TableBody>
         </Table>
+        <Dialog
+          title="Installation Details"
+          actions={actions}
+          modal={true}
+          open={this.state.open}
+        >
+          {this.state.saleDetails ?
+            <div>
+              <strong>First Name</strong>: {this.state.saleDetails.firstName} <br />
+              <strong>Last Name</strong>: {this.state.saleDetails.lastName} <br />
+              <strong>Address</strong>: {this.state.saleDetails.address} <br />
+              <strong>City</strong>: {this.state.saleDetails.city} <br />
+              <strong>Province</strong>: {this.state.saleDetails.province} <br />
+              <strong>Postal Code</strong>: {this.state.saleDetails.postalCode} <br />
+              <strong>Enbridge Gas #</strong>: {this.state.saleDetails.enbridgeNum} <br />
+              <strong>Email</strong>: {this.state.saleDetails.email} <br />
+              <strong>Home Phone</strong>: {this.state.saleDetails.homePhone} <br />
+              <strong>Cell Phone</strong>: {this.state.saleDetails.cellPhone} <br />
+              <strong>Program</strong>: {this.state.saleDetails.product} <br />
+              <strong>Installation Date</strong>: {this.state.installationDate} <br />
+              <strong>Sales Representative</strong>: {this.state.saleDetails.salesRepId} <br />
+              <strong>Notes</strong>: {this.state.saleDetails.notes} <br />
+            </div> : null}
+        </Dialog>
       </div>
     );
   }

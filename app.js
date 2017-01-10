@@ -515,6 +515,39 @@ app.get('/getoneemployee', function(request, response) {
     req.end();
 });
 
+app.get('/getonecustomer', function(request, response) {
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    path: '/crud/CustomerService/getCustomerById/' + request.query.id,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  var req = http.request(options, function(res)
+    {
+      var output = '';
+      res.setEncoding('utf8');
+
+      res.on('data', function (chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+          var obj = JSON.parse(output);
+          return response.status(200).json(obj);
+      });
+    });
+
+    req.on('error', function(err) {
+        //response.send('error: ' + err.message);
+    });
+
+    req.end();
+});
+
 //POST http://localhost:3000/newsale
 app.post('/newsale', function(request, response) {
   createBoxFolder(request.body.fname + request.body.lname, function(folderId) {

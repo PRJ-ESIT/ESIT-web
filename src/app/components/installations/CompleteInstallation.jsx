@@ -164,6 +164,11 @@ export default class CompleteInstallation extends React.Component {
                 allInstallers: allInstallers,
                 installation: installation,
 
+                // Set program type
+                program1: installation.product == "Whole Home Filter" ? true : false,
+                program2: installation.product == "Whole Home D-Scaler" ? true : false,
+                program3: installation.product == "Whole Home Combo" ? true : false,
+
                 fnameValidated: installation.customerFirstName ? true : false,
                 lnameValidated: installation.customerLastName ? true : false,
                 addressValidated: installation.address ? true : false,
