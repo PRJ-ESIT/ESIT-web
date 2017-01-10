@@ -1413,7 +1413,7 @@ var getDocuSignUrl = function(envelopeId, returnUrl, email, userName, clientUser
     req.end();
 }
 
-var createBoxFolder = function(name, callback) {
+var createBoxFolder = function(name, saleId, callback) {
   adminAPIClient.folders.create('0', name, function(err, response) {
 		if(err) {
 			console.log('could not create folder');
@@ -1423,9 +1423,53 @@ var createBoxFolder = function(name, callback) {
 		} else {
 			console.log('folder was created: ' + JSON.stringify(response.id));
       // Return fodler id
-      callback(response.id);
+			setFolderId(response.id, saleId, function(folderId){
+				callback(response.id);
+			});
 		}
 	});
+}
+
+var setFolderId = function(folderId, saleId, callback) {
+	var jsonObj = querystring.stringify({
+    // Envelope Id
+    folderId: folderId
+  });
+	console.log("to send: " + jsonObj);
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'PUT',
+    path: '/crud/SaleService/setFolderId/' + saleId,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+			console.log("output: " + output);
+			var obj = JSON.parse(output);
+			console.log("added: " + JSON.stringify(obj));
+			callback(obj);
+    });
+
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
 }
 
 var setEnvelopeId = function(envelopeId, saleId, callback) {
@@ -1545,13 +1589,16 @@ var webhook = function(data) {
 		console.log("Connect data parsed!");
 		var envelopeStatus = xml.DocuSignEnvelopeInformation.EnvelopeStatus;
 		var envelopeId = envelopeStatus[0].EnvelopeID[0];
-		// var customerFName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].FormData[0].xfdf[0].fields[0].field["customerFName"].value;
-		var customerFName = "James";
-		var customerLName = "Johnson";
-		var saleId = "20";
+		var userName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].UserName[0];
+		var userId = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].ClientUserId[0];
+		var customerName = userName.replace(" ", "_");
 
 		// console.log(envelopeStatus);
 		console.log(envelopeId);
+		console.log(userName);
+		console.log(userId);
+		console.log(customerName);
+
 		// var timeGenerated = envelopeStatus[0].TimeGenerated[0];
 
 		// Store the file. Create directories as needed
@@ -1584,12 +1631,14 @@ var webhook = function(data) {
 		// console.log("DocuSign Webhook: created " + filename);
 
 		if ("Completed" === envelopeStatus[0].Status[0]) {
+			var fields = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].FormData[0].xfdf[0].fields[0];
+
 			// Loop through the DocumentPDFs element, storing each document.
 			nodeList = xml.DocuSignEnvelopeInformation.DocumentPDFs[0].DocumentPDF;
 			var i = 0;
 			async.forEachSeries(nodeList, function(node, cb) {
 				var pdf = node;
-				filename = "doc_" + (pdf.DocumentID ? pdf.DocumentID[0] : "") + ".pdf";
+				filename = envelopeId + "_doc_" + (pdf.DocumentID ? pdf.DocumentID[0] : "") + ".pdf";
 				// var folderId = "0"; // Root folder id
 				// var fullFilename = path.resolve(__filename + "/../../" + self.xmlFileDir + "E" + envelopeId + "/" + filename);
 				// console.log('file' + ':' + fullFilename);
@@ -1659,7 +1708,7 @@ var webhook = function(data) {
 								console.log("folderId not found");
 								// Box folder doesn't exist - new sale - online scenario
 								// Create box folder
-								createBoxFolder(customerFName + "_" + customerLName + "_" + saleId, function (folderId) {
+								createBoxFolder(customerName + "_" + userId, obj.salesNumber, function (folderId) {
 									console.log("folderId: ", folderId);
 									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'),function(message) {
 										console.log("file uploaded");
