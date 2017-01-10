@@ -7,15 +7,11 @@ export default class CameraComponent extends React.Component {
     super(props);
 
     this.state = {
-      installationPictures: ['a', 'b', 'c'],
+      installationPictures: [],
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
     this.uploadClickHandler = this.uploadClickHandler.bind(this);
-  }
-
-  componentWillUpdate() {
-    console.log(this.state.installationPictures);
   }
 
   cameraClickHandler() {
@@ -46,10 +42,9 @@ export default class CameraComponent extends React.Component {
     // Called on successful authorisation of camera/camera roll
     function onCameraAuthorised(){
       function onSuccess(imageURI) {
-        // var image = document.getElementById('myImage');
-        // console.log(imageURI);
-        // image.src = imageURI;
-        _this.setState({installationPictures: _this.state.installationPictures.push(imageURI)});
+        var pictures = _this.state.installationPictures;
+        pictures.push(imageURI);
+        _this.setState({installationPictures: pictures});
       }
 
       function onFail(message) {
@@ -244,9 +239,9 @@ export default class CameraComponent extends React.Component {
           />
         </div>
         <div className="installPictureWrapper">
-          {this.state.installationPictures.map((imgSrc, index) =>
-            <img key={index} src={imgSrc} className="installImageBox" id="myImage"/>
-          )}
+          {this.state.installationPictures.map((imgSrc, index) => (
+            <img key={index} src={imgSrc} className="installImageBox"/>
+          ))}
         </div>
         <div className="finishWrapper">
           <RaisedButton

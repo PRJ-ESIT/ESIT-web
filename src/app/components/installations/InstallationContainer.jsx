@@ -39,6 +39,9 @@ export default class InstallationContainer extends React.Component {
             <StepLabel>Choose a Installation</StepLabel>
           </Step>
           <Step>
+            <StepLabel>Take Installation Photos</StepLabel>
+          </Step>
+          <Step>
             <StepLabel>Complete the Installation</StepLabel>
           </Step>
           <Step>
@@ -46,9 +49,6 @@ export default class InstallationContainer extends React.Component {
           </Step>
           <Step>
             <StepLabel>Installer Sign the Documents</StepLabel>
-          </Step>
-          <Step>
-            <StepLabel>Take Installation Photos</StepLabel>
           </Step>
         </Stepper>
         <div style={{height: '90%'}}>
