@@ -1736,6 +1736,16 @@ var webhook = function(data) {
 							}
 						} else {
 							console.log("envelopeId not found, offline scenario");
+							uploadFile("0", filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+								console.log("file uploaded");
+								if (message == "0") {
+									console.log("error uploading file", JSON.stringify(message));
+									cb(error);
+								} else {
+									console.log("file uploaded successfully", JSON.stringify(message));
+									cb();
+								}
+							});
 						}
 						// adminAPIClient.files.uploadFile(folderId, "E" + envelopeId + "_" + filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(err, response) {
 						// 	console.log('uploadFile: ' + i++);
