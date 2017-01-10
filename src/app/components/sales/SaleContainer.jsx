@@ -28,8 +28,8 @@ export default class SaleContainer extends React.Component {
   render() {
     const {saleStepIndex} = this.props;
     return (
-      <div style={{width: '100%', maxWidth: 900, margin: 'auto'}}>
-        <Stepper activeStep={saleStepIndex}>
+      <div style={{width: '100%', height: '100%', maxWidth: 900, margin: 'auto'}}>
+        <Stepper style={{height: '10%'}} activeStep={saleStepIndex}>
           <Step>
             <StepLabel>Create a Sale</StepLabel>
           </Step>
@@ -40,7 +40,7 @@ export default class SaleContainer extends React.Component {
             <StepLabel>Take Cheque Photo</StepLabel>
           </Step>
         </Stepper>
-        <div>
+        <div style={{height: '90%'}}>
           {this.getStepContent(saleStepIndex)}
         </div>
       </div>
