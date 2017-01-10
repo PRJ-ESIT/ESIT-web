@@ -188,7 +188,7 @@ export default class AllSales extends React.Component {
                     "edit", this.state.selectedId, "editSale")}/>
                 <RaisedButton label="Details" primary={true}
                   onClick={this.handleOpen.bind(this)}/>
-                <RaisedButton label="Delete" primary={true} />
+                <RaisedButton label="Cancel" primary={true} />
               </ToolbarGroup>
             : null }
           </ToolbarGroup>
