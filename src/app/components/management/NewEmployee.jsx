@@ -488,6 +488,7 @@ export default class NewEmployee extends React.Component {
                 onBlur={this.validateHireDate.bind(this)}
                 errorText={this.state.hireDateErr}
                 errorStyle={{float: "left"}}
+                onTouchTap={(e) => {e.preventDefault();}}
               />
               <br />
               <TextField
@@ -643,7 +644,7 @@ export default class NewEmployee extends React.Component {
                 onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
               />
               <RaisedButton
-                onClick={this.validateAllFields.bind(this)}
+                onTouchTap={this.validateAllFields.bind(this)}
                 style={{float: 'right'}}
                 label="Create"
                 primary={true}

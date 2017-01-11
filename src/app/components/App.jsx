@@ -261,7 +261,7 @@ export default class App extends React.Component {
         <AppBar
           title='esit'
           iconElementRight={this.getRightButtons()}
-          onLeftIconButtonTouchTap={this.appBarClickHandler}
+          onLeftIconButtonTouchTap={(e) => {e.preventDefault(); this.appBarClickHandler()}}
           style={appBarStyles}
         />
         <div className="contentContainer">

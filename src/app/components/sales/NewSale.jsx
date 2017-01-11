@@ -799,6 +799,7 @@ export default class NewSale extends React.Component {
                   onBlur={this.validateInstallationDate.bind(this)}
                   errorText={this.state.installationDateErr}
                   errorStyle={{float: "left"}}
+                  onTouchTap={(e) => {e.preventDefault();}}
                 />
               </div>
               &nbsp;
