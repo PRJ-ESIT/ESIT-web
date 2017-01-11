@@ -655,6 +655,7 @@ export default class CompleteInstallation extends React.Component {
     if (this.validateAllFields()) {
       var obj = {
         installationObj: {
+          installationId: this.props.id,
           customerFirstName: this.state.fname,
           customerLastName: this.state.lname,
           address: this.state.address,

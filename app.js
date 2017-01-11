@@ -128,11 +128,11 @@ app.get('/dashboard', function(request, response) {
                     console.log('Hello, ' + currentUser.name + '!');
                   });
 
-                  adminAPIClient.folders.getItems('0', null, function(err, response) {
-                    console.log(err);
-                    if(err) throw err;
-                    console.log(response);
-                  });
+                  // adminAPIClient.folders.getItems('0', null, function(err, response) {
+                  //   console.log(err);
+                  //   if(err) throw err;
+                  //   console.log(response);
+                  // });
 
 									response.status(200).json(entry);
               });
@@ -942,7 +942,7 @@ app.post('/getembeddedurl', function(request, response) {
         var envelopeId = obj.envelopeId;
 
 				// Save envelopeId to db
-				return setEnvelopeId(envelopeId, request.body.salesNumber, function() {
+				return setEnvelopeId(envelopeId, 'SaleService' , request.body.salesNumber, function() {
 					// Get embedded URL
 	        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, recipientName, "1001", function(urlObj) {
 	          return response.status(200).json(urlObj);
@@ -1280,11 +1280,21 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
         var obj = JSON.parse(output);
         var envelopeId = obj.envelopeId;
 				console.log(envelopeId);
-        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
-          // Add envelopeId to object
-          urlObj["envelopeId"] = envelopeId;
-          return response.status(200).json(urlObj);
-        });
+        // return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
+        //   // Add envelopeId to object
+        //   urlObj["envelopeId"] = envelopeId;
+        //   return response.status(200).json(urlObj);
+        // });
+
+				// Save envelopeId to db
+				return setEnvelopeId(envelopeId, 'InstallationService' , request.body.installationId, function() {
+					// Get embedded URL
+	        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
+					  // Add envelopeId to object
+	          urlObj["envelopeId"] = envelopeId;
+	          return response.status(200).json(urlObj);
+	        });
+				});
       });
     });
 
@@ -1473,7 +1483,7 @@ var setFolderId = function(folderId, saleId, callback) {
   req.end();
 }
 
-var setEnvelopeId = function(envelopeId, saleId, callback) {
+var setEnvelopeId = function(envelopeId, service, id, callback) {
 	var jsonObj = querystring.stringify({
     // Envelope Id
     envelopeId: envelopeId
@@ -1483,13 +1493,13 @@ var setEnvelopeId = function(envelopeId, saleId, callback) {
     host: config.crudIP,
     port: 8080,
     method: 'PUT',
-    path: '/crud/SaleService/setEnvelopeId/' + saleId,
+    path: '/crud/' + service + '/setEnvelopeId/' + id,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': Buffer.byteLength(jsonObj)
     }
   };
-
+console.log(options);
   var req = http.request(options, function(res) {
     var output = '';
     res.setEncoding('utf8');
@@ -1500,7 +1510,7 @@ var setEnvelopeId = function(envelopeId, saleId, callback) {
     res.on('end', function() {
 			console.log("output: " + output);
 			var obj = JSON.parse(output);
-			console.log("added: " + JSON.stringify(obj));
+			console.log(service + " added: " + JSON.stringify(obj));
 			callback(obj);
     });
 
