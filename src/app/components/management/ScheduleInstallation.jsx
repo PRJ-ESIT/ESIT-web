@@ -60,13 +60,14 @@ export default class ScheduleInstallation extends React.Component {
 
   handleRowSelected(selectedRows) {
     if(selectedRows.length == 1) {
+      var dt = this.state.allSales[selectedRows[0]].installationDateTime.split(/[- :]/);
       this.setState({
         sale: this.state.allSales[selectedRows[0]],
         selectedNum: selectedRows[0],
-        installationDate: new Date(this.state.allSales[selectedRows[0]].installationDateTime),
+        installationDate: new Date(dt[0], dt[1]-1, dt[2], dt[3], dt[4], dt[5]),
         installationDateErr: '',
         installationDateValidated: true,
-        installationTime: new Date(this.state.allSales[selectedRows[0]].installationDateTime),
+        installationTime: new Date(dt[0], dt[1]-1, dt[2], dt[3], dt[4], dt[5]),
         installationTimeErr: '',
         installationTimeValidated: true,
         saleValidated: true,

@@ -132,29 +132,8 @@ export default class CompleteInstallation extends React.Component {
         if (this.readyState == 4 && this.status == 200) {
           let installation = JSON.parse(httpRequest.responseText).installation;
           // Format time
-          console.log("MySQL: " + installation.installationDateTime);
-          // var tempYear = installation.installationDateTime.substring(0,4);
-          // var tempMonth = installation.installationDateTime.substring(5,7);
-          // var tempDay = installation.installationDateTime.substring(8,10);
-          // var tempHour = installation.installationDateTime.substring(11,13);
-          // var tempMin = installation.installationDateTime.substring(14,16);
-          // var tempSec = installation.installationDateTime.substring(17,19);
-          // var tempMilsec = installation.installationDateTime.substring(20);
-          // console.log("tempYear: " + tempYear);
-          // console.log("tempMonth: " + tempMonth);
-          // console.log("tempDay: " + tempDay);
-          // console.log("tempHour: " + tempHour);
-          // console.log("tempMin: " + tempMin);
-          // console.log("tempSec: " + tempSec);
-          // console.log("tempMilsec: " + tempMilsec);
           var t = installation.installationDateTime.split(/[- :]/);
           var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-          // var tempDateTime = new Date(installation.installationDateTime);
-
-          console.log("tempDateTime: " + tempDateTime);
-          // console.log("converted: " + d);
-          // var newDate = new Date(tempYear, tempMonth, tempDay, tempHour, tempMin, tempSec, tempMilsec);
-          // console.log("newDate: " + newDate);
           var minDate = new Date(2000, 0, 1);
 
           var httpReq = new XMLHttpRequest();
