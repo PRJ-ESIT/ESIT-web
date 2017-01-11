@@ -184,10 +184,10 @@ export default class AllSales extends React.Component {
               <ToolbarGroup>
                 <ToolbarSeparator />
                 <RaisedButton label="Edit" primary={true}
-                  onClick={this.props.editClickHandler.bind(null,
+                  onTouchTap={this.props.editClickHandler.bind(null,
                     "edit", this.state.selectedId, "editSale")}/>
                 <RaisedButton label="Details" primary={true}
-                  onClick={this.handleOpen.bind(this)}/>
+                  onTouchTap={this.handleOpen.bind(this)}/>
                 <RaisedButton label="Cancel" primary={true} />
               </ToolbarGroup>
             : null }

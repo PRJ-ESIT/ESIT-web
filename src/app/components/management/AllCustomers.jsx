@@ -161,7 +161,7 @@ export default class AllCustomers extends React.Component {
               <ToolbarGroup>
                 <ToolbarSeparator />
                 <RaisedButton label="Details" primary={true}
-                  onClick={this.handleOpen.bind(this)} />
+                  onTouchTap={this.handleOpen.bind(this)} />
               </ToolbarGroup>
             : null }
           </ToolbarGroup>

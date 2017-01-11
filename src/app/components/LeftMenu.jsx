@@ -46,7 +46,7 @@ export default class LeftMenu extends React.Component {
     return (
       <List className='headings'>
         <ListItem
-          onClick={this.props.clickHandler.bind(null, "dashboard")}
+          onTouchTap={this.props.clickHandler.bind(null, "dashboard")}
           primaryText="Dashboard"
           leftIcon={<Dashboard color="white"/>}
           style={fontStyle}
@@ -59,7 +59,7 @@ export default class LeftMenu extends React.Component {
           leftIcon={<AttachMoney color="white"/>}
           initiallyOpen={false}
           rightIconButton={
-            <IconButton onClick={this.toggleCategory.bind(this, "salesOpen")}>
+            <IconButton onTouchTap={this.toggleCategory.bind(this, "salesOpen")}>
               { this.state.currentOpen == "salesOpen" ?
                 <ExpandLess color="white"/>
                 :
@@ -70,7 +70,7 @@ export default class LeftMenu extends React.Component {
           style={fontStyle}
           nestedItems={[
             <ListItem
-              onClick={this.props.clickHandler.bind(null, "newSale")}
+              onTouchTap={this.props.clickHandler.bind(null, "newSale")}
               key={1}
               primaryText="Create New Sale"
               leftIcon={<Create color="white"/>}
@@ -78,13 +78,13 @@ export default class LeftMenu extends React.Component {
             />,
             <ListItem
               key={2}
-              onClick={this.props.clickHandler.bind(null, "allSales")}
+              onTouchTap={this.props.clickHandler.bind(null, "allSales")}
               primaryText="View All Sales"
               leftIcon={<TrendingUp color="white"/>}
               style={fontStyle}
             />,
             <ListItem
-              onClick={this.props.clickHandler.bind(null, "documents")}
+              onTouchTap={this.props.clickHandler.bind(null, "documents")}
               key={3}
               primaryText="Documents"
               leftIcon={<Folder color="white" />}
@@ -100,7 +100,7 @@ export default class LeftMenu extends React.Component {
           leftIcon={<Build color="white" />}
           initiallyOpen={false}
           rightIconButton={
-            <IconButton onClick={this.toggleCategory.bind(this, "installationOpen")}>
+            <IconButton onTouchTap={this.toggleCategory.bind(this, "installationOpen")}>
               { this.state.currentOpen == "installationOpen" ?
                 <ExpandLess color="white"/>
                 :
@@ -112,14 +112,14 @@ export default class LeftMenu extends React.Component {
           nestedItems={[
             <ListItem
               key={1}
-              onClick={this.props.clickHandler.bind(null, "completeInstallation")}
+              onTouchTap={this.props.clickHandler.bind(null, "completeInstallation")}
               primaryText="Complete Installation"
               leftIcon={<EventAvailable color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={2}
-              onClick={this.props.clickHandler.bind(null, "allInstallations")}
+              onTouchTap={this.props.clickHandler.bind(null, "allInstallations")}
               primaryText="View All Installations"
               leftIcon={<ActionAssignment color="white"/>}
               style={fontStyle}
@@ -134,7 +134,7 @@ export default class LeftMenu extends React.Component {
           leftIcon={<Business color="white" />}
           initiallyOpen={false}
           rightIconButton={
-            <IconButton onClick={this.toggleCategory.bind(this, "managementOpen")}>
+            <IconButton onTouchTap={this.toggleCategory.bind(this, "managementOpen")}>
               { this.state.currentOpen == "managementOpen" ?
                 <ExpandLess color="white"/>
                 :
@@ -146,28 +146,28 @@ export default class LeftMenu extends React.Component {
           nestedItems={[
             <ListItem
               key={1}
-              onClick={this.props.clickHandler.bind(null, "scheduleInstallation")}
+              onTouchTap={this.props.clickHandler.bind(null, "scheduleInstallation")}
               primaryText="Schedule Installation"
               leftIcon={<Event color="white" />}
               style={fontStyle}
             />,
             <ListItem
               key={2}
-              onClick={this.props.clickHandler.bind(null, "newEmployee")}
+              onTouchTap={this.props.clickHandler.bind(null, "newEmployee")}
               primaryText="Create New Employee"
               leftIcon={<GroupAdd color="white" />}
               style={fontStyle}
             />,
             <ListItem
               key={3}
-              onClick={this.props.clickHandler.bind(null, "allEmployees")}
+              onTouchTap={this.props.clickHandler.bind(null, "allEmployees")}
               primaryText="View All Employees"
               leftIcon={<Group color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={4}
-              onClick={this.props.clickHandler.bind(null, "allCustomers")}
+              onTouchTap={this.props.clickHandler.bind(null, "allCustomers")}
               primaryText="View All Customers"
               leftIcon={<TagFaces color="white" />}
               style={fontStyle}

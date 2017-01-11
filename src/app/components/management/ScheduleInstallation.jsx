@@ -273,7 +273,7 @@ export default class ScheduleInstallation extends React.Component {
         <RaisedButton label="Cancel" secondary={true} onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}/>
         &nbsp;
         &nbsp;
-        <RaisedButton label="Schedule" onClick={this.validateAllAndSubmit.bind(this)} />
+        <RaisedButton label="Schedule" onTouchTap={this.validateAllAndSubmit.bind(this)} />
       </div>
     );
   }

@@ -179,10 +179,10 @@ export default class AllEmployees extends React.Component {
               <ToolbarGroup>
                 <ToolbarSeparator />
                 <RaisedButton label="Edit" primary={true}
-                onClick={this.props.editClickHandler.bind(null,
+                  onTouchTap={this.props.editClickHandler.bind(null,
                   "edit", this.state.selectedId, "newEmployee")} />
                 <RaisedButton label="Details" primary={true}
-                  onClick={this.handleOpen.bind(this)}/>
+                  onTouchTap={this.handleOpen.bind(this)}/>
                 <RaisedButton label="Deactivate" primary={true} />
               </ToolbarGroup>
             : null }
