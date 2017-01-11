@@ -180,6 +180,7 @@ export default class ScheduleInstallation extends React.Component {
       salesNumber: this.state.sale.salesNumber,
       installer: this.state.installer,
       installationDateTime: dateHelpers.toMysqlFormat(finalDate),
+      folderId: this.state.sale.folderId,
     };
     console.log(data);
     var request = new XMLHttpRequest();
