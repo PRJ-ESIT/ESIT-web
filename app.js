@@ -1579,10 +1579,10 @@ var uploadFile = function(folderId, filename, file, callback) {
 		console.log('attempt to uploadFile: ');
 		if(err) {
 			console.log('box err:' + JSON.stringify(err));
-			callback("0");
+			callback(err, null);
 		}
 		console.log(JSON.stringify(response));
-		callback(response);
+		callback(null, response);
 	});
 }
 
@@ -1721,10 +1721,10 @@ var webhook = function(data) {
 								// Create box folder
 								createBoxFolder(customerName + "_" + userId, obj.salesNumber, function(folderId) {
 									console.log("folderId: ", folderId);
-									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(error, message) {
 										console.log("file uploaded");
-										if (message == "0") {
-											console.log("error uploading file", JSON.stringify(message));
+										if (error) {
+											console.log("error uploading file", JSON.stringify(error));
 											cb(error);
 										} else {
 											console.log("file uploaded successfully", JSON.stringify(message));
@@ -1734,10 +1734,10 @@ var webhook = function(data) {
 								});
 							} else {
 								console.log("folderId found - a file has already been uploaded to the folder");
-								uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+								uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(error, message) {
 									console.log("file uploaded");
-									if (message == "0") {
-										console.log("error uploading file", JSON.stringify(message));
+									if (error) {
+										console.log("error uploading file", JSON.stringify(error));
 										cb(error);
 									} else {
 										console.log("file uploaded successfully", JSON.stringify(message));
@@ -1747,10 +1747,10 @@ var webhook = function(data) {
 							}
 						} else {
 							console.log("envelopeId not found, offline scenario");
-							uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+							uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(error, message) {
 								console.log("file uploaded");
-								if (message == "0") {
-									console.log("error uploading file", JSON.stringify(message));
+								if (error) {
+									console.log("error uploading file", JSON.stringify(error));
 									cb(error);
 								} else {
 									console.log("file uploaded successfully", JSON.stringify(message));
