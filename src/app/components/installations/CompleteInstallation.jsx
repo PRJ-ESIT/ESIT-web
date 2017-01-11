@@ -132,7 +132,9 @@ export default class CompleteInstallation extends React.Component {
         if (this.readyState == 4 && this.status == 200) {
           let installation = JSON.parse(httpRequest.responseText).installation;
           // Format time
-          var tempDateTime = new Date(installation.installationDateTime);
+          var tempDateTime = new Date(installation.installationDateTime.replace(/-/g, "/"));
+          console.log("installation Time: " + installation.installationDateTime);
+          console.log("tempDateTime: " + tempDateTime);
           var minDate = new Date(2000, 0, 1);
 
           var httpReq = new XMLHttpRequest();
