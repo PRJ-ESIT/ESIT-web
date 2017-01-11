@@ -125,7 +125,8 @@ export default class NewSale extends React.Component {
                 allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
               }
               // Format time
-              var tempDateTime = new Date(sale.installationDateTime);
+              var t = installation.installationDateTime.split(/[- :]/);
+              var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
               var minDate = new Date(2000, 0, 1);
 
               _this.setState({
