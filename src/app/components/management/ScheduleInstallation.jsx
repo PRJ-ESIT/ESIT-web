@@ -40,22 +40,7 @@ export default class ScheduleInstallation extends React.Component {
   }
 
   componentDidMount() {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allSales = JSON.parse(httpRequest.responseText).data.sales;
-        let allInstallers = JSON.parse(httpRequest.responseText).data.installers;
-
-        _this.setState({
-          allSales: allSales,
-          allInstallers: allInstallers,
-        });
-      }
-    };
-
-    httpRequest.open('GET', "http://" + IP + "/scheduleinstallationinfo", true);
-    httpRequest.send(null);
+    this.getInstallationInfo();
   }
 
   handleRowSelected(selectedRows) {
@@ -168,6 +153,25 @@ export default class ScheduleInstallation extends React.Component {
     }
   }
 
+  getInstallationInfo() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let allSales = JSON.parse(httpRequest.responseText).data.sales;
+        let allInstallers = JSON.parse(httpRequest.responseText).data.installers;
+
+        _this.setState({
+          allSales: allSales,
+          allInstallers: allInstallers,
+        });
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/scheduleinstallationinfo", true);
+    httpRequest.send(null);
+  }
+
   createNewInstallation() {
     //combining the date and time objects and converting them to MySQL DATETIME format
     var finalDate = new Date(this.state.installationDate);
@@ -181,11 +185,15 @@ export default class ScheduleInstallation extends React.Component {
       installer: this.state.installer,
       installationDateTime: dateHelpers.toMysqlFormat(finalDate),
     };
-    console.log(data);
+
+    var _this = this;
     var request = new XMLHttpRequest();
     request.open('POST', "http://" + IP + '/newinstallation', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 201) {
+        _this.getInstallationInfo();
+      }
       //#TODO receive Sale number and add it to the state
     };
 

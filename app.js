@@ -651,7 +651,7 @@ app.post('/newinstallation', function(request, response) {
     res.on('end', function() {
       //#TODO remove tempObj and forward the SaleNumber from crud instead
       var tempObj = {'a': 'b'};
-      return response.status(200).json(tempObj);
+      return response.status(201).json(tempObj);
     });
 
   });
