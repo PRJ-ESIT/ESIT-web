@@ -167,12 +167,12 @@ export default class AllSales extends React.Component {
           <FlatButton
             label="Close"
             primary={true}
-            onTouchTap={this.handleClose}
+            onTouchTap={(e) => {e.preventDefault(); this.handleClose()}}
           />,
           <FlatButton
             label="Edit"
             primary={true}
-            onTouchTap={this.props.editClickHandler.bind(null, "edit", this.state.selectedId, "editSale")}
+            onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editSale")}}
           />,
         ];
     return (
@@ -184,10 +184,9 @@ export default class AllSales extends React.Component {
               <ToolbarGroup>
                 <ToolbarSeparator />
                 <RaisedButton label="Edit" primary={true}
-                  onTouchTap={this.props.editClickHandler.bind(null,
-                    "edit", this.state.selectedId, "editSale")}/>
+                  onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editSale")}}/>
                 <RaisedButton label="Details" primary={true}
-                  onTouchTap={this.handleOpen.bind(this)}/>
+                  onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}/>
                 <RaisedButton label="Cancel" primary={true} />
               </ToolbarGroup>
             : null }

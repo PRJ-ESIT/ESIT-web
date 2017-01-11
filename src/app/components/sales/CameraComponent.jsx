@@ -233,7 +233,7 @@ export default class CameraComponent extends React.Component {
             backgroundColor="white"
             hoverColor="$light-gray"
             style={rightButtonsStyle}
-            onTouchTap={this.cameraClickHandler}
+            onTouchTap={(e) => {e.preventDefault(); this.cameraClickHandler()}}
             label="New Image"
           />
         </div>
@@ -245,7 +245,7 @@ export default class CameraComponent extends React.Component {
             className="finishButton"
             label={'Upload'}
             primary={true}
-            onTouchTap={this.uploadClickHandler}
+            onTouchTap={(e) => {e.preventDefault(); this.uploadClickHandler()}}
           />
         </div>
        </div>

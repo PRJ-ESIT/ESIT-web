@@ -119,7 +119,7 @@ export default class App extends React.Component {
           backgroundColor="white"
           hoverColor="$light-gray"
           style={rightButtonsStyle}
-          onTouchTap={this.handleLogout}
+          onTouchTap={(e) => {e.preventDefault(); this.handleLogout()}}
           label="Logout"
         />
       </div>

@@ -116,7 +116,7 @@ export default class LoginScreen extends React.Component {
           label="LOG IN"
           primary={true}
           keyboardFocused={true}
-          onTouchTap={this.login}
+          onTouchTap={(e) => {e.preventDefault(); this.login()}}
         />
       </div>
     );
