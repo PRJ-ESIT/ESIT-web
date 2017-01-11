@@ -128,11 +128,11 @@ app.get('/dashboard', function(request, response) {
                     console.log('Hello, ' + currentUser.name + '!');
                   });
 
-                  adminAPIClient.folders.getItems('0', null, function(err, response) {
-                    console.log(err);
-                    if(err) throw err;
-                    console.log(response);
-                  });
+                  // adminAPIClient.folders.getItems('0', null, function(err, response) {
+                  //   console.log(err);
+                  //   if(err) throw err;
+                  //   console.log(response);
+                  // });
 
 									response.status(200).json(entry);
               });
@@ -673,7 +673,8 @@ app.post('/newinstallation', function(request, response) {
     //homeowner's info
     saleId: request.body.salesNumber,
     installerId: request.body.installer,
-    installationDateTime: request.body.installationDateTime
+    installationDateTime: request.body.installationDateTime,
+		folderId: request.body.folderId
   });
   // console.log(jsonObj);
   var options = {
@@ -987,7 +988,7 @@ app.post('/getembeddedurl', function(request, response) {
         var envelopeId = obj.envelopeId;
 
 				// Save envelopeId to db
-				return setEnvelopeId(envelopeId, request.body.salesNumber, function() {
+				return setEnvelopeId(envelopeId, 'SaleService' , request.body.salesNumber, function() {
 					// Get embedded URL
 	        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, recipientName, "1001", function(urlObj) {
 	          return response.status(200).json(urlObj);
@@ -1325,11 +1326,21 @@ app.post('/getInstallationEmbeddedUrl', function(request, response) {
         var obj = JSON.parse(output);
         var envelopeId = obj.envelopeId;
 				console.log(envelopeId);
-        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
-          // Add envelopeId to object
-          urlObj["envelopeId"] = envelopeId;
-          return response.status(200).json(urlObj);
-        });
+        // return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
+        //   // Add envelopeId to object
+        //   urlObj["envelopeId"] = envelopeId;
+        //   return response.status(200).json(urlObj);
+        // });
+
+				// Save envelopeId to db
+				return setEnvelopeId(envelopeId, 'InstallationService' , request.body.installationId, function() {
+					// Get embedded URL
+	        return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
+					  // Add envelopeId to object
+	          urlObj["envelopeId"] = envelopeId;
+	          return response.status(200).json(urlObj);
+	        });
+				});
       });
     });
 
@@ -1518,7 +1529,7 @@ var setFolderId = function(folderId, saleId, callback) {
   req.end();
 }
 
-var setEnvelopeId = function(envelopeId, saleId, callback) {
+var setEnvelopeId = function(envelopeId, service, id, callback) {
 	var jsonObj = querystring.stringify({
     // Envelope Id
     envelopeId: envelopeId
@@ -1528,13 +1539,13 @@ var setEnvelopeId = function(envelopeId, saleId, callback) {
     host: config.crudIP,
     port: 8080,
     method: 'PUT',
-    path: '/crud/SaleService/setEnvelopeId/' + saleId,
+    path: '/crud/' + service + '/setEnvelopeId/' + id,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': Buffer.byteLength(jsonObj)
     }
   };
-
+console.log(options);
   var req = http.request(options, function(res) {
     var output = '';
     res.setEncoding('utf8');
@@ -1545,7 +1556,7 @@ var setEnvelopeId = function(envelopeId, saleId, callback) {
     res.on('end', function() {
 			console.log("output: " + output);
 			var obj = JSON.parse(output);
-			console.log("added: " + JSON.stringify(obj));
+			console.log(service + " added: " + JSON.stringify(obj));
 			callback(obj);
     });
 
@@ -1614,10 +1625,10 @@ var uploadFile = function(folderId, filename, file, callback) {
 		console.log('attempt to uploadFile: ');
 		if(err) {
 			console.log('box err:' + JSON.stringify(err));
-			callback("0");
+			callback(err, null);
 		}
 		console.log(JSON.stringify(response));
-		callback(response);
+		callback(null, response);
 	});
 }
 
@@ -1756,10 +1767,10 @@ var webhook = function(data) {
 								// Create box folder
 								createBoxFolder(customerName + "_" + userId, obj.salesNumber, function(folderId) {
 									console.log("folderId: ", folderId);
-									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+									uploadFile(folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(error, message) {
 										console.log("file uploaded");
-										if (message == "0") {
-											console.log("error uploading file", JSON.stringify(message));
+										if (error) {
+											console.log("error uploading file", JSON.stringify(error));
 											cb(error);
 										} else {
 											console.log("file uploaded successfully", JSON.stringify(message));
@@ -1769,10 +1780,10 @@ var webhook = function(data) {
 								});
 							} else {
 								console.log("folderId found - a file has already been uploaded to the folder");
-								uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+								uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(error, message) {
 									console.log("file uploaded");
-									if (message == "0") {
-										console.log("error uploading file", JSON.stringify(message));
+									if (error) {
+										console.log("error uploading file", JSON.stringify(error));
 										cb(error);
 									} else {
 										console.log("file uploaded successfully", JSON.stringify(message));
@@ -1782,10 +1793,10 @@ var webhook = function(data) {
 							}
 						} else {
 							console.log("envelopeId not found, offline scenario");
-							uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(message) {
+							uploadFile(obj.folderId, filename, new Buffer(pdf.PDFBytes[0], 'base64'), function(error, message) {
 								console.log("file uploaded");
-								if (message == "0") {
-									console.log("error uploading file", JSON.stringify(message));
+								if (error) {
+									console.log("error uploading file", JSON.stringify(error));
 									cb(error);
 								} else {
 									console.log("file uploaded successfully", JSON.stringify(message));
