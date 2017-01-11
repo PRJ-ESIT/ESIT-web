@@ -3,7 +3,6 @@ import '../../client/styles/style.scss';
 import { AppBar, FlatButton  } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import LoginDialog from './modals/LoginDialog.jsx';
 import LeftMenu from './LeftMenu.jsx';
 import Dashboard from './dashboard/Dashboard.jsx';
 import SaleContainer from './sales/SaleContainer.jsx';
@@ -41,7 +40,6 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loginDialog: false,
       leftMenuOpen: false,
       currentContent: Dashboard,
       saleStepIndex: 0,
@@ -57,7 +55,6 @@ export default class App extends React.Component {
     }
 
     this.handleLogout = this.handleLogout.bind(this);
-    this.closeHandler = this.closeHandler.bind(this);
     this.menuClickHandler = this.menuClickHandler.bind(this);
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
     this.editClickHandler = this.editClickHandler.bind(this);
@@ -69,12 +66,6 @@ export default class App extends React.Component {
 
   getChildContext() {
     return { muiTheme: getMuiTheme(baseTheme) };
-  }
-
-  closeHandler() {
-    this.setState({
-      loginDialog: false,
-    });
   }
 
   handleLogout() {
