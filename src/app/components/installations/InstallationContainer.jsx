@@ -33,7 +33,7 @@ export default class InstallationContainer extends React.Component {
   render() {
     const {installationStepIndex} = this.props;
     return (
-      <div style={{width: '100%', height: '100%', maxWidth: 900, margin: 'auto', position: 'absolute'}}>
+      <div style={{width: '100%', height: '100%', maxWidth: 900, margin: 'auto'}}>
         <Stepper style={{height: '10%'}} activeStep={installationStepIndex}>
           <Step>
             <StepLabel>Choose a Installation</StepLabel>
