@@ -627,7 +627,8 @@ app.post('/newinstallation', function(request, response) {
     //homeowner's info
     saleId: request.body.salesNumber,
     installerId: request.body.installer,
-    installationDateTime: request.body.installationDateTime
+    installationDateTime: request.body.installationDateTime,
+		folderId: request.body.folderId
   });
   // console.log(jsonObj);
   var options = {
