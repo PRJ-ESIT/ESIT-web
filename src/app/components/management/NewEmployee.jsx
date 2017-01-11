@@ -488,6 +488,7 @@ export default class NewEmployee extends React.Component {
                 onBlur={this.validateHireDate.bind(this)}
                 errorText={this.state.hireDateErr}
                 errorStyle={{float: "left"}}
+                onTouchTap={(e) => {e.preventDefault();}}
               />
               <br />
               <TextField

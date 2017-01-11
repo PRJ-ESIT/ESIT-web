@@ -1204,6 +1204,7 @@ export default class CompleteInstallation extends React.Component {
                   maxDate={this.state.maxDate}
                   errorText={this.state.installedDateErr}
                   errorStyle={{float: "left"}}
+                  onTouchTap={(e) => {e.preventDefault();}}
                 />
               </div>
             </div>
