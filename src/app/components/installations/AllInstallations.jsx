@@ -164,12 +164,12 @@ export default class AllInstallations extends React.Component {
           <FlatButton
             label="Close"
             primary={true}
-            onTouchTap={this.handleClose}
+            onTouchTap={(e) => {e.preventDefault(); this.handleClose()}}
           />,
           <FlatButton
             label="Edit"
             primary={true}
-            onTouchTap={this.props.editClickHandler.bind(null, "edit", this.state.selectedId, "editInstallation")}
+            onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editInstallation")}}
           />,
         ];
     return (
@@ -182,9 +182,9 @@ export default class AllInstallations extends React.Component {
               <ToolbarGroup>
                 <ToolbarSeparator />
                 <RaisedButton label="Edit" primary={true}
-                  onTouchTap={this.props.editClickHandler.bind(null, "edit", this.state.selectedId, "editInstallation")}/>
+                  onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editInstallation")}}/>
                 <RaisedButton label="Details" primary={true}
-                  onTouchTap={this.handleOpen.bind(this)}/>
+                  onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}/>
                 <RaisedButton label="Cancel" primary={true} />
               </ToolbarGroup>
             : null }
