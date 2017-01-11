@@ -641,10 +641,10 @@ export default class NewEmployee extends React.Component {
                 style={{float: 'left'}}
                 label="Cancel"
                 secondary={true}
-                onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
+                onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}
               />
               <RaisedButton
-                onTouchTap={this.validateAllFields.bind(this)}
+                onTouchTap={(e) => {e.preventDefault(); this.validateAllFields()}}
                 style={{float: 'right'}}
                 label="Create"
                 primary={true}

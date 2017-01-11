@@ -99,12 +99,12 @@ export default class SelectInstallation extends React.Component {
           <RaisedButton
             label="Cancel"
             secondary={true}
-            onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
+            onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}
           />
           <RaisedButton
             label={'Next'}
             primary={true}
-            onTouchTap={this.validateSelected.bind(this)}
+            onTouchTap={(e) => {e.preventDefault(); this.validateSelected()}}
           />
         </div>
       </div>

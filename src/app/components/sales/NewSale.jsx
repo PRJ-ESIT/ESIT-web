@@ -862,12 +862,12 @@ export default class NewSale extends React.Component {
           <RaisedButton
             label={'Cancel'}
             secondary={true}
-            onTouchTap={this.props.menuClickHandler.bind(null, "dashboard")}
+            onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}
           />
           <RaisedButton
             label={this.props.status === 'create' ? 'Next' : 'Update'}
             primary={true}
-            onTouchTap={this.validateRentalAgreement.bind(this)}
+            onTouchTap={(e) => {e.preventDefault(); this.validateRentalAgreement()}}
           />
         </div>
       </div>

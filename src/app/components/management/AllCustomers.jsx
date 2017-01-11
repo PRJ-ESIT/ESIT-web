@@ -148,7 +148,7 @@ export default class AllCustomers extends React.Component {
           <FlatButton
             label="Close"
             primary={true}
-            onTouchTap={this.handleClose}
+            onTouchTap={(e) => {e.preventDefault(); this.handleClose()}}
           />
         ];
 
@@ -161,7 +161,7 @@ export default class AllCustomers extends React.Component {
               <ToolbarGroup>
                 <ToolbarSeparator />
                 <RaisedButton label="Details" primary={true}
-                  onTouchTap={this.handleOpen.bind(this)} />
+                  onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}} />
               </ToolbarGroup>
             : null }
           </ToolbarGroup>

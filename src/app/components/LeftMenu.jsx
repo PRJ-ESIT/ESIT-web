@@ -46,7 +46,7 @@ export default class LeftMenu extends React.Component {
     return (
       <List className='headings'>
         <ListItem
-          onTouchTap={this.props.clickHandler.bind(null, "dashboard")}
+          onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("dashboard")}}
           primaryText="Dashboard"
           leftIcon={<Dashboard color="white"/>}
           style={fontStyle}
@@ -59,7 +59,7 @@ export default class LeftMenu extends React.Component {
           leftIcon={<AttachMoney color="white"/>}
           initiallyOpen={false}
           rightIconButton={
-            <IconButton onTouchTap={this.toggleCategory.bind(this, "salesOpen")}>
+            <IconButton onTouchTap={(e) => {e.preventDefault(); this.toggleCategory("salesOpen")}}>
               { this.state.currentOpen == "salesOpen" ?
                 <ExpandLess color="white"/>
                 :
@@ -70,7 +70,7 @@ export default class LeftMenu extends React.Component {
           style={fontStyle}
           nestedItems={[
             <ListItem
-              onTouchTap={this.props.clickHandler.bind(null, "newSale")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("newSale")}}
               key={1}
               primaryText="Create New Sale"
               leftIcon={<Create color="white"/>}
@@ -78,13 +78,13 @@ export default class LeftMenu extends React.Component {
             />,
             <ListItem
               key={2}
-              onTouchTap={this.props.clickHandler.bind(null, "allSales")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allSales")}}
               primaryText="View All Sales"
               leftIcon={<TrendingUp color="white"/>}
               style={fontStyle}
             />,
             <ListItem
-              onTouchTap={this.props.clickHandler.bind(null, "documents")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("documents")}}
               key={3}
               primaryText="Documents"
               leftIcon={<Folder color="white" />}
@@ -100,7 +100,7 @@ export default class LeftMenu extends React.Component {
           leftIcon={<Build color="white" />}
           initiallyOpen={false}
           rightIconButton={
-            <IconButton onTouchTap={this.toggleCategory.bind(this, "installationOpen")}>
+            <IconButton onTouchTap={(e) => {e.preventDefault(); this.toggleCategory("installationOpen")}}>
               { this.state.currentOpen == "installationOpen" ?
                 <ExpandLess color="white"/>
                 :
@@ -112,14 +112,14 @@ export default class LeftMenu extends React.Component {
           nestedItems={[
             <ListItem
               key={1}
-              onTouchTap={this.props.clickHandler.bind(null, "completeInstallation")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("completeInstallation")}}
               primaryText="Complete Installation"
               leftIcon={<EventAvailable color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={2}
-              onTouchTap={this.props.clickHandler.bind(null, "allInstallations")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allInstallations")}}
               primaryText="View All Installations"
               leftIcon={<ActionAssignment color="white"/>}
               style={fontStyle}
@@ -134,7 +134,7 @@ export default class LeftMenu extends React.Component {
           leftIcon={<Business color="white" />}
           initiallyOpen={false}
           rightIconButton={
-            <IconButton onTouchTap={this.toggleCategory.bind(this, "managementOpen")}>
+            <IconButton onTouchTap={(e) => {e.preventDefault(); this.toggleCategory("managementOpen")}}>
               { this.state.currentOpen == "managementOpen" ?
                 <ExpandLess color="white"/>
                 :
@@ -146,28 +146,28 @@ export default class LeftMenu extends React.Component {
           nestedItems={[
             <ListItem
               key={1}
-              onTouchTap={this.props.clickHandler.bind(null, "scheduleInstallation")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("scheduleInstallation")}}
               primaryText="Schedule Installation"
               leftIcon={<Event color="white" />}
               style={fontStyle}
             />,
             <ListItem
               key={2}
-              onTouchTap={this.props.clickHandler.bind(null, "newEmployee")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("newEmployee")}}
               primaryText="Create New Employee"
               leftIcon={<GroupAdd color="white" />}
               style={fontStyle}
             />,
             <ListItem
               key={3}
-              onTouchTap={this.props.clickHandler.bind(null, "allEmployees")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allEmployees")}}
               primaryText="View All Employees"
               leftIcon={<Group color="white"/>}
               style={fontStyle}
             />,
             <ListItem
               key={4}
-              onTouchTap={this.props.clickHandler.bind(null, "allCustomers")}
+              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allCustomers")}}
               primaryText="View All Customers"
               leftIcon={<TagFaces color="white" />}
               style={fontStyle}

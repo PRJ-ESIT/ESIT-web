@@ -1214,12 +1214,12 @@ export default class CompleteInstallation extends React.Component {
           <RaisedButton
             label={this.props.status === 'create' ? 'Back' : 'Cancel'}
             secondary={this.props.status === 'create' ? false : true}
-            onTouchTap={this.props.status === 'create' ? this.props.handleInstallationPrev : this.props.menuClickHandler.bind(null, "dashboard")}
+            onTouchTap={(e) => {e.preventDefault(); this.props.status === 'create' ? this.props.handleInstallationPrev() : this.props.menuClickHandler("dashboard")}}
           />
           <RaisedButton
             label={this.props.status === 'create' ? 'Next' : 'Update'}
             primary={true}
-            onTouchTap={this.validateForm.bind(this)}
+            onTouchTap={(e) => {e.preventDefault(); this.validateForm()}}
           />
         </div>
       </div>
