@@ -56,7 +56,7 @@ export default class App extends React.Component {
       envelopeId: undefined,
     }
 
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
     this.closeHandler = this.closeHandler.bind(this);
     this.menuClickHandler = this.menuClickHandler.bind(this);
     this.appBarClickHandler = this.appBarClickHandler.bind(this);
@@ -77,11 +77,8 @@ export default class App extends React.Component {
     });
   }
 
-  handleLogin() {
-    console.log('handle login');
-    this.setState({
-      loginDialog: true,
-    });
+  handleLogout() {
+    this.props.logout();
   }
 
   handleSaleNext = (obj) => {
@@ -131,7 +128,7 @@ export default class App extends React.Component {
           backgroundColor="white"
           hoverColor="$light-gray"
           style={rightButtonsStyle}
-          onTouchTap={this.handleLogin}
+          onTouchTap={this.handleLogout}
           label="Logout"
         />
       </div>
@@ -278,7 +275,7 @@ export default class App extends React.Component {
         />
         <div className="contentContainer">
           <div className="leftPanel" style={leftMenuStyles}>
-            <LeftMenu clickHandler={this.menuClickHandler}/>
+            <LeftMenu clickHandler={this.menuClickHandler} role={this.props.role}/>
           </div>
           <div className="mainContent">
             <CurrentContent getEmbeddedUrl={this.getEmbeddedUrl} editClickHandler={this.editClickHandler}
@@ -291,12 +288,6 @@ export default class App extends React.Component {
               getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj} />
           </div>
         </div>
-        { this.state.loginDialog ?
-          <LoginDialog
-            closeHandler={this.closeHandler}
-            open={this.state.loginDialog}
-          />
-        : null }
       </div>
     );
   }
