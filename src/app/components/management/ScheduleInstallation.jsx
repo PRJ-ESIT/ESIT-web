@@ -154,6 +154,19 @@ export default class ScheduleInstallation extends React.Component {
     }
   }
 
+  getDate(datetime) {
+    var d = datetime.split(/[- :]/);
+    var date = new Date(d[0], d[1]-1, d[2], d[3], d[4], d[5]);
+    return dateHelpers.twoDigits(1 + date.getMonth())  + "-" + dateHelpers.twoDigits(date.getDate()) + "-" + date.getFullYear();
+  }
+
+  getTime(datetime) {
+    var t = datetime.split(/[- :]/);
+    var time = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+    var mins = ("0" + time.getMinutes());
+    return time.getHours() + ":" + mins.slice(-2);
+  }
+
   getInstallationInfo() {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
@@ -225,8 +238,8 @@ export default class ScheduleInstallation extends React.Component {
                 <TableRowColumn>{row.name}</TableRowColumn>
                 <TableRowColumn>{row.address}</TableRowColumn>
                 <TableRowColumn>{row.product}</TableRowColumn>
-                <TableRowColumn>{row.installationDateTime}</TableRowColumn>
-                <TableRowColumn>{row.installationDateTime}</TableRowColumn>
+                <TableRowColumn>{this.getDate(row.installationDateTime)}</TableRowColumn>
+                <TableRowColumn>{this.getTime(row.installationDateTime)}</TableRowColumn>
               </TableRow>
               ))
             : null }
@@ -242,6 +255,7 @@ export default class ScheduleInstallation extends React.Component {
           onChange={this.handleSelectChange.bind(this, "installer")}
           errorText={this.state.installerErr}
           errorStyle={{float: "left"}}
+          style={{paddingLeft: "20px"}}
         >
           {this.state.allInstallers ? this.state.allInstallers.map((installer, index) => (
             <MenuItem key={index} value={installer.employeeNumber} primaryText={installer.name} />
@@ -259,6 +273,7 @@ export default class ScheduleInstallation extends React.Component {
           errorText={this.state.installationDateErr}
           errorStyle={{float: "left"}}
           onTouchTap={(e) => {e.preventDefault();}}
+          style={{marginLeft: "20px"}}
         />
         <br />
         <TimePicker
@@ -268,13 +283,22 @@ export default class ScheduleInstallation extends React.Component {
           onChange={this.handleTimeChange.bind(this, "installationTime")}
           errorText={this.state.installationTimeErr}
           errorStyle={{float: "left"}}
+          style={{marginLeft: "20px"}}
         />
         </Paper>
         <br />
-        <RaisedButton label="Cancel" secondary={true} onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}/>
+        <RaisedButton
+          label="Cancel"
+          secondary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}
+          style={{marginLeft: "20px"}}
+        />
         &nbsp;
         &nbsp;
-        <RaisedButton label="Schedule" onTouchTap={(e) => {e.preventDefault(); this.validateAllAndSubmit()}} />
+        <RaisedButton
+          label="Schedule"
+          onTouchTap={(e) => {e.preventDefault(); this.validateAllAndSubmit()}}
+        />
       </div>
     );
   }

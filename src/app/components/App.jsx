@@ -244,6 +244,18 @@ export default class App extends React.Component {
     },false);
   }
 
+  componentWillUnmount() {
+    var eventMethod = window.addEventListener ? "removeEventListener" : "detachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "detachEvent" ? "onmessage" : "message";
+    var _this = this;
+    eventer(messageEvent,function(e) {
+      var key = e.message ? "message" : "data";
+      var data = e[key];
+      _this.closeIframe(data);
+    },false);
+  }
+
   getIframe() {
     return (
       <iframe id='docusignIframe' src={this.state.docuSignURL} frameBorder="0"
@@ -279,6 +291,7 @@ export default class App extends React.Component {
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
               getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj}
               folderId={this.state.folderId} />
+              userId={this.props.userId} userName={this.props.userName} role={this.props.role}/>
           </div>
         </div>
       </div>

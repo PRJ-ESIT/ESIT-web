@@ -16,6 +16,35 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 */
 
 //***********************//
+//     Login styles      //
+//***********************//
+
+.loginPage {
+  background: $main-blue;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  justify-content: center;
+}
+
+.loginLogo {
+  font-family: $logo-font;
+  font-size: 7em;
+  color: #FFF;
+  text-align: center;
+}
+
+.mid {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  width:256px;
+}
+
+//***********************//
 //     Global styles     //
 //***********************//
 
@@ -91,6 +120,7 @@ h2 {
   background-color: $light-gray;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
 .full-width {
@@ -103,17 +133,6 @@ h2 {
 
 .dialogTitle {
   text-align:center;
-}
-
-//styling for close X button in the Log In / Sign Up dialogs
-.closeXButton {
-  position: absolute !important;
-  left: calc(100% - 55px) !important;
-  bottom: calc(100% - 55px) !important;
-  div {
-    font-size: 24px;
-    font-weight: bold;
-  }
 }
 
 //************************//

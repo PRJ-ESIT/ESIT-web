@@ -60,7 +60,7 @@ export default class AllInstallations extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/allinstallations", true);
+    httpRequest.open('GET', "http://" + IP + "/allinstallations?id=" + this.props.userId, true);
     httpRequest.send(null);
   }
 

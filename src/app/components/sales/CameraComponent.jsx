@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlatButton, RaisedButton } from 'material-ui';
+import { IP } from '../../../../config/config.js';
 
 export default class CameraComponent extends React.Component {
 
@@ -213,7 +214,23 @@ export default class CameraComponent extends React.Component {
   }
 
   uploadClickHandler() {
-    this.props.handleSaleNext();
+    let data = {
+      status: "Paid",
+      saleId: this.props.sale.salesNumber,
+    };
+    console.log(this.props.sale);
+    console.log(data);
+    let _this = this;
+    var request = new XMLHttpRequest();
+    request.open('PUT', "http://" + IP + '/updatesalestatus', true);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        _this.props.handleSaleNext();
+      }
+    };
+
+    request.send(JSON.stringify(data));
   }
 
   render() {

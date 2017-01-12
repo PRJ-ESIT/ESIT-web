@@ -14,9 +14,9 @@ export default class InstallationContainer extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <SelectInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} menuClickHandler={this.props.menuClickHandler} />;
+        return <SelectInstallation userId={this.props.userId} handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} menuClickHandler={this.props.menuClickHandler} />;
       case 1:
-        return <CameraComponent handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} id={this.props.selectedInstallationId} folderId={this.props.folderId} /> 
+        return <CameraComponent handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} id={this.props.selectedInstallationId} folderId={this.props.folderId} />
       case 2:
         return <CompleteInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} status={'create'} id={this.props.selectedInstallationId} />;
       case 3:
@@ -33,22 +33,22 @@ export default class InstallationContainer extends React.Component {
   render() {
     const {installationStepIndex} = this.props;
     return (
-      <div style={{width: '100%', height: '100%', maxWidth: 900, margin: 'auto'}}>
+      <div style={{width: '100%', height: '100%', maxWidth: 900, position: 'absolute', left: '0', right: '0', margin: 'auto'}}>
         <Stepper style={{height: '10%'}} activeStep={installationStepIndex}>
           <Step>
-            <StepLabel>Choose a Installation</StepLabel>
+            <StepLabel>Choose Installation</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Take Installation Photos</StepLabel>
+            <StepLabel>Take Photos</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Complete the Installation</StepLabel>
+            <StepLabel>Complete Installation</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Customer Sign the Documents</StepLabel>
+            <StepLabel>Customer DocuSign</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Installer Sign the Documents</StepLabel>
+            <StepLabel>Installer DocuSign</StepLabel>
           </Step>
         </Stepper>
         <div style={{height: '90%'}}>
