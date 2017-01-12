@@ -711,6 +711,51 @@ app.post('/newinstallation', function(request, response) {
   req.end();
 });
 
+app.put('/updatesalestatus', function(request, response) {
+  var jsonObj = querystring.stringify({
+    status: request.body.status,
+    id: request.body.saleId,
+  });
+  console.log('update sale');
+  console.log(jsonObj);
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'PUT',
+    path: '/crud/SaleService/setSaleStatus',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      //#TODO remove tempObj
+      var tempObj = {'a': 'b'};
+      return response.status(200).json(tempObj);
+    });
+
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
+
+
+});
+
+
 //POST http://localhost:3000/newemployee
 app.post('/newemployee', function(request, response) {
   var jsonObj = querystring.stringify({
