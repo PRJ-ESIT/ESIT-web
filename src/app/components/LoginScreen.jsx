@@ -96,28 +96,42 @@ export default class LoginScreen extends React.Component {
 
   render() {
     return (
-      <div> 
-        <TextField
-          hintText="John_Doe"
-          floatingLabelText="Username"
-          value={this.state.loginTxtField}
-          onChange={this.handleLoginTextFieldChange}
-          errorText={this.state.loginErrorText}
-        /><br />
-        <TextField
-          hintText="<your_secure_password>"
-          floatingLabelText="Password"
-          type="password"
-          value={this.state.passwordTxtField}
-          onChange={this.handlePasswordTextFieldChange}
-          errorText={this.state.passwordErrorText}
-        /><br />
-        <FlatButton
-          label="LOG IN"
-          primary={true}
-          keyboardFocused={true}
-          onTouchTap={(e) => {e.preventDefault(); this.login()}}
-        />
+      <div className="loginPage">
+        <div className="mid">
+          <div className="loginLogo">esit</div>
+          <TextField
+            hintText="john_doe@email.com"
+            hintStyle={{color: "white"}}
+            floatingLabelText="Email"
+            floatingLabelStyle={{color: "white"}}
+            underlineStyle={{color: "white"}}
+            underlineFocusStyle={{borderColor: "white"}}
+            value={this.state.loginTxtField}
+            onChange={this.handleLoginTextFieldChange}
+            errorText={this.state.loginErrorText}
+          /><br />
+          <TextField
+            hintText="<your_secure_password>"
+            hintStyle={{color: "white"}}
+            floatingLabelText="Password"
+            floatingLabelStyle={{color: "white"}}
+            type="password"
+            underlineStyle={{color: "white"}}
+            underlineFocusStyle={{borderColor: "white"}}
+            value={this.state.passwordTxtField}
+            onChange={this.handlePasswordTextFieldChange}
+            errorText={this.state.passwordErrorText}
+          /><br />
+          <FlatButton
+            label="LOG IN"
+            labelStyle={{color: "#2f3c7d"}}
+            hoverColor={{color: "grey"}}
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.login()}}
+            backgroundColor="white"
+            style={{float: "right"}}
+          />
+        </div>
       </div>
     );
   }
