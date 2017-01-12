@@ -295,11 +295,10 @@ app.get('/allinstallations', function(request, response) {
 });
 
 app.get('/scheduledinstallations', function(request, response) {
-
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/InstallationService/getScheduledInstallations/',
+    path: '/crud/InstallationService/getScheduledInstallations/'  + request.query.id,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
