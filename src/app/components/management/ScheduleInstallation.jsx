@@ -223,7 +223,6 @@ export default class ScheduleInstallation extends React.Component {
           selectable={true}>
           <TableHeader>
             <TableRow>
-              <TableHeaderColumn>#</TableHeaderColumn>
               <TableHeaderColumn>Name</TableHeaderColumn>
               <TableHeaderColumn>Address</TableHeaderColumn>
               <TableHeaderColumn>Product</TableHeaderColumn>
@@ -234,7 +233,6 @@ export default class ScheduleInstallation extends React.Component {
           <TableBody deselectOnClickaway={false}>
             {this.state.allSales? this.state.allSales.map( (row, index) => (
               <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
-                <TableRowColumn>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn>{row.name}</TableRowColumn>
                 <TableRowColumn>{row.address}</TableRowColumn>
                 <TableRowColumn>{row.product}</TableRowColumn>
