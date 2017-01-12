@@ -30,7 +30,7 @@ export default class Dashboard extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/dashboard", true);
+    httpRequest.open('GET', "http://" + IP + "/dashboard?id=" + this.props.userId, true);
     httpRequest.send(null);
   }
 

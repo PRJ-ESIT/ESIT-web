@@ -63,7 +63,7 @@ export default class AllSales extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/allsales", true);
+    httpRequest.open('GET', "http://" + IP + "/allsales?id=" + this.props.userId, true);
     httpRequest.send(null);
   }
 
