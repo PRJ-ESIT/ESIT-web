@@ -39,6 +39,9 @@ export default class SaleContainer extends React.Component {
           <Step>
             <StepLabel>Take Cheque Photo</StepLabel>
           </Step>
+          <Step>
+            <StepLabel>Sale Completed!</StepLabel>
+          </Step>
         </Stepper>
         <div style={{height: '90%'}}>
           {this.getStepContent(saleStepIndex)}
@@ -46,6 +49,4 @@ export default class SaleContainer extends React.Component {
       </div>
     );
   }
-
-
 }
