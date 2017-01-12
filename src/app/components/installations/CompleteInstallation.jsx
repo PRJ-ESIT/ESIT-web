@@ -173,7 +173,7 @@ export default class CompleteInstallation extends React.Component {
                 fnameValidated: installation.customerFirstName ? true : false,
                 lnameValidated: installation.customerLastName ? true : false,
                 addressValidated: installation.address ? true : false,
-                unitValidated: installation.unit ? true : false,
+                unitValidated: true,
                 cityValidated: installation.city ? true : false,
                 provinceValidated: installation.province ? true : false,
                 postalCodeValidated: installation.postalCode ? true : false,
@@ -601,6 +601,28 @@ export default class CompleteInstallation extends React.Component {
 
 
   validateAllFields() {
+    console.log(
+      this.state.fnameValidated,
+      this.state.lnameValidated,
+      this.state.addressValidated,
+      this.state.unitValidated,
+      this.state.cityValidated,
+      this.state.provinceValidated,
+      this.state.postalCodeValidated,
+      this.state.enbridgeValidated,
+      this.state.emailValidated,
+      this.state.homePhoneValidated,
+      this.state.cellPhoneValidated,
+      this.state.sqftValidated,
+      this.state.bathroomsValidated,
+      this.state.residentsValidated,
+      this.state.poolValidated,
+      this.state.programValidated,
+      this.state.checklistValidated,
+      this.state.acknowledgementValidated,
+      this.state.installerValidated,
+      this.state.installedDateValidated);
+
     if (this.state.fnameValidated &&
         this.state.lnameValidated &&
         this.state.addressValidated &&
