@@ -57,7 +57,8 @@ export default class SelectInstallation extends React.Component {
   getTime(datetime) {
     var t = datetime.split(/[- :]/);
     var time = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-    return time.getHours() + ":" + time.getMinutes();
+    var mins = ("0" + time.getMinutes());
+    return time.getHours() + ":" + mins.slice(-2);
   }
 
   validateSelected() {
