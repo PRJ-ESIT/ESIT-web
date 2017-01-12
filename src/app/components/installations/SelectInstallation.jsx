@@ -49,13 +49,15 @@ export default class SelectInstallation extends React.Component {
   }
 
   getDate(datetime) {
-    var date = new Date(datetime);
+    var d = datetime.split(/[- :]/);
+    var date = new Date(d[0], d[1]-1, d[2], d[3], d[4], d[5]);
     return dateHelpers.twoDigits(1 + date.getMonth())  + "-" + dateHelpers.twoDigits(date.getDate()) + "-" + date.getFullYear();
   }
 
   getTime(datetime) {
-    var date = new Date(datetime);
-    return date.getHours() + ":" + date.getMinutes();
+    var t = datetime.split(/[- :]/);
+    var time = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+    return time.getHours() + ":" + time.getMinutes();
   }
 
   validateSelected() {
@@ -73,7 +75,6 @@ export default class SelectInstallation extends React.Component {
         >
           <TableHeader>
             <TableRow>
-              <TableHeaderColumn>ID</TableHeaderColumn>
               <TableHeaderColumn>Customer</TableHeaderColumn>
               <TableHeaderColumn>Address</TableHeaderColumn>
               <TableHeaderColumn>Scheduled Date</TableHeaderColumn>
@@ -84,7 +85,6 @@ export default class SelectInstallation extends React.Component {
           <TableBody deselectOnClickaway={false}>
             {this.state.installations? this.state.installations.map( (row, index) => (
                 <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
-                  <TableRowColumn>{row.installationNumber}</TableRowColumn>
                   <TableRowColumn>{row.customerName}</TableRowColumn>
                   <TableRowColumn>{row.address}</TableRowColumn>
                   <TableRowColumn>{this.getDate(row.installationDateTime)}</TableRowColumn>
@@ -95,18 +95,19 @@ export default class SelectInstallation extends React.Component {
             : null }
           </TableBody>
         </Table>
-        <div>
-          <RaisedButton
-            label="Cancel"
-            secondary={true}
-            onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}
-          />
-          <RaisedButton
-            label={'Next'}
-            primary={true}
-            onTouchTap={(e) => {e.preventDefault(); this.validateSelected()}}
-          />
-        </div>
+        <br />
+        <RaisedButton
+          label="Cancel"
+          secondary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}
+        />
+        &nbsp;
+        &nbsp;
+        <RaisedButton
+          label={'Next'}
+          primary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.validateSelected()}}
+        />
       </div>
     );
   }

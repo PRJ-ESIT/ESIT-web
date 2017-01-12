@@ -106,6 +106,7 @@ export default class LoginScreen extends React.Component {
             floatingLabelStyle={{color: "white"}}
             underlineStyle={{color: "white"}}
             underlineFocusStyle={{borderColor: "white"}}
+            inputStyle={{color: "white"}}
             value={this.state.loginTxtField}
             onChange={this.handleLoginTextFieldChange}
             errorText={this.state.loginErrorText}
@@ -118,6 +119,7 @@ export default class LoginScreen extends React.Component {
             type="password"
             underlineStyle={{color: "white"}}
             underlineFocusStyle={{borderColor: "white"}}
+            inputStyle={{color: "white"}}
             value={this.state.passwordTxtField}
             onChange={this.handlePasswordTextFieldChange}
             errorText={this.state.passwordErrorText}
@@ -125,7 +127,7 @@ export default class LoginScreen extends React.Component {
           <FlatButton
             label="LOG IN"
             labelStyle={{color: "#2f3c7d"}}
-            hoverColor={{color: "grey"}}
+            hoverColor="white"
             primary={true}
             onTouchTap={(e) => {e.preventDefault(); this.login()}}
             backgroundColor="white"
