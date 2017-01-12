@@ -243,6 +243,18 @@ export default class App extends React.Component {
     },false);
   }
 
+  componentWillUnmount() {
+    var eventMethod = window.addEventListener ? "removeEventListener" : "detachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "detachEvent" ? "onmessage" : "message";
+    var _this = this;
+    eventer(messageEvent,function(e) {
+      var key = e.message ? "message" : "data";
+      var data = e[key];
+      _this.closeIframe(data);
+    },false);
+  }
+
   getIframe() {
     return (
       <iframe id='docusignIframe' src={this.state.docuSignURL} frameBorder="0"
