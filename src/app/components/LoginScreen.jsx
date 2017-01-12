@@ -131,6 +131,7 @@ export default class LoginScreen extends React.Component {
             primary={true}
             onTouchTap={(e) => {e.preventDefault(); this.login()}}
             backgroundColor="white"
+            style={{marginTop: "20px"}}
           />
         </div>
       </div>

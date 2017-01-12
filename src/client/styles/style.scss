@@ -43,19 +43,13 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
     justify-content: center;
     margin: auto;
   }
-  @media #{$tablet-portrait} {
+  @media #{$tablet-portrait}, #{$tablet-landscape} {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: auto;
     width:256px;
-  }
-  @media #{$tablet-landscape} {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: auto;
-    width: 256px;
+    left:50%;
   }
 }
 
