@@ -16,7 +16,6 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //end of body-parser
 var fs = require('fs');
-var util = require('util');
 // Box.com vars
 var CLIENT_ID = 'fmoj564gllo2g90aykbejymeyr8g73am',
 	CLIENT_SECRET = 'aRRX4hOWmiKsSlltaiAW2BHZ5eNAYFDK',
