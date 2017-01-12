@@ -205,7 +205,6 @@ export default class AllSales extends React.Component {
             enableSelectAll={this.state.enableSelectAll}
           >
             <TableRow onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
-              <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }} tooltip="Sale Number">Sales Number</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Product Sold">Product</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Date">Date</TableHeaderColumn>
@@ -221,7 +220,6 @@ export default class AllSales extends React.Component {
           >
             {this.state.filteredDataList? this.state.filteredDataList.map( (row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index}>
-                <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.salesNumber}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }}>{row.product}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }}>{row.date}</TableRowColumn>
