@@ -276,7 +276,8 @@ export default class App extends React.Component {
               handleInstallationNext={this.handleInstallationNext} handleInstallationPrev={this.handleInstallationPrev}
               selectedInstallationId={this.state.selectedInstallationId} installationObj={this.state.installationObj}
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
-              getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj} />
+              getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj}
+              userId={this.props.userId} userName={this.props.userName} role={this.props.role}/>
           </div>
         </div>
       </div>
