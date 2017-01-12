@@ -27,6 +27,8 @@ export default class AppContainer extends React.Component {
     if(role != undefined && userId != undefined) {
       this.setState({
         loggedIn: true,
+        role: role,
+        userId: userId,
       });
     }
   }

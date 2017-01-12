@@ -16,6 +16,8 @@ import Folder from 'material-ui/svg-icons/file/folder';
 import Create from 'material-ui/svg-icons/content/create';
 import Event from 'material-ui/svg-icons/action/event';
 
+const fontStyle = {'color': 'white'};
+
 export default class LeftMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +27,7 @@ export default class LeftMenu extends React.Component {
       emailTxtField: '',
       currentOpen: ''
     }
-
+    this.getManagementNestedItems = this.getManagementNestedItems.bind(this);
   }
 
   toggleCategory(category) {
@@ -41,8 +43,52 @@ export default class LeftMenu extends React.Component {
     }
   }
 
+  getManagementNestedItems() {
+    var nestedItems = [];
+    if(this.props.role == "admin" || this.props.role == "manager") {
+      nestedItems.push(
+        <ListItem
+          key={1}
+          onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("scheduleInstallation")}}
+          primaryText="Schedule Installation"
+          leftIcon={<Event color="white" />}
+          style={fontStyle}
+        />
+      );
+      if(this.props.role == "admin") {
+        nestedItems.push(
+          <ListItem
+            key={2}
+            onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("newEmployee")}}
+            primaryText="Create New Employee"
+            leftIcon={<GroupAdd color="white" />}
+            style={fontStyle}
+          />
+        );
+      }
+      nestedItems.push(
+        <ListItem
+          key={3}
+          onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allEmployees")}}
+          primaryText="View All Employees"
+          leftIcon={<Group color="white"/>}
+          style={fontStyle}
+        />
+      );
+      nestedItems.push(
+        <ListItem
+          key={4}
+          onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allCustomers")}}
+          primaryText="View All Customers"
+          leftIcon={<TagFaces color="white" />}
+          style={fontStyle}
+        />
+      );
+    }
+    return nestedItems;
+  }
+
   render() {
-    var fontStyle = {'color': 'white'};
     return (
       <List className='headings'>
         <ListItem
@@ -126,6 +172,7 @@ export default class LeftMenu extends React.Component {
             />
           ]}
         />
+        {this.props.role == "manager" || this.props.role == "admin" ?
         <ListItem
           open={this.state.currentOpen == "managementOpen" ? true : false}
           primaryText="Management"
@@ -143,37 +190,9 @@ export default class LeftMenu extends React.Component {
             </IconButton>
           }
           style={fontStyle}
-          nestedItems={[
-            <ListItem
-              key={1}
-              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("scheduleInstallation")}}
-              primaryText="Schedule Installation"
-              leftIcon={<Event color="white" />}
-              style={fontStyle}
-            />,
-            <ListItem
-              key={2}
-              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("newEmployee")}}
-              primaryText="Create New Employee"
-              leftIcon={<GroupAdd color="white" />}
-              style={fontStyle}
-            />,
-            <ListItem
-              key={3}
-              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allEmployees")}}
-              primaryText="View All Employees"
-              leftIcon={<Group color="white"/>}
-              style={fontStyle}
-            />,
-            <ListItem
-              key={4}
-              onTouchTap={(e) => {e.preventDefault(); this.props.clickHandler("allCustomers")}}
-              primaryText="View All Customers"
-              leftIcon={<TagFaces color="white" />}
-              style={fontStyle}
-            />
-          ]}
+          nestedItems={this.getManagementNestedItems()}
         />
+        : null }
       </List>
     );
   }
