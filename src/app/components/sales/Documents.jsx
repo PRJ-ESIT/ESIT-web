@@ -3,7 +3,7 @@ import {
   RaisedButton, GridList, GridTile, IconButton, Subheader,
 } from 'material-ui';
 import { IP } from '../../../../config/config.js';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import StarBorder from 'material-ui/svg-icons/file/cloud-download';
 
 const styles = {
   root: {
@@ -62,7 +62,9 @@ export default class Documents extends React.Component {
               <GridTile
                 key={file.id}
                 title={file.name}
-                actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
+                actionIcon={<IconButton
+                  href={"/download/" + file.id}
+                  ><StarBorder color="white" /></IconButton>}
               >
                 <img src={"/thumbnail/" + file.id} alt="file" />
               </GridTile>

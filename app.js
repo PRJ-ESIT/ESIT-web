@@ -1462,6 +1462,22 @@ app.get('/thumbnail/:id', function(req, res) {
 	});
 });
 
+// Download box.com file
+app.get('/download/:id', function(req, res) {
+	// API call to get the temporary download URL for the user's file
+	adminAPIClient.files.getDownloadURL(req.params.id, null, function(err, url) {
+
+		if (err) {
+			res.redirect('/dashboard');
+			return;
+		}
+
+		// Redirect to the download URL, which will cause the user's browser to
+		// start the download
+		res.redirect(url);
+	});
+});
+
 var createSale = function (requestBody, callback) {
 	// Create sale
 	console.log(requestBody);
