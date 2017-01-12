@@ -278,7 +278,7 @@ export default class App extends React.Component {
               selectedInstallationId={this.state.selectedInstallationId} installationObj={this.state.installationObj}
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
               getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj}
-              folderId={this.state.folderId} />
+              folderId={this.state.folderId} userId={this.props.userId} userName={this.props.userName} role={this.props.role}/>
           </div>
         </div>
       </div>

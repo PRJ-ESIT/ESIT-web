@@ -30,7 +30,7 @@ export default class Dashboard extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/dashboard", true);
+    httpRequest.open('GET', "http://" + IP + "/dashboard?id=" + this.props.userId, true);
     httpRequest.send(null);
   }
 
@@ -38,21 +38,25 @@ export default class Dashboard extends React.Component {
     return (
       <div className="dashboard">
         <div className="dashboardWelcome">
-          Welcome to <span style={{ fontFamily: '$logo-font' }}>esit</span>, %username%!
+          Welcome to <span style={{ fontFamily: '$logo-font' }}>esit</span>, {this.props.userName}!
         </div>
         <div className="dashboardTables">
-          <div className="recentSales salesAndInstallation">
-            <Toolbar className="salesInstallationToolBar">
-              <ToolbarTitle text="Recent Sales" />
-            </Toolbar>
-            <RecentSales allSales={this.state.allSales}/>
-          </div>
-          <div className="recentInstallations salesAndInstallation">
-            <Toolbar className="salesInstallationToolBar">
-              <ToolbarTitle text="Recent Installations" />
-            </Toolbar>
-            <RecentInstallations allInstallations={this.state.allInstallations}/>
-          </div>
+          {this.props.role == "admin" || this.props.role == "manager" || this.props.role == "salesperson" ?
+            <div className="recentSales salesAndInstallation">
+              <Toolbar className="salesInstallationToolBar">
+                <ToolbarTitle text={this.props.role == "salesperson" ? "Your Recent Sales" : "Recent Sales"} />
+              </Toolbar>
+              <RecentSales allSales={this.state.allSales}/>
+            </div>
+          : null }
+          {this.props.role == "admin" || this.props.role == "manager" || this.props.role == "installer" ?
+            <div className="recentInstallations salesAndInstallation">
+              <Toolbar className="salesInstallationToolBar">
+                <ToolbarTitle text={this.props.role == "installer" ? "Your Recent Installations" : "Recent Installations"}/>
+              </Toolbar>
+              <RecentInstallations allInstallations={this.state.allInstallations}/>
+            </div>
+          : null }
         </div>
       </div>
     );
