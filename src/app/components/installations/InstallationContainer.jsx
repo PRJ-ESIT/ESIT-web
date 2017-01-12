@@ -45,10 +45,10 @@ export default class InstallationContainer extends React.Component {
             <StepLabel>Complete Installation</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Customer DocuSign</StepLabel>
+            <StepLabel>Customer Sign</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Installer DocuSign</StepLabel>
+            <StepLabel>Installer Sign</StepLabel>
           </Step>
         </Stepper>
         <div style={{height: '90%'}}>
