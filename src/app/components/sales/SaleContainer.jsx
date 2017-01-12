@@ -28,7 +28,7 @@ export default class SaleContainer extends React.Component {
   render() {
     const {saleStepIndex} = this.props;
     return (
-      <div style={{width: '100%', height: '100%', maxWidth: 900, margin: 'auto', position: 'absolute'}}>
+      <div style={{width: '100%', height: '100%', maxWidth: 900, position: 'absolute', left: '0', right: '0', margin: 'auto'}}>
         <Stepper style={{height: '10%'}} activeStep={saleStepIndex}>
           <Step>
             <StepLabel>Create a Sale</StepLabel>
