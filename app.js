@@ -16,6 +16,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //end of body-parser
 var fs = require('fs');
+var util = require('util');
 // Box.com vars
 var CLIENT_ID = 'fmoj564gllo2g90aykbejymeyr8g73am',
 	CLIENT_SECRET = 'aRRX4hOWmiKsSlltaiAW2BHZ5eNAYFDK',
@@ -1420,6 +1421,46 @@ app.post('/', bodyParser.text({
 		// console.log("webhook request body: " + JSON.stringify(request.body));
 		webhook(request.body);
 		response.send("Received!");
+});
+
+// Get files form box.com
+app.get('/files', function(request, response) {
+	// Get the user's files in their root folder.  Box uses folder ID "0" to
+	// represent the user's root folder, where we'll be putting all their files.
+	adminAPIClient.folders.getItems('0', null, function(err, data) {
+		console.log(JSON.stringify(data));
+		if(err) {
+			return response.status(404);
+		}
+
+		return response.status(200).json('files', {
+			files: data ? data.entries: []
+		});
+	});
+});
+
+// Get box thumbnail
+app.get('/thumbnail/:id', function(req, res) {
+	// API call to get the thumbnail for a file.  This can return either the
+	// specific thumbnail image or a URL pointing to a placeholder thumbnail.
+	adminAPIClient.files.getThumbnail(req.params.id, {}, function(err, data) {
+
+		if (err) {
+			res.status(err.statusCode || 500).json(err);
+			return;
+		}
+
+		if (data.file) {
+			// We got the thumbnail file, so send the image bytes back
+			res.send(data.file);
+		} else if (data.location) {
+			// We got a placeholder URL, so redirect the user there
+			res.redirect(data.location);
+		} else {
+			// Something went wrong, so return a 500
+			res.status(500).end();
+		}
+	});
 });
 
 var createSale = function (requestBody, callback) {
