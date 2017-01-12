@@ -33,8 +33,11 @@ export default class Documents extends React.Component {
     let _this = this;
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        let files = JSON.parse(httpRequest.responseText).files;
-        console.log(files);
+        let items = JSON.parse(httpRequest.responseText).files;
+        let files = items.filter(function(item) {
+          return item.type !== "folder";
+        });
+        // console.log(items);
         _this.setState({
           files: files,
         });
@@ -46,7 +49,6 @@ export default class Documents extends React.Component {
   }
 
   render() {
-    console.log(this.state.files ?  this.state.files[0].name : "no files");
     return (
       <div>
       { this.state.files ?
@@ -62,8 +64,7 @@ export default class Documents extends React.Component {
                 title={file.name}
                 actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
               >
-
-                <img src={"/thumbnail/{{file.id}}"} alt="file" />
+                <img src={"/thumbnail/" + file.id} alt="file" />
               </GridTile>
             ))}
           </GridList>

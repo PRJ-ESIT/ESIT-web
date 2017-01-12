@@ -1428,7 +1428,6 @@ app.get('/files', function(request, response) {
 	// Get the user's files in their root folder.  Box uses folder ID "0" to
 	// represent the user's root folder, where we'll be putting all their files.
 	adminAPIClient.folders.getItems('0', null, function(err, data) {
-		console.log(JSON.stringify(data));
 		if(err) {
 			return response.status(404);
 		}
