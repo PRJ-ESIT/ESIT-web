@@ -270,10 +270,11 @@ export default class CameraComponent extends React.Component {
       'marginTop': '40px',
       'marginBottom': '40px',
     };
+    var url = "/upload?type=Installation&folderId=" + this.props.folderId + "&id=" + this.props.id;
     return (
       <div className="cameraWrapper">
 
-        <form method="post" action="/upload" encType="multipart/form-data">
+        <form method="post" action={url} encType="multipart/form-data">
           <input type="file" name="images[]" multiple />
           <button type="submit" className="btn btn-lg btn-success">Upload</button>
         </form>
