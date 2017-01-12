@@ -17,7 +17,7 @@ export default class SaleContainer extends React.Component {
       case 1:
         return <DocuSignSale sale={this.props.saleObj} handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
       case 2:
-        return <CameraComponent handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} />
+        return <CameraComponent handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} sale={this.props.saleObj}/>
       case 3:
         return <CompletedSale />;
       default:
