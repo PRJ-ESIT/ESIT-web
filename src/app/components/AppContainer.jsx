@@ -23,12 +23,14 @@ export default class AppContainer extends React.Component {
   componentDidMount() {
     var role = window.sessionStorage.getItem("role"); //Get item
     var userId = window.sessionStorage.getItem("userId"); //Get item
+    var userName = window.sessionStorage.getItem("userName"); //Get item
 
     if(role != undefined && userId != undefined) {
       this.setState({
         loggedIn: true,
         role: role,
         userId: userId,
+        userName: userName,
       });
     }
   }
@@ -37,6 +39,7 @@ export default class AppContainer extends React.Component {
     if(this.state.loggedIn == false) {
       var role = window.sessionStorage.getItem("role"); //Get item
       var userId = window.sessionStorage.getItem("userId"); //Get item
+      var userName = window.sessionStorage.getItem("userName"); //Get item
       if(role != undefined && userId != undefined) {
         this.setState({
           loggedIn: true,
@@ -48,9 +51,10 @@ export default class AppContainer extends React.Component {
   setCredentials(userId, firstName, lastName, role) {
     window.sessionStorage.setItem("role", role); //Set item
     window.sessionStorage.setItem("userId", userId); //Set item
+    window.sessionStorage.setItem("userName", firstName + " " + lastName); //Set item
     this.setState({
       userId: userId,
-      userName: firstName + lastName,
+      userName: firstName + " " + lastName,
       role: role,
     });
   }
@@ -67,7 +71,7 @@ export default class AppContainer extends React.Component {
 
   render() {
       if(this.state.loggedIn) {
-        return <App logout={this.clearCredentials} role={this.state.role}/>;
+        return <App logout={this.clearCredentials} userId={this.state.userId} userName={this.state.userName} role={this.state.role}/>;
       } else {
         return <LoginScreen setCredentials={this.setCredentials}/>;
       }
