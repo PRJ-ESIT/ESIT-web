@@ -160,7 +160,7 @@ app.get('/allsales', function(request, response) {
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/SaleService/getAllSales/' + request.query.id,
+    path: '/crud/SaleService/getAllSales/',
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -267,7 +267,7 @@ app.get('/allinstallations', function(request, response) {
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/InstallationService/getAllInstallations/' + request.query.id,
+    path: '/crud/InstallationService/getAllInstallations/',
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -1433,8 +1433,10 @@ app.post('/upload', function(request, response) {
 	// 	console.log(request.body);
 	// });
 	var form = new formidable.IncomingForm();
+	// specify that we want to allow the user to upload multiple files in a single request
+  form.multiples = true;
 	var files = {};
-
+	console.log(request.query);
 	form
     .on('error', function(err) {
       response.writeHead(500, {'content-type': 'text/plain'});
@@ -1442,32 +1444,72 @@ app.post('/upload', function(request, response) {
       console.error(err);
     })
     .on('file', function(name, file) {
-      console.log("file:", file.name, file);
+      console.log("file:", file.name);
       files[file.name] = file;
     })
     .on('end', function() {
       console.log('-> post done');
-      response.writeHead(200, {'content-type': 'text/plain'});
-      response.end('received fields:\n\n '+util.inspect(files));
+      // response.writeHead(200, {'content-type': 'text/plain'});
+      // response.end('received fields:\n\n '+util.inspect(files));
+			console.log('received fields:\n\n '+util.inspect(files));
 
-			for(file in files) {
-				console.log(files[file].path);
-				var fileStream = fs.createReadStream(files[file].path + "");
-				// console.log(JSON.stringify(request.body));
-				// var fileStream = fs.createReadStream(request.body.file.path);
-				uploadFile("0", files[file].name + "", fileStream, function(err, res) {
+			// Loop through all files
+			async.forEach(Object.keys(files), function(file_name, cb) {
+				var file = files[file_name];
+
+				var fileStream = fs.createReadStream(file.path + "");
+
+				uploadFile(request.query.folderId, file.name + "", fileStream, function(err, res) {
 					if (err) {
-						console.log(JSON.stringify(err));
+						// console.log(JSON.stringify(err));
 						// Once the upload completes, delete the temporary file from disk
-						fs.unlink(files[file].path + "", function() {});
+						fs.unlink(file.path + "", function() {
+							cb(err);
+						});
 					} else {
-						console.log(JSON.stringify(res));
+						console.log("file uploaded");
 						// Once the upload completes, delete the temporary file from disk
-						fs.unlink(files[file].path + "", function() {});
-						return response.status(200).json(res);
+						fs.unlink(file.path + "", function() {
+							cb();
+						});
 					}
+				});
+			}, function(err) { // Fired at the end, once all the files have been uploaded
+						if(err) {
+							// fs.unlink(file.path + "", function() {});
+
+							return response.end(err);
+						}
+
+						if(request.query.type == "Sale") {
+							setStatus(request.query.id, request.query.type, "Signed", function(obj) {
+								return response.status(200).json({success: true, obj: obj});
+							});
+						} else if(request.query.type == "Installation") {
+							setStatus(request.query.id, request.query.type, "Completed", function(obj) {
+								return response.status(200).json({success: true, obj: obj});
+							});
+						}
 			});
-		}
+
+		// 	for(file in files) {
+		// 		console.log(files[file].path);
+		// 		var fileStream = fs.createReadStream(files[file].path + "");
+		// 		// console.log(JSON.stringify(request.body));
+		// 		// var fileStream = fs.createReadStream(request.body.file.path);
+		// 		uploadFile("0", files[file].name + "", fileStream, function(err, res) {
+		// 			if (err) {
+		// 				console.log(JSON.stringify(err));
+		// 				// Once the upload completes, delete the temporary file from disk
+		// 				fs.unlink(files[file].path + "", function() {});
+		// 			} else {
+		// 				console.log(JSON.stringify(res));
+		// 				// Once the upload completes, delete the temporary file from disk
+		// 				fs.unlink(files[file].path + "", function() {});
+		// 				return response.status(200).json(res);
+		// 			}
+		// 	});
+		// }
     });
   form.parse(request);
 
@@ -1495,6 +1537,48 @@ app.post('/upload', function(request, response) {
 		// 	// });
 	  // });
 });
+
+var setStatus = function(id, type, status, callback) {
+	var jsonObj = querystring.stringify({
+    // Envelope Id
+    status: status
+  });
+	console.log("to send: " + jsonObj);
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'PUT',
+    path: '/crud/' + type + 'Service/setStatus/' + id,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+console.log(options);
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+			console.log("output: " + output);
+			var obj = JSON.parse(output);
+			console.log("added: " + JSON.stringify(obj));
+			callback(obj);
+    });
+
+  });
+
+  req.on('error', function(err) {
+    console.log('error message');
+    //response.send('error: ' + err.message);
+  });
+
+  req.write(jsonObj);
+  req.end();
+}
 
 var createSale = function (requestBody, callback) {
 	// Create sale
