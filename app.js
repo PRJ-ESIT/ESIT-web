@@ -75,7 +75,7 @@ app.get('/dashboard', function(request, response) {
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/SaleService/getAllSales/',
+    path: '/crud/SaleService/getAllSales/' + request.query.id,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -97,7 +97,7 @@ app.get('/dashboard', function(request, response) {
           var options = {
             host: config.crudIP,
             port: 8080,
-            path: '/crud/InstallationService/getAllInstallations/',
+            path: '/crud/InstallationService/getAllInstallations/' + request.query.id,
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -158,7 +158,7 @@ app.get('/allsales', function(request, response) {
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/SaleService/getAllSales/',
+    path: '/crud/SaleService/getAllSales/' + request.query.id,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -265,7 +265,7 @@ app.get('/allinstallations', function(request, response) {
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/InstallationService/getAllInstallations/',
+    path: '/crud/InstallationService/getAllInstallations/' + request.query.id,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
