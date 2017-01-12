@@ -37,10 +37,26 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
 }
 
 .mid {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: auto;
+  @media #{$desktop-landscape}, #{$desktop-portrait} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+  }
+  @media #{$tablet-portrait} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    width:256px;
+  }
+  @media #{$tablet-landscape} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    width: 256px;
+  }
 }
 
 //***********************//
