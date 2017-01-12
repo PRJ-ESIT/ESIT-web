@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlatButton, RaisedButton } from 'material-ui';
+import { IP } from '../../../../config/config.js';
 
 export default class CameraComponent extends React.Component {
 
@@ -12,6 +13,25 @@ export default class CameraComponent extends React.Component {
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
     this.uploadClickHandler = this.uploadClickHandler.bind(this);
+  }
+
+  componentDidMount() {
+    console.log(this.props.id);
+    console.log(this.props.folderId);
+    // var httpRequest = new XMLHttpRequest();
+    // let _this = this;
+    // httpRequest.onreadystatechange = function() {
+    //   if (this.readyState == 4 && this.status == 200) {
+    //     let installations = JSON.parse(httpRequest.responseText).installations;
+    //     _this.setState({
+    //       installations: installations
+    //     });
+    //
+    //   }
+    // };
+    //
+    // httpRequest.open('GET', "http://" + IP + "/scheduledinstallations", true);
+    // httpRequest.send(null);
   }
 
   cameraClickHandler() {
@@ -214,7 +234,31 @@ export default class CameraComponent extends React.Component {
   }
 
   uploadClickHandler() {
-    this.props.handleInstallationNext();
+
+    // let data = {
+    //   filepath: "C:\\Users\\Klever\\Pictures\\signing.jpg",
+    //   filename: "signing.jpg",
+    //   folderId: this.props.folderId,
+    //   file: fileStream,
+    // }
+    // var fileStream = fs.createReadStream(req.body.file.path);
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let response = JSON.parse(httpRequest.responseText);
+        console.log(response);
+        // _this.setState({
+        //   installations: installations
+        // });
+
+      }
+    };
+    httpRequest.open('POST', "http://" + IP + "/upload", true);
+    httpRequest.setRequestHeader("Content-Type", "multipart/form-data");
+    httpRequest.send();
+
+    // this.props.handleInstallationNext();
   }
 
   render() {
@@ -228,29 +272,11 @@ export default class CameraComponent extends React.Component {
     };
     return (
       <div className="cameraWrapper">
-        <div className="buttonWrapper">
-          <FlatButton
-            labelStyle={{ color: "#2f3c7d" }}
-            backgroundColor="white"
-            hoverColor="$light-gray"
-            style={rightButtonsStyle}
-            onTouchTap={(e) => {e.preventDefault(); this.cameraClickHandler()}}
-            label="New Image"
-          />
-        </div>
-        <div className="installPictureWrapper">
-          {this.state.installationPictures.map((imgSrc, index) => (
-            <img key={index} src={imgSrc} className="installImageBox"/>
-          ))}
-        </div>
-        <div className="finishWrapper">
-          <RaisedButton
-            className="finishButton"
-            label={'Upload'}
-            primary={true}
-            onTouchTap={(e) => {e.preventDefault(); this.uploadClickHandler()}}
-          />
-        </div>
+
+        <form method="post" action="/upload" encType="multipart/form-data">
+          <input type="file" name="images[]" multiple />
+          <button type="submit" className="btn btn-lg btn-success">Upload</button>
+        </form>
       </div>
     );
   }

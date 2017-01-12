@@ -16,6 +16,8 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //end of body-parser
 var fs = require('fs');
+var formidable = require('formidable');
+var util = require('util');
 // Box.com vars
 var CLIENT_ID = 'fmoj564gllo2g90aykbejymeyr8g73am',
 	CLIENT_SECRET = 'aRRX4hOWmiKsSlltaiAW2BHZ5eNAYFDK',
@@ -1376,6 +1378,78 @@ app.post('/', bodyParser.text({
 		// console.log("webhook request body: " + JSON.stringify(request.body));
 		webhook(request.body);
 		response.send("Received!");
+});
+
+app.post('/upload', function(request, response) {
+	// var form = new formidable.IncomingForm();
+	// form.parse(request, function() {
+	// 	// console.log(err);
+	// 	// console.log(fields);
+	// 	// console.log(files);
+	// 	console.log(request.body);
+	// });
+	var form = new formidable.IncomingForm();
+	var files = {};
+
+	form
+    .on('error', function(err) {
+      response.writeHead(500, {'content-type': 'text/plain'});
+      response.end('error:\n\n'+util.inspect(err));
+      console.error(err);
+    })
+    .on('file', function(name, file) {
+      console.log("file:", file.name, file);
+      files[file.name] = file;
+    })
+    .on('end', function() {
+      console.log('-> post done');
+      response.writeHead(200, {'content-type': 'text/plain'});
+      response.end('received fields:\n\n '+util.inspect(files));
+
+			for(file in files) {
+				console.log(files[file].path);
+				var fileStream = fs.createReadStream(files[file].path + "");
+				// console.log(JSON.stringify(request.body));
+				// var fileStream = fs.createReadStream(request.body.file.path);
+				uploadFile("0", files[file].name + "", fileStream, function(err, res) {
+					if (err) {
+						console.log(JSON.stringify(err));
+						// Once the upload completes, delete the temporary file from disk
+						fs.unlink(files[file].path + "", function() {});
+					} else {
+						console.log(JSON.stringify(res));
+						// Once the upload completes, delete the temporary file from disk
+						fs.unlink(files[file].path + "", function() {});
+						return response.status(200).json(res);
+					}
+			});
+		}
+    });
+  form.parse(request);
+
+    // form.parse(request, function(err, fields, files) {
+    //   response.writeHead(200, {'content-type': 'text/plain'});
+    //   response.write('received upload:\n\n');
+    //   response.end(util.inspect({fields: fields, files: files}));
+		//
+		// 	// var fileStream = fs.createReadStream(files[0].path);
+		// 	//
+		// 	//
+		// 	// console.log(JSON.stringify(request.body));
+		// 	// // var fileStream = fs.createReadStream(request.body.file.path);
+		// 	// uploadFile("0", files[0].name, fileStream, function(err, res) {
+		// 	// 	if (err) {
+		// 	// 		console.log(JSON.stringify(err));
+		// 	// 		// Once the upload completes, delete the temporary file from disk
+		// 	// 		fs.unlink(files[0].path, function() {});
+		// 	// 	} else {
+		// 	// 		console.log(JSON.stringify(res));
+		// 	// 		// Once the upload completes, delete the temporary file from disk
+		// 	// 		fs.unlink(files[0].path, function() {});
+		// 	// 		return response.status(200).json(res);
+		// 	// 	}
+		// 	// });
+	  // });
 });
 
 var createSale = function (requestBody, callback) {

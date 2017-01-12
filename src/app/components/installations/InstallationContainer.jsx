@@ -16,7 +16,7 @@ export default class InstallationContainer extends React.Component {
       case 0:
         return <SelectInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} menuClickHandler={this.props.menuClickHandler} />;
       case 1:
-        return <CameraComponent handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} /> 
+        return <CameraComponent handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} id={this.props.selectedInstallationId} folderId={this.props.folderId} /> 
       case 2:
         return <CompleteInstallation handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} status={'create'} id={this.props.selectedInstallationId} />;
       case 3:

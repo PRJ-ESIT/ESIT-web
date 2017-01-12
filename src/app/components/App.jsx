@@ -52,6 +52,7 @@ export default class App extends React.Component {
       installationObj: undefined,
       saleObj: undefined,
       envelopeId: undefined,
+      folderId: undefined,
     }
 
     this.handleLogout = this.handleLogout.bind(this);
@@ -276,7 +277,8 @@ export default class App extends React.Component {
               handleInstallationNext={this.handleInstallationNext} handleInstallationPrev={this.handleInstallationPrev}
               selectedInstallationId={this.state.selectedInstallationId} installationObj={this.state.installationObj}
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
-              getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj} />
+              getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj}
+              folderId={this.state.folderId} />
           </div>
         </div>
       </div>
