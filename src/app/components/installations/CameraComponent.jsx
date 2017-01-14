@@ -108,7 +108,7 @@ export default class CameraComponent extends React.Component {
         quality: 50,
         destinationType: Camera.DestinationType.FILE_URI,
         sourceType: Camera.PictureSourceType.CAMERA,
-        encodingType: Camera.EncodingType.PNG,
+        encodingType: Camera.EncodingType.JPEG,
         allowEdit: true,
         targetWidth: 600, targetHeight: 600,
         popoverOptions: new CameraPopoverOptions(300, 300, 100, 100, Camera.PopoverArrowDirection.ARROW_ANY)
@@ -266,8 +266,42 @@ export default class CameraComponent extends React.Component {
     isCameraPresent();
   }
 
-  uploadClickHandler() {
+  iOSUploadClickHandler() {
+    var fileURI = this.state.installationPictures[0];
+    var win = function (r) {
+        clearCache();
+        retries = 0;
+        alert('Done!');
+        this.props.handleInstallationNext();
+    }
 
+    var fail = function (error) {
+        if (retries == 0) {
+            retries ++
+            setTimeout(function() {
+                uploadClickHandler(fileURI)
+            }, 1000)
+        } else {
+            retries = 0;
+            clearCache();
+            alert('Ups. Something wrong happens!');
+        }
+    }
+
+    var options = new FileUploadOptions();
+    options.fileKey = "file";
+    options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
+    options.mimeType = "image/jpeg";
+    options.params = {
+      folderId: this.props.folderId,
+      id: this.props.id,
+      type: "Installation"
+    }; // if we need to send parameters to the server request
+    var ft = new FileTransfer();
+    ft.upload(fileURI, encodeURI("http://" + IP + "/upload"), win, fail, options);
+  }
+
+  desktopUploadClickHandler() {
     // let data = {
     //   filepath: "C:\\Users\\Klever\\Pictures\\signing.jpg",
     //   filename: "signing.jpg",
@@ -293,6 +327,7 @@ export default class CameraComponent extends React.Component {
 
     // this.props.handleInstallationNext();
   }
+
   getCordovaUI() {
     var rightButtonsStyle = {
       'height': '40px',
@@ -325,7 +360,7 @@ export default class CameraComponent extends React.Component {
             className="finishButton"
             label={'Upload'}
             primary={true}
-            onTouchTap={(e) => {e.preventDefault(); this.uploadClickHandler()}}
+            onTouchTap={(e) => {e.preventDefault(); this.iOSUploadClickHandler()}}
             />
         </div>
       </div>
