@@ -1,5 +1,32 @@
 import React from 'react';
 import { FlatButton, RaisedButton } from 'material-ui';
+import { IP } from '../../../../config/config.js';
+
+const styles = {
+  imageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
+  button: {
+    margin: 12,
+  },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
+};
 
 export default class CameraComponent extends React.Component {
 
@@ -8,10 +35,36 @@ export default class CameraComponent extends React.Component {
 
     this.state = {
       installationPictures: [],
+      isCordova: undefined,
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
     this.uploadClickHandler = this.uploadClickHandler.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({
+      isCordova: !!window.cordova
+    });
+  }
+
+  componentDidMount() {
+    console.log(this.props.id);
+    console.log(this.props.folderId);
+    // var httpRequest = new XMLHttpRequest();
+    // let _this = this;
+    // httpRequest.onreadystatechange = function() {
+    //   if (this.readyState == 4 && this.status == 200) {
+    //     let installations = JSON.parse(httpRequest.responseText).installations;
+    //     _this.setState({
+    //       installations: installations
+    //     });
+    //
+    //   }
+    // };
+    //
+    // httpRequest.open('GET', "http://" + IP + "/scheduledinstallations", true);
+    // httpRequest.send(null);
   }
 
   cameraClickHandler() {
@@ -214,10 +267,33 @@ export default class CameraComponent extends React.Component {
   }
 
   uploadClickHandler() {
-    this.props.handleInstallationNext();
-  }
 
-  render() {
+    // let data = {
+    //   filepath: "C:\\Users\\Klever\\Pictures\\signing.jpg",
+    //   filename: "signing.jpg",
+    //   folderId: this.props.folderId,
+    //   file: fileStream,
+    // }
+    // var fileStream = fs.createReadStream(req.body.file.path);
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let response = JSON.parse(httpRequest.responseText);
+        console.log(response);
+        // _this.setState({
+        //   installations: installations
+        // });
+
+      }
+    };
+    httpRequest.open('POST', "http://" + IP + "/upload", true);
+    httpRequest.setRequestHeader("Content-Type", "multipart/form-data");
+    httpRequest.send();
+
+    // this.props.handleInstallationNext();
+  }
+  getCordovaUI() {
     var rightButtonsStyle = {
       'height': '40px',
       'width': '160px',
@@ -226,6 +302,7 @@ export default class CameraComponent extends React.Component {
       'marginTop': '40px',
       'marginBottom': '40px',
     };
+
     return (
       <div className="cameraWrapper">
         <div className="buttonWrapper">
@@ -249,9 +326,37 @@ export default class CameraComponent extends React.Component {
             label={'Upload'}
             primary={true}
             onTouchTap={(e) => {e.preventDefault(); this.uploadClickHandler()}}
-          />
+            />
         </div>
       </div>
     );
+  }
+
+  getDesktopUI() {
+    let url = "/upload?type=Installation&folderId=" + this.props.folderId + "&id=" + this.props.id;
+
+    return (
+      <div className="cameraWrapper">
+        <form method="post" action={url} encType="multipart/form-data">
+          <RaisedButton
+            label="Choose an Image"
+            labelPosition="before"
+            style={styles.button}
+            containerElement="label"
+          >
+            <input type="file" name="images[]" style={styles.exampleImageInput} multiple/>
+          </RaisedButton>
+        </form>
+      </div>
+    );
+  }
+
+  render() {
+    if(this.state.isCordova) {
+      return this.getCordovaUI();
+    }
+    else {
+      return this.getDesktopUI();
+    }
   }
 }
