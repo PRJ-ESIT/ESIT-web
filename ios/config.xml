@@ -34,4 +34,5 @@
     <plugin name="cordova-plugin-statusbar" spec="~2.2.1" />
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#2f3c7d" />
+    <plugin name="cordova-plugin-file-transfer" spec="~1.6.1" />
 </widget>
