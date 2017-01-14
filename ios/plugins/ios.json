@@ -23,10 +23,16 @@
         },
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "com.esit"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.esit"
         }
     },
     "dependent_plugins": {
         "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.esit"
+        },
+        "cordova-plugin-file": {
             "PACKAGE_NAME": "com.esit"
         }
     }
