@@ -1431,8 +1431,8 @@ app.get('/files', function(request, response) {
 			return response.status(404);
 		}
 
-		return response.status(200).json('files', {
-			files: data ? data.entries: []
+		return response.status(200).json({
+			files: data ? data.entries: [],
 		});
 	});
 });
