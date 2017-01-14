@@ -307,6 +307,31 @@ export default class CameraComponent extends React.Component {
     var url = "/upload?type=Installation&folderId=" + this.props.folderId + "&id=" + this.props.id;
     return (
       <div className="cameraWrapper">
+        {this.state.isCordova ?
+          <div className="buttonWrapper">
+            <FlatButton
+              labelStyle={{ color: "#2f3c7d" }}
+              backgroundColor="white"
+              hoverColor="$light-gray"
+              style={rightButtonsStyle}
+              onTouchTap={(e) => {e.preventDefault(); this.cameraClickHandler()}}
+              label="New Image"
+            />
+          </div>		
+          <div className="installPictureWrapper">
+            {this.state.installationPictures.map((imgSrc, index) => (
+              <img key={index} src={imgSrc} className="installImageBox"/>
+            ))}
+          </div>
+          <div className="finishWrapper">
+            <RaisedButton
+              className="finishButton"
+              label={'Upload'}
+              primary={true}
+              onTouchTap={(e) => {e.preventDefault(); this.uploadClickHandler()}}
+              />
+          </div>
+        :
         <form method="post" action={url} encType="multipart/form-data">
           <RaisedButton
             label="Choose an Image"
@@ -316,7 +341,7 @@ export default class CameraComponent extends React.Component {
           >
             <input type="file" name="images[]" style={styles.exampleImageInput} multiple/>
           </RaisedButton>
-        </form>
+        </form> }
       </div>
     );
   }

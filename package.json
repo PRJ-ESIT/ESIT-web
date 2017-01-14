@@ -28,7 +28,6 @@
     "react-addons-transition-group": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-tap-event-plugin": "~2.0.1",
-    "util": "^0.10.3",
     "xml2js": "^0.4.17"
   },
   "devDependencies": {

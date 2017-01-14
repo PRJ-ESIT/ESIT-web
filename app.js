@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 //end of body-parser
 var fs = require('fs');
 var formidable = require('formidable');
-var util = require('util');
+// var util = require('util');
 // Box.com vars
 var CLIENT_ID = 'fmoj564gllo2g90aykbejymeyr8g73am',
 	CLIENT_SECRET = 'aRRX4hOWmiKsSlltaiAW2BHZ5eNAYFDK',
@@ -160,7 +160,7 @@ app.get('/allsales', function(request, response) {
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/SaleService/getAllSales/',
+    path: '/crud/SaleService/getAllSales/'  + request.query.id,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -267,7 +267,7 @@ app.get('/allinstallations', function(request, response) {
   var options = {
     host: config.crudIP,
     port: 8080,
-    path: '/crud/InstallationService/getAllInstallations/',
+    path: '/crud/InstallationService/getAllInstallations/'  + request.query.id,
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -1440,7 +1440,7 @@ app.post('/upload', function(request, response) {
 	form
     .on('error', function(err) {
       response.writeHead(500, {'content-type': 'text/plain'});
-      response.end('error:\n\n'+util.inspect(err));
+      // response.end('error:\n\n'+util.inspect(err));
       console.error(err);
     })
     .on('file', function(name, file) {
@@ -1451,7 +1451,7 @@ app.post('/upload', function(request, response) {
       console.log('-> post done');
       // response.writeHead(200, {'content-type': 'text/plain'});
       // response.end('received fields:\n\n '+util.inspect(files));
-			console.log('received fields:\n\n '+util.inspect(files));
+			// console.log('received fields:\n\n '+util.inspect(files));
 
 			// Loop through all files
 			async.forEach(Object.keys(files), function(file_name, cb) {
