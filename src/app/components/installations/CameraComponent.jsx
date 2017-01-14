@@ -2,6 +2,32 @@ import React from 'react';
 import { FlatButton, RaisedButton } from 'material-ui';
 import { IP } from '../../../../config/config.js';
 
+const styles = {
+  imageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
+  button: {
+    margin: 12,
+  },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
+};
+
 export default class CameraComponent extends React.Component {
 
   constructor(props) {
@@ -9,10 +35,17 @@ export default class CameraComponent extends React.Component {
 
     this.state = {
       installationPictures: [],
+      isCordova: undefined,
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
     this.uploadClickHandler = this.uploadClickHandler.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({
+      isCordova: !!window.cordova
+    });
   }
 
   componentDidMount() {
@@ -270,13 +303,19 @@ export default class CameraComponent extends React.Component {
       'marginTop': '40px',
       'marginBottom': '40px',
     };
+
     var url = "/upload?type=Installation&folderId=" + this.props.folderId + "&id=" + this.props.id;
     return (
       <div className="cameraWrapper">
-
         <form method="post" action={url} encType="multipart/form-data">
-          <input type="file" name="images[]" multiple />
-          <button type="submit" className="btn btn-lg btn-success">Upload</button>
+          <RaisedButton
+            label="Choose an Image"
+            labelPosition="before"
+            style={styles.button}
+            containerElement="label"
+          >
+            <input type="file" name="images[]" style={styles.exampleImageInput} multiple/>
+          </RaisedButton>
         </form>
       </div>
     );
