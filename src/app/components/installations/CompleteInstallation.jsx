@@ -173,7 +173,7 @@ export default class CompleteInstallation extends React.Component {
                 fnameValidated: installation.customerFirstName ? true : false,
                 lnameValidated: installation.customerLastName ? true : false,
                 addressValidated: installation.address ? true : false,
-                unitValidated: installation.unit ? true : false,
+                unitValidated: true,
                 cityValidated: installation.city ? true : false,
                 provinceValidated: installation.province ? true : false,
                 postalCodeValidated: installation.postalCode ? true : false,

@@ -1,4 +1,5 @@
 import React from 'react';
+import {CircularProgress} from 'material-ui';
 
 export default class DocuSignSale extends React.Component {
   componentDidMount() {
@@ -41,7 +42,15 @@ export default class DocuSignSale extends React.Component {
   render() {
     return (
       <div>
-        Generating DocuSign Form
+        <div className="mid">
+          <p style={{margin: 'auto'}}>Generating DocuSign Form</p>
+          <br />
+          <CircularProgress
+            size={80}
+            thickness={5}
+            style={{margin: 'auto'}}
+          />
+        </div>
       </div>
     );
   }

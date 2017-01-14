@@ -1580,6 +1580,61 @@ console.log(options);
   req.end();
 }
 
+// Get files form box.com
+app.get('/files', function(request, response) {
+	// Get the user's files in their root folder.  Box uses folder ID "0" to
+	// represent the user's root folder, where we'll be putting all their files.
+	adminAPIClient.folders.getItems('0', null, function(err, data) {
+		if(err) {
+			return response.status(404);
+		}
+
+		return response.status(200).json({
+			files: data ? data.entries: [],
+		});
+	});
+});
+
+// Get box thumbnail
+app.get('/thumbnail/:id', function(req, res) {
+	// API call to get the thumbnail for a file.  This can return either the
+	// specific thumbnail image or a URL pointing to a placeholder thumbnail.
+	adminAPIClient.files.getThumbnail(req.params.id, {}, function(err, data) {
+
+		if (err) {
+			res.status(err.statusCode || 500).json(err);
+			return;
+		}
+
+		if (data.file) {
+			// We got the thumbnail file, so send the image bytes back
+			res.send(data.file);
+		} else if (data.location) {
+			// We got a placeholder URL, so redirect the user there
+			res.redirect(data.location);
+		} else {
+			// Something went wrong, so return a 500
+			res.status(500).end();
+		}
+	});
+});
+
+// Download box.com file
+app.get('/download/:id', function(req, res) {
+	// API call to get the temporary download URL for the user's file
+	adminAPIClient.files.getDownloadURL(req.params.id, null, function(err, url) {
+
+		if (err) {
+			res.redirect('/dashboard');
+			return;
+		}
+
+		// Redirect to the download URL, which will cause the user's browser to
+		// start the download
+		res.redirect(url);
+	});
+});
+
 var createSale = function (requestBody, callback) {
 	// Create sale
 	console.log(requestBody);
