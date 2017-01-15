@@ -39,7 +39,7 @@ export default class CameraComponent extends React.Component {
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
-    this.uploadClickHandler = this.uploadClickHandler.bind(this);
+    this.iOSUploadClickHandler = this.iOSUploadClickHandler.bind(this);
   }
 
   componentWillMount() {
@@ -267,6 +267,7 @@ export default class CameraComponent extends React.Component {
   }
 
   iOSUploadClickHandler() {
+    var retries = 0;
     var fileURI = this.state.installationPictures[0];
     var win = function (r) {
         clearCache();
@@ -279,7 +280,7 @@ export default class CameraComponent extends React.Component {
         if (retries == 0) {
             retries ++
             setTimeout(function() {
-                uploadClickHandler(fileURI)
+                iOSUploadClickHandler(fileURI)
             }, 1000)
         } else {
             retries = 0;
