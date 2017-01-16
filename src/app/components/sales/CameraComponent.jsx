@@ -9,10 +9,20 @@ export default class CameraComponent extends React.Component {
 
     this.state = {
       picturePath: undefined,
+      saleFile: [],
+      isCordova: undefined,
+      disableButton: true,
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
-    this.uploadClickHandler = this.uploadClickHandler.bind(this);
+    this.uploadClickHandler = this.iOSUploadClickHandler.bind(this);
+    this.uploadClickHandler = this.desktopUploadClickHandler.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({
+      isCordova: !!window.cordova
+    });
   }
 
   cameraClickHandler() {
@@ -213,27 +223,112 @@ export default class CameraComponent extends React.Component {
     isCameraPresent();
   }
 
-  uploadClickHandler() {
-    let data = {
-      status: "Paid",
-      saleId: this.props.sale.salesNumber,
-    };
-    console.log(this.props.sale);
-    console.log(data);
-    let _this = this;
-    var request = new XMLHttpRequest();
-    request.open('PUT', "http://" + IP + '/updatesalestatus', true);
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        _this.props.handleSaleNext();
-      }
-    };
+  iOSUploadClickHandler() {
+    var retries = 0;
+    var fileURI = this.state.installationPictures[0];
+    var win = function (r) {
+        clearCache();
+        retries = 0;
+        alert('Done!');
+        this.props.handleInstallationNext();
+    }
 
-    request.send(JSON.stringify(data));
+    var fail = function (error) {
+        if (retries == 0) {
+            retries ++
+            setTimeout(function() {
+                iOSUploadClickHandler(fileURI)
+            }, 1000)
+        } else {
+            retries = 0;
+            clearCache();
+            alert('Ups. Something wrong happens!');
+        }
+    }
+
+    var options = new FileUploadOptions();
+    options.fileKey = "file";
+    options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
+    options.mimeType = "image/jpeg";
+    options.params = {
+      folderId: this.props.folderId,
+      id: this.props.id,
+      type: "Installation"
+    }; // if we need to send parameters to the server request
+    var ft = new FileTransfer();
+    ft.upload(fileURI, encodeURI("http://" + IP + "/upload"), win, fail, options);
   }
 
-  render() {
+  desktopUploadClickHandler() {
+    var fd = new FormData();
+    fd.append('type', 'Sale');
+    fd.append('folderId', this.props.sale.folderId);
+    fd.append('id', this.props.sale.salesNumber);
+
+    console.log(this.state.saleFile);
+    // for (var i = 0; i < this.state.installationFiles.length; i++) {
+      fd.append('file', this.state.saleFile);
+    // }
+    console.log("fd:", fd);
+
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let response = JSON.parse(httpRequest.responseText);
+        console.log("response: ", response);
+        if (response.success == true) {
+          _this.props.handleSaleNext();
+        } else {
+        _this.setState({
+          disableButton: false,
+        });
+        }
+
+      }
+    };
+    httpRequest.open('POST', "http://" + IP + '/upload', true);
+    httpRequest.send(fd);
+
+    this.setState({
+      disableButton: true,
+    });
+  }
+
+  selectImagesHandler() {
+    if (this.refs.file.files.length > 0){
+      let _this = this;
+      console.log("file: ", this.refs.file.files);
+      // var files = this.state.installationFiles;
+      // var pictures = this.state.installationPictures;
+      // for (var i = 0; i < this.refs.file.files.length; i ++) {
+        var file = this.refs.file.files[0];
+        // files.push(file);
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e) {
+          // pictures.push(this.result);
+          // var image = document.getElementById('myImage');
+          // image.src = this.result;
+          _this.setState({
+            picturePath: this.result,
+            saleFile: file,
+            disableButton: false,
+          });
+        }
+      // }
+    }
+  }
+
+  desktopClearClickHandler() {
+    this.setState({
+      picturePath: undefined,
+      saleFile: undefined,
+      disableButton: true,
+    })
+  }
+
+  getCordovaUI() {
     var rightButtonsStyle = {
       'height': '40px',
       'width': '160px',
@@ -262,10 +357,56 @@ export default class CameraComponent extends React.Component {
             className="finishButton"
             label={'Upload'}
             primary={true}
-            onTouchTap={(e) => {e.preventDefault(); this.uploadClickHandler()}}
+            onTouchTap={(e) => {e.preventDefault(); this.iOSUploadClickHandler()}}
           />
         </div>
        </div>
     );
+  }
+
+  getDesktopUI() {
+    return (
+      <div className="cameraWrapper">
+        <div className="buttonWrapper">
+          <RaisedButton
+            label="Choose an Image"
+            labelPosition="before"
+            style={styles.button}
+            containerElement="label"
+          >
+            <input ref="file" type="file" name="image" style={styles.exampleImageInput}
+              onChange={(evt) => this.selectImagesHandler(evt)}/>
+          </RaisedButton>
+        </div>
+        <div className="pictureWrapper">
+          <img className="imageBox" id="myImage" src={this.state.picturePath}/>
+        </div>
+        <div className="finishWrapper">
+          <RaisedButton
+            className="finishButton"
+            label={'Clear'}
+            secondary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.desktopClearClickHandler()}}
+            disabled={this.state.disableButton}
+            />
+          <RaisedButton
+            className="finishButton"
+            label={'Upload'}
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.desktopUploadClickHandler()}}
+            disabled={this.state.disableButton}
+            />
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    if(this.state.isCordova) {
+      return this.getCordovaUI();
+    }
+    else {
+      return this.getDesktopUI();
+    }
   }
 }
