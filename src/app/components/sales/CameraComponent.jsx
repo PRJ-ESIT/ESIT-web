@@ -2,6 +2,22 @@ import React from 'react';
 import { FlatButton, RaisedButton } from 'material-ui';
 import { IP } from '../../../../config/config.js';
 
+const styles = {
+  button: {
+    margin: 12,
+  },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
+};
+
 export default class CameraComponent extends React.Component {
 
   constructor(props) {
@@ -10,6 +26,7 @@ export default class CameraComponent extends React.Component {
     this.state = {
       picturePath: undefined,
       saleFile: [],
+      sale: undefined,
       isCordova: undefined,
       disableButton: true,
     };
@@ -23,6 +40,24 @@ export default class CameraComponent extends React.Component {
     this.setState({
       isCordova: !!window.cordova
     });
+  }
+
+  componentDidMount() {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let sale = JSON.parse(httpRequest.responseText).sale;
+
+        _this.setState({
+          sale: sale,
+        });
+      }
+    }
+
+    httpRequest.open('GET', "http://" + IP + "/existingsale?id="
+      + _this.props.sale.salesNumber, true);
+    httpRequest.send(null);
   }
 
   cameraClickHandler() {
@@ -262,7 +297,7 @@ export default class CameraComponent extends React.Component {
   desktopUploadClickHandler() {
     var fd = new FormData();
     fd.append('type', 'Sale');
-    fd.append('folderId', this.props.sale.folderId);
+    fd.append('folderId', this.state.sale.folderId);
     fd.append('id', this.props.sale.salesNumber);
 
     console.log(this.state.saleFile);
