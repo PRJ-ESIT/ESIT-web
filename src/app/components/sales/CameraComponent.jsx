@@ -286,7 +286,7 @@ export default class CameraComponent extends React.Component {
     options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
     options.mimeType = "image/jpeg";
     options.params = {
-      folderId: this.props.folderId,
+      folderId: this.state.sale.folderId,
       id: this.props.id,
       type: "Installation"
     }; // if we need to send parameters to the server request
