@@ -69,6 +69,8 @@ app.get('/closeinstallationoneiframe', function(req, res) {
 });
 
 app.get('/closeinstallationtwoiframe', function(req, res) {
+	// console.log(JSON.stringify(req.body));
+	// console.log(JSON.stringify(req.query));
     res.sendFile(path.join(__dirname + '/src/client/closeinstallationtwoiframe.html'));
 });
 
@@ -530,7 +532,6 @@ app.get('/getonecustomer', function(request, response) {
     req.end();
 });
 
-
 //POST http://localhost:3000/login
 app.post('/login', function(request, response) {
   var jsonObj = querystring.stringify({
@@ -756,7 +757,6 @@ app.put('/updatesalestatus', function(request, response) {
 
 
 });
-
 
 //POST http://localhost:3000/newemployee
 app.post('/newemployee', function(request, response) {
@@ -1425,33 +1425,28 @@ app.post('/', bodyParser.text({
 });
 
 app.post('/upload', function(request, response) {
-	// var form = new formidable.IncomingForm();
-	// form.parse(request, function() {
-	// 	// console.log(err);
-	// 	// console.log(fields);
-	// 	// console.log(files);
-	// 	console.log(request.body);
-	// });
 	var form = new formidable.IncomingForm();
-	// specify that we want to allow the user to upload multiple files in a single request
+	// Allow upload multiple files in a single request
   form.multiples = true;
-	var files = {};
-	console.log(request.query);
+	var files = {}, fields = {};
+
 	form
     .on('error', function(err) {
+			console.error(err);
       response.writeHead(500, {'content-type': 'text/plain'});
-      // response.end('error:\n\n'+util.inspect(err));
-      console.error(err);
+      response.end('error:\n\n'+ err);
     })
     .on('file', function(name, file) {
-      console.log("file:", file.name);
       files[file.name] = file;
+    })
+		.on('field', function(name, field) {
+      fields[name] = field;
     })
     .on('end', function() {
       console.log('-> post done');
       // response.writeHead(200, {'content-type': 'text/plain'});
-      // response.end('received fields:\n\n '+util.inspect(files));
-			// console.log('received fields:\n\n '+util.inspect(files));
+			// console.log('received files:\n\n '+util.inspect(files));
+			// console.log('received fields:\n\n '+util.inspect(fields));
 
 			// Loop through all files
 			async.forEach(Object.keys(files), function(file_name, cb) {
@@ -1459,9 +1454,9 @@ app.post('/upload', function(request, response) {
 
 				var fileStream = fs.createReadStream(file.path + "");
 
-				uploadFile(request.query.folderId, file.name + "", fileStream, function(err, res) {
+				uploadFile(fields.folderId, file.name + "", fileStream, function(err, res) {
 					if (err) {
-						// console.log(JSON.stringify(err));
+
 						// Once the upload completes, delete the temporary file from disk
 						fs.unlink(file.path + "", function() {
 							cb(err);
@@ -1476,71 +1471,26 @@ app.post('/upload', function(request, response) {
 				});
 			}, function(err) { // Fired at the end, once all the files have been uploaded
 						if(err) {
-							// fs.unlink(file.path + "", function() {});
-
 							return response.end(err);
 						}
 
-						if(request.query.type == "Sale") {
-							setStatus(request.query.id, request.query.type, "Signed", function(obj) {
+						if(fields.type == "Sale") {
+							setStatus(fields.id, fields.type, "Signed", function(obj) {
 								return response.status(200).json({success: true, obj: obj});
 							});
-						} else if(request.query.type == "Installation") {
-							setStatus(request.query.id, request.query.type, "Completed", function(obj) {
-								return response.status(200).json({success: true, obj: obj});
+						} else if(fields.type == "Installation") {
+							setStatus(fields.id, fields.type, "Documented", function(obj) {
+								return response.status(200).json({success: true, installation: obj.installation});
 							});
 						}
 			});
-
-		// 	for(file in files) {
-		// 		console.log(files[file].path);
-		// 		var fileStream = fs.createReadStream(files[file].path + "");
-		// 		// console.log(JSON.stringify(request.body));
-		// 		// var fileStream = fs.createReadStream(request.body.file.path);
-		// 		uploadFile("0", files[file].name + "", fileStream, function(err, res) {
-		// 			if (err) {
-		// 				console.log(JSON.stringify(err));
-		// 				// Once the upload completes, delete the temporary file from disk
-		// 				fs.unlink(files[file].path + "", function() {});
-		// 			} else {
-		// 				console.log(JSON.stringify(res));
-		// 				// Once the upload completes, delete the temporary file from disk
-		// 				fs.unlink(files[file].path + "", function() {});
-		// 				return response.status(200).json(res);
-		// 			}
-		// 	});
-		// }
     });
   form.parse(request);
-
-    // form.parse(request, function(err, fields, files) {
-    //   response.writeHead(200, {'content-type': 'text/plain'});
-    //   response.write('received upload:\n\n');
-    //   response.end(util.inspect({fields: fields, files: files}));
-		//
-		// 	// var fileStream = fs.createReadStream(files[0].path);
-		// 	//
-		// 	//
-		// 	// console.log(JSON.stringify(request.body));
-		// 	// // var fileStream = fs.createReadStream(request.body.file.path);
-		// 	// uploadFile("0", files[0].name, fileStream, function(err, res) {
-		// 	// 	if (err) {
-		// 	// 		console.log(JSON.stringify(err));
-		// 	// 		// Once the upload completes, delete the temporary file from disk
-		// 	// 		fs.unlink(files[0].path, function() {});
-		// 	// 	} else {
-		// 	// 		console.log(JSON.stringify(res));
-		// 	// 		// Once the upload completes, delete the temporary file from disk
-		// 	// 		fs.unlink(files[0].path, function() {});
-		// 	// 		return response.status(200).json(res);
-		// 	// 	}
-		// 	// });
-	  // });
 });
 
 var setStatus = function(id, type, status, callback) {
 	var jsonObj = querystring.stringify({
-    // Envelope Id
+    // Status
     status: status
   });
 	console.log("to send: " + jsonObj);
@@ -1554,7 +1504,7 @@ var setStatus = function(id, type, status, callback) {
       'Content-Length': Buffer.byteLength(jsonObj)
     }
   };
-console.log(options);
+ console.log(options);
   var req = http.request(options, function(res) {
     var output = '';
     res.setEncoding('utf8');
@@ -1563,9 +1513,9 @@ console.log(options);
     });
 
     res.on('end', function() {
-			console.log("output: " + output);
+			// console.log("output: " + output);
 			var obj = JSON.parse(output);
-			console.log("added: " + JSON.stringify(obj));
+			// console.log("added: " + JSON.stringify(obj));
 			callback(obj);
     });
 
@@ -1802,7 +1752,7 @@ var setEnvelopeId = function(envelopeId, service, id, callback) {
       'Content-Length': Buffer.byteLength(jsonObj)
     }
   };
-console.log(options);
+ console.log(options);
   var req = http.request(options, function(res) {
     var output = '';
     res.setEncoding('utf8');
@@ -1827,8 +1777,6 @@ console.log(options);
   req.write(jsonObj);
   req.end();
 }
-
-// Need to create setFolderId function
 
 var getFolderIdByEnvelopeId = function(envelopeId, callback) {
 	console.log("to send: " + envelopeId);

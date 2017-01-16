@@ -35,7 +35,9 @@ export default class CameraComponent extends React.Component {
 
     this.state = {
       installationPictures: [],
+      installationFiles: [],
       isCordova: undefined,
+      disableButton: true,
     };
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
@@ -51,6 +53,8 @@ export default class CameraComponent extends React.Component {
   componentDidMount() {
     console.log(this.props.id);
     console.log(this.props.folderId);
+    console.log("file: ", this.refs.file);
+
     // var httpRequest = new XMLHttpRequest();
     // let _this = this;
     // httpRequest.onreadystatechange = function() {
@@ -303,30 +307,72 @@ export default class CameraComponent extends React.Component {
   }
 
   desktopUploadClickHandler() {
-    // let data = {
-    //   filepath: "C:\\Users\\Klever\\Pictures\\signing.jpg",
-    //   filename: "signing.jpg",
-    //   folderId: this.props.folderId,
-    //   file: fileStream,
-    // }
-    // var fileStream = fs.createReadStream(req.body.file.path);
+    var fd = new FormData();
+    fd.append('type', 'Installation');
+    fd.append('folderId', this.props.folderId);
+    fd.append('id', this.props.id);
+
+    console.log(this.state.installationFiles);
+    for (var i = 0; i < this.state.installationFiles.length; i++) {
+      fd.append('file' + i, this.state.installationFiles[i]);
+    }
+    console.log("fd:", fd);
+
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let response = JSON.parse(httpRequest.responseText);
-        console.log(response);
-        // _this.setState({
-        //   installations: installations
-        // });
+        console.log("response: ", response);
+        if (response.success == true) {
+          _this.props.handleInstallationNext({
+            status: response.installation.status,
+          });
+        } else {
+        _this.setState({
+          disableButton: false,
+        });
+        }
 
       }
     };
-    httpRequest.open('POST', "http://" + IP + "/upload", true);
-    httpRequest.setRequestHeader("Content-Type", "multipart/form-data");
-    httpRequest.send();
+    httpRequest.open('POST', "http://" + IP + '/upload', true);
+    httpRequest.send(fd);
 
-    // this.props.handleInstallationNext();
+    this.setState({
+      disableButton: true,
+    });
+  }
+
+  selectImagesHandler() {
+    if (this.refs.file.files.length > 0){
+      let _this = this;
+      console.log("file: ", this.refs.file.files);
+      var files = this.state.installationFiles;
+      var pictures = this.state.installationPictures;
+      for (var i = 0; i < this.refs.file.files.length; i ++) {
+        var file = this.refs.file.files[i];
+        files.push(file);
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e) {
+          pictures.push(this.result);
+          _this.setState({
+            installationPictures: pictures,
+            installationFiles: files,
+            disableButton: false,
+          });
+        }
+      }
+    }
+  }
+
+  desktopClearClickHandler() {
+    this.setState({
+      installationFiles: [],
+      installationPictures: [],
+      disableButton: true,
+    })
   }
 
   getCordovaUI() {
@@ -369,20 +415,40 @@ export default class CameraComponent extends React.Component {
   }
 
   getDesktopUI() {
-    let url = "/upload?type=Installation&folderId=" + this.props.folderId + "&id=" + this.props.id;
-
     return (
       <div className="cameraWrapper">
-        <form method="post" action={url} encType="multipart/form-data">
+        <div className="buttonWrapper">
           <RaisedButton
             label="Choose an Image"
             labelPosition="before"
             style={styles.button}
             containerElement="label"
           >
-            <input type="file" name="images[]" style={styles.exampleImageInput} multiple/>
+            <input ref="file" type="file" name="images[]" style={styles.exampleImageInput} multiple
+              onChange={(evt) => this.selectImagesHandler(evt)}/>
           </RaisedButton>
-        </form>
+        </div>
+        <div className="installPictureWrapper">
+          {this.state.installationPictures.map((imgSrc, index) => (
+            <img key={index} src={imgSrc} className="installImageBox"/>
+          ))}
+        </div>
+        <div className="finishWrapper">
+          <RaisedButton
+            className="finishButton"
+            label={'Clear'}
+            secondary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.desktopClearClickHandler()}}
+            disabled={this.state.disableButton}
+            />
+          <RaisedButton
+            className="finishButton"
+            label={'Upload'}
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.desktopUploadClickHandler()}}
+            disabled={this.state.disableButton}
+            />
+        </div>
       </div>
     );
   }
