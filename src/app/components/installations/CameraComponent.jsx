@@ -35,6 +35,7 @@ export default class CameraComponent extends React.Component {
 
     this.state = {
       installationPictures: [],
+      uploadedPictures: 0,
       installationFiles: [],
       isCordova: undefined,
       disableButton: true,
@@ -42,6 +43,8 @@ export default class CameraComponent extends React.Component {
 
     this.cameraClickHandler = this.cameraClickHandler.bind(this);
     this.iOSUploadClickHandler = this.iOSUploadClickHandler.bind(this);
+    this.iOSUploadSingleFile = this.iOSUploadSingleFile.bind(this);
+    this.clearCache = this.clearCache.bind(this);
   }
 
   componentWillMount() {
@@ -69,6 +72,21 @@ export default class CameraComponent extends React.Component {
     //
     // httpRequest.open('GET', "http://" + IP + "/scheduledinstallations", true);
     // httpRequest.send(null);
+  }
+
+  componentDidUpdate(nextProps, nextState) {
+    if(this.state.uploadedPictures > 0 && this.state.uploadedPictures == this.state.installationPictures.length) {
+      this.props.handleInstallationNext();
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.state.uploadedPictures != nextState.uploadedPictures) {
+      if (nextState.uploadedPictures < this.state.installationPictures.length) {
+        return false;
+      }
+    }
+    return true;
   }
 
   cameraClickHandler() {
@@ -269,28 +287,48 @@ export default class CameraComponent extends React.Component {
     //Start point, check if Camera exists on a device
     isCameraPresent();
   }
-
   iOSUploadClickHandler() {
+    for(var i = 0; i < this.state.installationPictures.length; i++)
+    {
+      console.log('in the loop');
+      console.log(this.state.installationPictures[i]);
+      this.iOSUploadSingleFile(this.state.installationPictures[i]);
+    }
+  }
+
+  clearCache() {
+    navigator.camera.cleanup();
+  }
+
+  iOSUploadSingleFile(file_URI) {
     var retries = 0;
-    var fileURI = this.state.installationPictures[0];
+    var fileURI = file_URI;
+    var _this = this;
     var win = function (r) {
-        clearCache();
-        retries = 0;
-        alert('Done!');
-        this.props.handleInstallationNext();
+      console.log("Code = " + r.responseCode);
+      console.log("Response = " + r.response);
+      _this.clearCache();
+      retries = 0;
+      _this.setState({
+        uploadedPictures: _this.state.uploadedPictures + 1,
+      });
     }
 
     var fail = function (error) {
-        if (retries == 0) {
-            retries ++
-            setTimeout(function() {
-                iOSUploadClickHandler(fileURI)
-            }, 1000)
-        } else {
-            retries = 0;
-            clearCache();
-            alert('Ups. Something wrong happens!');
-        }
+      alert("An error has occurred: Code = " + error.code);
+      console.log("upload error source " + error.source);
+      console.log("upload error target " + error.target);
+
+      if (retries == 0) {
+        retries ++
+        setTimeout(function() {
+          _this.iOSUploadSingleFile(fileURI)
+        }, 1000)
+      } else {
+        retries = 0;
+        _this.clearCache();
+        alert('Ups. Something wrong happens!');
+      }
     }
 
     var options = new FileUploadOptions();
