@@ -61,17 +61,38 @@ app.get('/', function(req, res) {
 });
 
 app.get('/closesaleiframe', function(req, res) {
-    res.sendFile(path.join(__dirname + '/src/client/closesaleiframe.html'));
+	console.log(JSON.stringify(req.query));
+	if (req.query.event == 'signing_complete') {
+		setStatus(req.query.id, "Sale", "Signed", function() {
+			createBoxFolder(req.query.name + '_' + req.query.id, req.query.id, function() {
+				res.sendFile(path.join(__dirname + '/src/client/closesaleiframe.html'));
+			});
+		});
+	}
+	// Handle else case when docusign form is cancelled, editClickHandler
+	// See https://www.docusign.com/developer-center/explore/features/embedding-docusign#determine-action
 });
 
 app.get('/closeinstallationoneiframe', function(req, res) {
-    res.sendFile(path.join(__dirname + '/src/client/closeinstallationoneiframe.html'));
+	console.log(JSON.stringify(req.query));
+	if (req.query.event == 'signing_complete') {
+		setStatus(req.query.id, "Installation", "Customer Signed", function() {
+			res.sendFile(path.join(__dirname + '/src/client/closeinstallationoneiframe.html'));
+		});
+	}
+	// Handle else case when docusign form is cancelled, editClickHandler
+	// See https://www.docusign.com/developer-center/explore/features/embedding-docusign#determine-action
 });
 
 app.get('/closeinstallationtwoiframe', function(req, res) {
-	// console.log(JSON.stringify(req.body));
-	// console.log(JSON.stringify(req.query));
-    res.sendFile(path.join(__dirname + '/src/client/closeinstallationtwoiframe.html'));
+	console.log(JSON.stringify(req.query));
+	if (req.query.event == 'signing_complete') {
+		setState(req.query.id, "Installation", "Installer Signed", function() {
+			res.sendFile(path.join(__dirname + '/src/client/closeinstallationtwoiframe.html'));
+		});
+	}
+	// Handle else case when docusign form is cancelled, editClickHandler
+	// See https://www.docusign.com/developer-center/explore/features/embedding-docusign#determine-action
 });
 
 app.get('/dashboard', function(request, response) {
@@ -847,7 +868,9 @@ app.get('/getoneinstallation', function(request, response) {
 app.post('/getembeddedurl', function(request, response) {
   var url = config.docusign.baseUrl + "/envelopes";
   var recipientName = request.body.fname + ' ' +  request.body.lname;
-  var returnUrl = "http://" + config.IP + "/closesaleiframe";
+	var formattedName = recipientName.replace(' ', '_');
+  var returnUrl = "http://" + config.IP + "/closesaleiframe?id=" + request.body.salesNumber +
+		"&name=" + formattedName;
   // Prepare the request body
   var body = JSON.stringify({
       "emailSubject": "DocuSign API call - Embedded Sending Example",
@@ -1055,7 +1078,7 @@ app.post('/getembeddedurl', function(request, response) {
 app.post('/getInstallationEmbeddedUrl', function(request, response) {
   var url = config.docusign.baseUrl + "/envelopes";
   var customerName = request.body.fname + ' ' +  request.body.lname;
-  var returnUrl = "http://" + config.IP + "/closeinstallationoneiframe";
+  var returnUrl = "http://" + config.IP + "/closeinstallationoneiframe?id=" + request.body.installationId;
 
   // Prepare the request body
   var body = JSON.stringify({
@@ -1475,7 +1498,7 @@ app.post('/upload', function(request, response) {
 						}
 
 						if(fields.type == "Sale") {
-							setStatus(fields.id, fields.type, "Signed", function(obj) {
+							setStatus(fields.id, fields.type, "Paid", function(obj) {
 								return response.status(200).json({success: true, obj: obj});
 							});
 						} else if(fields.type == "Installation") {
@@ -1677,7 +1700,7 @@ var getDocuSignUrl = function(envelopeId, returnUrl, email, userName, clientUser
     req.end();
 }
 
-var createBoxFolder = function(name, saleId, callback) {
+var createBoxFolder = function(name, id, callback) {
   adminAPIClient.folders.create('0', name, function(err, response) {
 		if(err) {
 			console.log('could not create folder');
@@ -1687,14 +1710,14 @@ var createBoxFolder = function(name, saleId, callback) {
 		} else {
 			console.log('folder was created: ' + JSON.stringify(response.id));
       // Return fodler id
-			setFolderId(response.id, saleId, function(folderId){
+			setFolderId(response.id, id, function(folderId){
 				callback(response.id);
 			});
 		}
 	});
 }
 
-var setFolderId = function(folderId, saleId, callback) {
+var setFolderId = function(folderId, id, callback) {
 	var jsonObj = querystring.stringify({
     // Envelope Id
     folderId: folderId
@@ -1704,7 +1727,7 @@ var setFolderId = function(folderId, saleId, callback) {
     host: config.crudIP,
     port: 8080,
     method: 'PUT',
-    path: '/crud/SaleService/setFolderId/' + saleId,
+    path: '/crud/SaleService/setFolderId/' + id,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': Buffer.byteLength(jsonObj)
