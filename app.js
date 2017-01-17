@@ -87,7 +87,7 @@ app.get('/closeinstallationoneiframe', function(req, res) {
 app.get('/closeinstallationtwoiframe', function(req, res) {
 	console.log(JSON.stringify(req.query));
 	if (req.query.event == 'signing_complete') {
-		setState(req.query.id, "Installation", "Installer Signed", function() {
+		setStatus(req.query.id, "Installation", "Installer Signed", function() {
 			res.sendFile(path.join(__dirname + '/src/client/closeinstallationtwoiframe.html'));
 		});
 	}
