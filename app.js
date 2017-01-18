@@ -1479,7 +1479,7 @@ app.post('/upload', function(request, response) {
 				var filename;
 
 				if (fields.type == "Sale") {
-					filename = "cheque_saleid_" + fields.id;
+					filename = "cheque_saleid_" + fields.id + ".jpg";
 				} else if (fields.type == "Installation") {
 					filename = "installation_id_" + fields.id + "_" + file.name;
 				}
