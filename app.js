@@ -1881,15 +1881,15 @@ var webhook = function(data) {
 		console.log("Connect data parsed!");
 		var envelopeStatus = xml.DocuSignEnvelopeInformation.EnvelopeStatus;
 		var envelopeId = envelopeStatus[0].EnvelopeID[0];
-		var userName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].UserName[0];
-		var userId = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].ClientUserId[0];
-		var customerName = userName.replace(" ", "_");
-
-		// console.log(envelopeStatus);
-		console.log(envelopeId);
-		console.log(userName);
-		console.log(userId);
-		console.log(customerName);
+		// var userName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].UserName[0];
+		// var userId = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].ClientUserId[0];
+		// var customerName = userName.replace(" ", "_");
+		//
+		// // console.log(envelopeStatus);
+		// console.log(envelopeId);
+		// console.log(userName);
+		// console.log(userId);
+		// console.log(customerName);
 
 		// var timeGenerated = envelopeStatus[0].TimeGenerated[0];
 
@@ -1924,6 +1924,15 @@ var webhook = function(data) {
 
 		if ("Completed" === envelopeStatus[0].Status[0]) {
 			var fields = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].FormData[0].xfdf[0].fields[0];
+			var userName = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].UserName[0];
+			var userId = envelopeStatus[0].RecipientStatuses[0].RecipientStatus[0].ClientUserId[0];
+			var customerName = userName.replace(" ", "_");
+
+			// console.log(envelopeStatus);
+			console.log(envelopeId);
+			console.log(userName);
+			console.log(userId);
+			console.log(customerName);
 
 			// Loop through the DocumentPDFs element, storing each document.
 			nodeList = xml.DocuSignEnvelopeInformation.DocumentPDFs[0].DocumentPDF;
