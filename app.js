@@ -1928,7 +1928,7 @@ var webhook = function(data) {
 			// Loop through the DocumentPDFs element, storing each document.
 			nodeList = xml.DocuSignEnvelopeInformation.DocumentPDFs[0].DocumentPDF;
 			var i = 0;
-			async.forEachSeries(nodeList, function(node, cb) {
+			async.forEachSeries(nodeList, function(node, cb2) {
 				var pdf = node;
 				filename = envelopeId + "_doc_" + (pdf.DocumentID ? pdf.DocumentID[0] : "") + ".pdf";
 				// var folderId = "0"; // Root folder id
@@ -2006,10 +2006,10 @@ var webhook = function(data) {
 										console.log("file uploaded");
 										if (error) {
 											console.log("error uploading file", JSON.stringify(error));
-											cb(error);
+											cb2(error);
 										} else {
 											console.log("file uploaded successfully", JSON.stringify(message));
-											cb();
+											cb2();
 										}
 									});
 								});
@@ -2019,10 +2019,10 @@ var webhook = function(data) {
 									console.log("file uploaded");
 									if (error) {
 										console.log("error uploading file", JSON.stringify(error));
-										cb(error);
+										cb2(error);
 									} else {
 										console.log("file uploaded successfully", JSON.stringify(message));
-										cb();
+										cb2();
 									}
 								});
 							}
@@ -2032,10 +2032,10 @@ var webhook = function(data) {
 								console.log("file uploaded");
 								if (error) {
 									console.log("error uploading file", JSON.stringify(error));
-									cb(error);
+									cb2(error);
 								} else {
 									console.log("file uploaded successfully", JSON.stringify(message));
-									cb();
+									cb2();
 								}
 							});
 						}
