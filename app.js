@@ -1427,7 +1427,7 @@ app.post('/getInstallationEmbeddedUrl2', function(request, response) {
   var installerId = request.body.contractorId;
   var envelopeId = request.body.envelopeId;
   var installerEmail = "installer@example.com";
-  var returnUrl = "http://" + config.IP + "/closeinstallationtwoiframe";
+  var returnUrl = "http://" + config.IP + "/closeinstallationtwoiframe?id=" + request.body.installationId;
 
   return getDocuSignUrl(envelopeId, returnUrl, installerEmail, installerName, installerId, function(urlObj) {
     return response.status(200).json(urlObj);

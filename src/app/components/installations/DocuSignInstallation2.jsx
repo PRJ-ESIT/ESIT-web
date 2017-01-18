@@ -9,6 +9,7 @@ export default class DocuSignInstallation2 extends React.Component {
       contractorId: this.props.installation.installerId,
       installerName: this.props.installation.installerName,
       installedDate: this.props.installation.installedDate,
+      installationId: this.props.installation.installationId,
       envelopeId: this.props.envelopeId,
     };
     this.props.getInstallationEmbeddedUrl2(data);
