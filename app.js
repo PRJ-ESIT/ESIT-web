@@ -1476,8 +1476,15 @@ app.post('/upload', function(request, response) {
 				var file = files[file_name];
 
 				var fileStream = fs.createReadStream(file.path + "");
+				var filename;
 
-				uploadFile(fields.folderId, file.name + "", fileStream, function(err, res) {
+				if (fields.type == "Sale") {
+					filename = "cheque_saleid_" + fields.id;
+				} else if (fields.type == "Installation") {
+					filename = "installation_id_" + fields.id + "_" + file.name;
+				}
+
+				uploadFile(fields.folderId, filename, fileStream, function(err, res) {
 					if (err) {
 
 						// Once the upload completes, delete the temporary file from disk
