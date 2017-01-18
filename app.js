@@ -2015,10 +2015,10 @@ var webhook = function(data) {
 										console.log("file uploaded");
 										if (error) {
 											console.log("error uploading file", JSON.stringify(error));
-											cb2(error);
+											return cb2(error);
 										} else {
 											console.log("file uploaded successfully", JSON.stringify(message));
-											cb2();
+											return cb2();
 										}
 									});
 								});
@@ -2028,10 +2028,10 @@ var webhook = function(data) {
 									console.log("file uploaded");
 									if (error) {
 										console.log("error uploading file", JSON.stringify(error));
-										cb2(error);
+										return cb2(error);
 									} else {
 										console.log("file uploaded successfully", JSON.stringify(message));
-										cb2();
+										return cb2();
 									}
 								});
 							}
@@ -2041,10 +2041,10 @@ var webhook = function(data) {
 								console.log("file uploaded");
 								if (error) {
 									console.log("error uploading file", JSON.stringify(error));
-									cb2(error);
+									return cb2(error);
 								} else {
 									console.log("file uploaded successfully", JSON.stringify(message));
-									cb2();
+									return cb2();
 								}
 							});
 						}
