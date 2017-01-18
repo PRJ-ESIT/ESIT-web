@@ -1861,9 +1861,10 @@ var uploadFile = function(folderId, filename, file, callback) {
 		if(err) {
 			console.log('box err:' + JSON.stringify(err));
 			callback(err, null);
+		} else {	
+		  console.log(JSON.stringify(response));
+		  callback(null, response);
 		}
-		console.log(JSON.stringify(response));
-		callback(null, response);
 	});
 }
 
