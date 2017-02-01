@@ -114,7 +114,7 @@ export default class NewEmployee extends React.Component {
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/getoneemployee?id="
+      httpRequest.open('GET', "http://" + IP + "/management/getoneemployee?id="
         + this.props.id, true);
       httpRequest.send(null);
     }
@@ -444,7 +444,7 @@ export default class NewEmployee extends React.Component {
 
     var _this = this;
     var request = new XMLHttpRequest();
-    request.open('POST', "http://" + IP + '/newemployee', true);
+    request.open('POST', "http://" + IP + '/management/newemployee', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 201) {

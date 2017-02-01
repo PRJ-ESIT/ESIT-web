@@ -60,7 +60,7 @@ export default class AllCustomers extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/allcustomers", true);
+    httpRequest.open('GET', "http://" + IP + "/management/getallcustomers", true);
     httpRequest.send(null);
   }
 
@@ -81,7 +81,7 @@ export default class AllCustomers extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/getonecustomer?id=" + this.state.selectedId, true);
+    httpRequest.open('GET', "http://" + IP + "/management/getonecustomer?id=" + this.state.selectedId, true);
     httpRequest.send(null);
   }
 

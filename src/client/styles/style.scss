@@ -27,6 +27,13 @@ AN EXAMPLE OF HOW YOU CAN USE MEDIA QUERIES
   width: 100%;
   position: absolute;
   justify-content: center;
+
+  //Chrome changes input fields' background colors when it autofills them//
+  //this fixes it
+  input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #2f3c7d inset;
+    -webkit-text-fill-color: white !important;
+  }
 }
 
 .loginLogo {

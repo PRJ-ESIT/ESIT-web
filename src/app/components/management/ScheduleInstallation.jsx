@@ -182,7 +182,7 @@ export default class ScheduleInstallation extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/scheduleinstallationinfo", true);
+    httpRequest.open('GET', "http://" + IP + "/management/getunscheduled", true);
     httpRequest.send(null);
   }
 
@@ -203,7 +203,7 @@ export default class ScheduleInstallation extends React.Component {
 
     var _this = this;
     var request = new XMLHttpRequest();
-    request.open('POST', "http://" + IP + '/newinstallation', true);
+    request.open('POST', "http://" + IP + '/installations/create', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 201) {

@@ -63,7 +63,7 @@ export default class AllEmployees extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/allemployees", true);
+    httpRequest.open('GET', "http://" + IP + "/management/getallemployees", true);
     httpRequest.send(null);
   }
 
@@ -94,7 +94,7 @@ export default class AllEmployees extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/getoneemployee?id=" + this.state.selectedId, true);
+    httpRequest.open('GET', "http://" + IP + "/management/getoneemployee?id=" + this.state.selectedId, true);
     httpRequest.send(null);
   }
 

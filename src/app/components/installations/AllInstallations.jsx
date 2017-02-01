@@ -60,7 +60,7 @@ export default class AllInstallations extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/allinstallations?id=" + this.props.userId, true);
+    httpRequest.open('GET', "http://" + IP + "/installations/getall?id=" + this.props.userId, true);
     httpRequest.send(null);
   }
 
@@ -91,7 +91,7 @@ export default class AllInstallations extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/getoneinstallation?id=" + this.state.selectedId, true);
+    httpRequest.open('GET', "http://" + IP + "/installations/getone?id=" + this.state.selectedId, true);
     httpRequest.send(null);
   }
 
