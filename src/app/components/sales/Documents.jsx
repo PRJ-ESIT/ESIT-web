@@ -44,7 +44,7 @@ export default class Documents extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/files", true);
+    httpRequest.open('GET', "http://" + IP + "/management/files", true);
     httpRequest.send(null);
   }
 
@@ -63,10 +63,10 @@ export default class Documents extends React.Component {
                 key={file.id}
                 title={file.name}
                 actionIcon={<IconButton
-                  href={"/download/" + file.id}
+                  href={"/management/download/" + file.id}
                   ><StarBorder color="white" /></IconButton>}
               >
-                <img src={"/thumbnail/" + file.id} alt="file" />
+                <img src={"/management/thumbnail/" + file.id} alt="file" />
               </GridTile>
             ))}
           </GridList>

@@ -73,7 +73,7 @@ export default class LoginScreen extends React.Component {
 
       var _this = this;
       var httpRequest = new XMLHttpRequest();
-      httpRequest.open('POST', "http://" + IP + "/login", true);
+      httpRequest.open('POST', "http://" + IP + "/auth/login", true);
       httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
       httpRequest.onreadystatechange = function() {
         if (this.readyState == 4) {

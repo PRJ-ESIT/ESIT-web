@@ -191,12 +191,12 @@ export default class CompleteInstallation extends React.Component {
             }
           };
 
-          httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=installer", true);
+          httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=installer", true);
           httpReq.send(null);
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/getoneinstallation?id="
+      httpRequest.open('GET', "http://" + IP + "/installations/getone?id="
         + this.props.id, true);
       httpRequest.send(null);
     }

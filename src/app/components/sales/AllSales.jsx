@@ -63,7 +63,7 @@ export default class AllSales extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/allsales?id=" + this.props.userId, true);
+    httpRequest.open('GET', "http://" + IP + "/sales/getall?id=" + this.props.userId, true);
     httpRequest.send(null);
   }
 
@@ -94,7 +94,7 @@ export default class AllSales extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/existingsale?id=" + this.state.selectedId, true);
+    httpRequest.open('GET', "http://" + IP + "/sales/getone?id=" + this.state.selectedId, true);
     httpRequest.send(null);
   }
 

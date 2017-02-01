@@ -55,7 +55,7 @@ export default class CameraComponent extends React.Component {
       }
     }
 
-    httpRequest.open('GET', "http://" + IP + "/existingsale?id="
+    httpRequest.open('GET', "http://" + IP + "/sales/getone?id="
       + _this.props.sale.salesNumber, true);
     httpRequest.send(null);
   }
@@ -291,7 +291,7 @@ export default class CameraComponent extends React.Component {
       type: "Installation"
     }; // if we need to send parameters to the server request
     var ft = new FileTransfer();
-    ft.upload(fileURI, encodeURI("http://" + IP + "/upload"), win, fail, options);
+    ft.upload(fileURI, encodeURI("http://" + IP + "/common/upload"), win, fail, options);
   }
 
   desktopUploadClickHandler() {
@@ -322,7 +322,7 @@ export default class CameraComponent extends React.Component {
 
       }
     };
-    httpRequest.open('POST', "http://" + IP + '/upload', true);
+    httpRequest.open('POST', "http://" + IP + '/common/upload', true);
     httpRequest.send(fd);
 
     this.setState({

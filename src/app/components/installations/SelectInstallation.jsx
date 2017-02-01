@@ -30,7 +30,7 @@ export default class SelectInstallation extends React.Component {
       }
     };
 
-    httpRequest.open('GET', "http://" + IP + "/scheduledinstallations?id=" + this.props.userId, true);
+    httpRequest.open('GET', "http://" + IP + "/installations/getallscheduled?id=" + this.props.userId, true);
     httpRequest.send(null);
   }
 

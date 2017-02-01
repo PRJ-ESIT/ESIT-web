@@ -167,7 +167,7 @@ export default class App extends React.Component {
       }
     };
 
-    httpRequest.open('POST', "http://" + IP + "/getembeddedurl", true);
+    httpRequest.open('POST', "http://" + IP + "/sales/getsaleembeddedurl", true);
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(data));
   }
@@ -187,7 +187,7 @@ export default class App extends React.Component {
       }
     };
 
-    httpRequest.open('POST', "http://" + IP + "/getInstallationEmbeddedUrl", true);
+    httpRequest.open('POST', "http://" + IP + "/installations/getinstallationembeddedurl", true);
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(data));
   }
@@ -205,7 +205,7 @@ export default class App extends React.Component {
       }
     };
 
-    httpRequest.open('POST', "http://" + IP + "/getInstallationEmbeddedUrl2", true);
+    httpRequest.open('POST', "http://" + IP + "/installations/getinstallationembeddedurl2", true);
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(data));
   }

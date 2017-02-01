@@ -152,11 +152,11 @@ export default class NewSale extends React.Component {
               });
             }
           };
-            httpReq.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
+            httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=salesperson", true);
           httpReq.send(null);
         }
       };
-      httpRequest.open('GET', "http://" + IP + "/existingsale?id="
+      httpRequest.open('GET', "http://" + IP + "/sales/getone?id="
         + _this.props.id, true);
       httpRequest.send(null);
     } else if (this.props.status == 'create') {
@@ -172,7 +172,7 @@ export default class NewSale extends React.Component {
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/allemployeesbyrole?role=salesperson", true);
+      httpRequest.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=salesperson", true);
       httpRequest.send(null);
     }
   }
@@ -576,7 +576,7 @@ export default class NewSale extends React.Component {
 
     let _this = this;
     var request = new XMLHttpRequest();
-    request.open('POST', "http://" + IP + '/newsale', true);
+    request.open('POST', "http://" + IP + '/sales/create', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 201) {
