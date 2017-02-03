@@ -120,6 +120,7 @@ export default class LoginScreen extends React.Component {
             value={this.state.loginTxtField}
             onChange={this.handleLoginTextFieldChange}
             errorText={this.state.loginErrorText}
+            maxLength="50"
           /><br />
           <TextField
             hintText="<your_secure_password>"
@@ -133,6 +134,7 @@ export default class LoginScreen extends React.Component {
             value={this.state.passwordTxtField}
             onChange={this.handlePasswordTextFieldChange}
             errorText={this.state.passwordErrorText}
+            maxLength="30"
           /><br />
           <FlatButton
             label="LOG IN"
