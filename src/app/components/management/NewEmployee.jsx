@@ -465,31 +465,38 @@ export default class NewEmployee extends React.Component {
         <div className="newEmployeeFormContainer">
           <div className="newEmployeeForm">
             <div className="newEmployeeFormBox">
-              <SelectField
-                floatingLabelText="Employee Type"
-                floatingLabelFixed={false}
-                hintText="Select Employee Type"
-                value={this.state.employeeType}
-                onChange={this.handleSelectChange.bind(this, "employeeType")}
-                errorText={this.state.employeeTypeErr}
-                errorStyle={{float: "left"}}
-              >
-                <MenuItem key={1} value={"salesperson"} primaryText="Sales Agent" />
-                <MenuItem key={2} value={"installer"} primaryText="Installer" />
-                <MenuItem key={3} value={"admin"} primaryText="Administrator" />
-              </SelectField>
-              <DatePicker
-                hintText="2017-08-20" container="inline"
-                floatingLabelText="Hire Date"
-                minDate={this.state.minDate}
-                maxDate={this.state.maxDate}
-                value={this.state.hireDate}
-                onChange={this.handleDateChange.bind(this, "hireDate")}
-                onBlur={this.validateHireDate.bind(this)}
-                errorText={this.state.hireDateErr}
-                errorStyle={{float: "left"}}
-                onTouchTap={(e) => {e.preventDefault();}}
-              />
+              <div style={{ display: 'inline-block' }}>
+                <DatePicker
+                  hintText="2017-08-20" container="inline"
+                  floatingLabelText="Hire Date"
+                  minDate={this.state.minDate}
+                  maxDate={this.state.maxDate}
+                  value={this.state.hireDate}
+                  onChange={this.handleDateChange.bind(this, "hireDate")}
+                  onBlur={this.validateHireDate.bind(this)}
+                  errorText={this.state.hireDateErr}
+                  errorStyle={{float: "left"}}
+                  onTouchTap={(e) => {e.preventDefault();}}
+                />
+              </div>
+              &nbsp;
+              &nbsp;
+              <div style={{ display: 'inline-block', verticalAlign: 'bottom' }}>
+                <SelectField
+                  // style={{ verticalAlign: 'bottom' }}
+                  floatingLabelText="Employee Type"
+                  floatingLabelFixed={false}
+                  hintText="Select Employee Type"
+                  value={this.state.employeeType}
+                  onChange={this.handleSelectChange.bind(this, "employeeType")}
+                  errorText={this.state.employeeTypeErr}
+                  errorStyle={{float: "left"}}
+                >
+                  <MenuItem key={1} value={"salesperson"} primaryText="Sales Agent" />
+                  <MenuItem key={2} value={"installer"} primaryText="Installer" />
+                  <MenuItem key={3} value={"admin"} primaryText="Administrator" />
+                </SelectField>
+              </div>
               <br />
               <TextField
                 floatingLabelText="First Name"
@@ -549,6 +556,7 @@ export default class NewEmployee extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
+                style={{ verticalAlign: 'bottom' }}
                 floatingLabelText="Province"
                 floatingLabelFixed={false}
                 hintText="Select a Province"

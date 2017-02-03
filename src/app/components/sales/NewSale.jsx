@@ -662,6 +662,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
+                style={{ verticalAlign: 'bottom' }}
                 floatingLabelText="Province"
                 floatingLabelFixed={false}
                 hintText="Select a Province"
@@ -842,6 +843,7 @@ export default class NewSale extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
+                style={{ verticalAlign: 'bottom' }}
                 floatingLabelText="Sales Representative"
                 floatingLabelFixed={false}
                 hintText="Select a Sales Representative"

@@ -253,7 +253,7 @@ export default class ScheduleInstallation extends React.Component {
           onChange={this.handleSelectChange.bind(this, "installer")}
           errorText={this.state.installerErr}
           errorStyle={{float: "left"}}
-          style={{paddingLeft: "20px"}}
+          style={{ paddingLeft: "20px", verticalAlign: 'bottom' }}
         >
           {this.state.allInstallers ? this.state.allInstallers.map((installer, index) => (
             <MenuItem key={index} value={installer.employeeNumber} primaryText={installer.name} />

@@ -796,6 +796,7 @@ export default class CompleteInstallation extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
+                style={{ verticalAlign: 'bottom' }}
                 floatingLabelText="Province"
                 floatingLabelFixed={false}
                 hintText="Select a Province"
@@ -1178,6 +1179,7 @@ export default class CompleteInstallation extends React.Component {
               />
               <div>
                 <SelectField
+                  style={{ verticalAlign: 'bottom' }}
                   floatingLabelText="Installer"
                   floatingLabelFixed={false}
                   hintText="Select an Installer"

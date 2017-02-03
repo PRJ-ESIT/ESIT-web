@@ -22,6 +22,7 @@ export default class LoginScreen extends React.Component {
     this.login = this.login.bind(this);
     this.handleLoginTextFieldChange = this.handleLoginTextFieldChange.bind(this);
     this.handlePasswordTextFieldChange = this.handlePasswordTextFieldChange.bind(this);
+    this.enterHandler = this.enterHandler.bind(this);
   }
 
   getChildContext() {
@@ -94,9 +95,18 @@ export default class LoginScreen extends React.Component {
     }
   }
 
+  enterHandler(e) {
+    if (e.key == 'Enter') {
+      this.login();
+    }
+  }
+
   render() {
     return (
-      <div className="loginPage">
+      <div
+        className="loginPage"
+        onKeyUp={this.enterHandler}
+      >
         <div className="mid">
           <div className="loginLogo">esit</div>
           <TextField
@@ -110,6 +120,7 @@ export default class LoginScreen extends React.Component {
             value={this.state.loginTxtField}
             onChange={this.handleLoginTextFieldChange}
             errorText={this.state.loginErrorText}
+            maxLength="50"
           /><br />
           <TextField
             hintText="<your_secure_password>"
@@ -123,6 +134,7 @@ export default class LoginScreen extends React.Component {
             value={this.state.passwordTxtField}
             onChange={this.handlePasswordTextFieldChange}
             errorText={this.state.passwordErrorText}
+            maxLength="30"
           /><br />
           <FlatButton
             label="LOG IN"
