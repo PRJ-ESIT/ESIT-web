@@ -22,6 +22,7 @@ export default class LoginScreen extends React.Component {
     this.login = this.login.bind(this);
     this.handleLoginTextFieldChange = this.handleLoginTextFieldChange.bind(this);
     this.handlePasswordTextFieldChange = this.handlePasswordTextFieldChange.bind(this);
+    this.enterHandler = this.enterHandler.bind(this);
   }
 
   getChildContext() {
@@ -94,9 +95,18 @@ export default class LoginScreen extends React.Component {
     }
   }
 
+  enterHandler(e) {
+    if (e.key == 'Enter') {
+      this.login();
+    }
+  }
+
   render() {
     return (
-      <div className="loginPage">
+      <div
+        className="loginPage"
+        onKeyUp={this.enterHandler}
+      >
         <div className="mid">
           <div className="loginLogo">esit</div>
           <TextField
