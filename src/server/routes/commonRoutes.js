@@ -3,6 +3,7 @@ var http = require("http");
 var querystring = require('querystring');
 var formidable = require('formidable');
 var fs = require('fs');
+var logger = require('../config/logger');
 
 var express     = require('express');
 var commonRouter = express.Router();
@@ -16,6 +17,7 @@ const async = require('async');
 
 //GET http://localhost:3000/common/allemployeesbyrole
 commonRouter.get('/allemployeesbyrole', function(request, response) {
+  logger.info("CommonRoutes: Handling GET /allemployeesbyrole request");
 
   var options = {
     host: config.crudIP,
@@ -51,6 +53,7 @@ commonRouter.get('/allemployeesbyrole', function(request, response) {
 
 //GET http://localhost:3000/common/dashboard
 commonRouter.get('/dashboard', function(request, response) {
+  logger.info("CommonRoutes: Handling GET /dashboard request");
 
   var options = {
     host: config.crudIP,
@@ -105,14 +108,8 @@ commonRouter.get('/dashboard', function(request, response) {
                   // Get some of that sweet, sweet data!
                   config.adminAPIClient.users.get(config.adminAPIClient.CURRENT_USER_ID, null, function(err, currentUser) {
                     if(err) throw err;
-                    console.log('Hello, ' + currentUser.name + '!');
+                    logger.debug('Hello, ' + currentUser.name + '!');
                   });
-
-                  // adminAPIClient.folders.getItems('0', null, function(err, response) {
-                  //   console.log(err);
-                  //   if(err) throw err;
-                  //   console.log(response);
-                  // });
 
                   response.status(200).json(entry);
               });
@@ -135,6 +132,8 @@ commonRouter.get('/dashboard', function(request, response) {
 
 //POST http://localhost:3000/common/upload
 commonRouter.post('/upload', function(request, response) {
+  logger.info("CommonRoutes: Handling POST /upload request");
+
   var form = new formidable.IncomingForm();
   // Allow upload multiple files in a single request
   form.multiples = true;
@@ -142,7 +141,7 @@ commonRouter.post('/upload', function(request, response) {
 
   form
     .on('error', function(err) {
-      console.error(err);
+      logger.error(err);
       response.writeHead(500, {'content-type': 'text/plain'});
       response.end('error:\n\n'+ err);
     })
@@ -153,10 +152,7 @@ commonRouter.post('/upload', function(request, response) {
       fields[name] = field;
     })
     .on('end', function() {
-      console.log('-> post done');
-      // response.writeHead(200, {'content-type': 'text/plain'});
-      // console.log('received files:\n\n '+util.inspect(files));
-      // console.log('received fields:\n\n '+util.inspect(fields));
+      logger.debug('/upload -> post completed');
 
       // Loop through all files
       async.forEach(Object.keys(files), function(file_name, cb) {
@@ -173,13 +169,13 @@ commonRouter.post('/upload', function(request, response) {
 
         uploadFile(fields.folderId, filename, fileStream, function(err, res) {
           if (err) {
-
+            logger.error('File was not uploaded');
             // Once the upload completes, delete the temporary file from disk
             fs.unlink(file.path + "", function() {
               cb(err);
             });
           } else {
-            console.log("file uploaded");
+            logger.debug("file uploaded");
             // Once the upload completes, delete the temporary file from disk
             fs.unlink(file.path + "", function() {
               cb();

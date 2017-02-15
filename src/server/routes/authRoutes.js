@@ -1,12 +1,16 @@
 var config = require("../config/config");
 var http = require("http");
 var querystring = require('querystring');
+var logger = require('../config/logger');
 
 var express     = require('express');
 var authRouter = express.Router();
 
+
 //POST http://localhost:3000/auth/login
 authRouter.post('/login', function(request, response) {
+  logger.info("AuthRoutes: Handling POST Login request");
+
   var jsonObj = querystring.stringify({
     email: request.body.email,
     password: request.body.password,
@@ -42,7 +46,7 @@ authRouter.post('/login', function(request, response) {
   });
 
   req.on('error', function(err) {
-    console.log('error message');
+    logger.error('error message');
     //response.send('error: ' + err.message);
   });
 

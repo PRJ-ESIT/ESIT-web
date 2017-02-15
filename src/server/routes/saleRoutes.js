@@ -5,6 +5,7 @@ var http = require("http");
 var https = require("https");
 var querystring = require('querystring');
 var path = require('path');
+var logger = require('../config/logger');
 
 //importing helpers
 var helpers = require('../helpers/common');
@@ -17,6 +18,7 @@ var createBoxFolder = helpers.createBoxFolder;
 
 //GET http://localhost:3000/sales/getall
 saleRouter.get('/getall', function(request, response) {
+  logger.info("SaleRoutes: Handling GET /getall request");
 
   var options = {
     host: config.crudIP,
@@ -52,6 +54,8 @@ saleRouter.get('/getall', function(request, response) {
 
 //GET http://localhost:3000/sales/getone
 saleRouter.get('/getone', function(request, response) {
+  logger.info("SaleRoutes: Handling GET /getone request");
+
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -86,6 +90,7 @@ saleRouter.get('/getone', function(request, response) {
 
 //POST http://localhost:3000/sales/create
 saleRouter.post('/create', function(request, response) {
+  logger.info("SaleRoutes: Handling POST /create request");
 
   var jsonObj = querystring.stringify({
     //homeowner's info
@@ -122,8 +127,9 @@ saleRouter.post('/create', function(request, response) {
 
 //helper function to create a sale
 var createSale = function (requestBody, callback) {
+  logger.info('in createSale()');
+
   // Create sale
-  console.log(requestBody);
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -144,13 +150,12 @@ var createSale = function (requestBody, callback) {
 
     res.on('end', function() {
       var saleObj = JSON.parse(output);
-      console.log(saleObj);
       callback(saleObj);
     });
   });
 
   req.on('error', function(err) {
-    console.log('error message');
+    logger.error('error message');
     //response.send('error: ' + err.message);
   });
 
@@ -160,7 +165,8 @@ var createSale = function (requestBody, callback) {
 
 //GET http://localhost:3000/sales/closesaleiframe
 saleRouter.get('/closesaleiframe', function(req, res) {
-  console.log(JSON.stringify(req.query));
+  logger.info("SaleRoutes: Handling GET /closesaleiframe request");
+
   if (req.query.event == 'signing_complete') {
     setStatus(req.query.id, "Sale", "Signed", function() {
       createBoxFolder(req.query.name + '_' + req.query.id, req.query.id, function() {
@@ -174,6 +180,8 @@ saleRouter.get('/closesaleiframe', function(req, res) {
 
 //POST http://localhost:3000/sales/getsaleembeddedurl
 saleRouter.post('/getsaleembeddedurl', function(request, response) {
+  logger.info("SaleRoutes: Handling POST /getsaleembeddedurl request");
+
   var url = config.docusign.baseUrl + "/envelopes";
   var recipientName = request.body.fname + ' ' +  request.body.lname;
   var formattedName = recipientName.replace(' ', '_');
@@ -375,7 +383,7 @@ saleRouter.post('/getsaleembeddedurl', function(request, response) {
     });
 
     req.on('error', function(err) {
-      console.log(err);
+      logger.error(err);
       response.send('error: ' + err.message);
     });
 

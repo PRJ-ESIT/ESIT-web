@@ -5,6 +5,7 @@ var http = require("http");
 var https = require("https");
 var querystring = require('querystring');
 var path = require('path');
+var logger = require('../config/logger');
 
 //importing helpers
 var helpers = require('../helpers/common');
@@ -16,6 +17,7 @@ var setStatus = helpers.setStatus;
 
 //GET http://localhost:3000/installations/getall
 installationRouter.get('/getall', function(request, response) {
+  logger.info("InstallationRoutes: Handling GET /getall request");
 
   var options = {
     host: config.crudIP,
@@ -51,6 +53,8 @@ installationRouter.get('/getall', function(request, response) {
 
 //GET http://localhost:3000/installations/getallscheduled
 installationRouter.get('/getallscheduled', function(request, response) {
+  logger.info("InstallationRoutes: Handling GET /getallscheduled request");
+
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -85,6 +89,8 @@ installationRouter.get('/getallscheduled', function(request, response) {
 
 //POST http://localhost:3000/installations/create
 installationRouter.post('/create', function(request, response) {
+  logger.info("InstallationRoutes: Handling POST /create request");
+
   var jsonObj = querystring.stringify({
     //homeowner's info
     saleId: request.body.salesNumber,
@@ -92,7 +98,7 @@ installationRouter.post('/create', function(request, response) {
     installationDateTime: request.body.installationDateTime,
     folderId: request.body.folderId
   });
-  // console.log(jsonObj);
+
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -120,7 +126,7 @@ installationRouter.post('/create', function(request, response) {
   });
 
   req.on('error', function(err) {
-    console.log('error message');
+    logger.error('error message');
     //response.send('error: ' + err.message);
   });
 
@@ -130,6 +136,8 @@ installationRouter.post('/create', function(request, response) {
 
 //GET http://localhost:3000/installations/getone
 installationRouter.get('/getone', function(request, response) {
+  logger.info("InstallationRoutes: Handling GET /getone request");
+
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -162,7 +170,8 @@ installationRouter.get('/getone', function(request, response) {
 
 //GET http://localhost:3000/installations/closefirstiframe
 installationRouter.get('/closefirstiframe', function(req, res) {
-  console.log(JSON.stringify(req.query));
+  logger.info("InstallationRoutes: Handling GET /closefirstiframe request");
+
   if (req.query.event == 'signing_complete') {
     setStatus(req.query.id, "Installation", "Customer Signed", function() {
       res.sendFile(path.join(__dirname + '../../../client/closeinstallationoneiframe.html'));
@@ -174,7 +183,8 @@ installationRouter.get('/closefirstiframe', function(req, res) {
 
 //GET http://localhost:3000/installations/closesecondiframe
 installationRouter.get('/closesecondiframe', function(req, res) {
-  console.log(JSON.stringify(req.query));
+  logger.info("InstallationRoutes: Handling GET /closesecondiframe request");
+
   if (req.query.event == 'signing_complete') {
     setStatus(req.query.id, "Installation", "Installer Signed", function() {
       res.sendFile(path.join(__dirname + '../../../client/closeinstallationtwoiframe.html'));
@@ -186,6 +196,8 @@ installationRouter.get('/closesecondiframe', function(req, res) {
 
 //POST http://localhost:3000/installations/getinstallationembeddedurl
 installationRouter.post('/getinstallationembeddedurl', function(request, response) {
+  logger.info("InstallationRoutes: Handling POST /getinstallationembeddedurl request");
+
   var url = config.docusign.baseUrl + "/envelopes";
   var customerName = request.body.fname + ' ' +  request.body.lname;
   var returnUrl = "http://" + config.IP + "/installations/closefirstiframe?id=" + request.body.installationId;
@@ -504,12 +516,6 @@ installationRouter.post('/getinstallationembeddedurl', function(request, respons
       res.on('end', function() {
         var obj = JSON.parse(output);
         var envelopeId = obj.envelopeId;
-        console.log(envelopeId);
-        // return getDocuSignUrl(envelopeId, returnUrl, request.body.email, customerName, "1001", function(urlObj) {
-        //   // Add envelopeId to object
-        //   urlObj["envelopeId"] = envelopeId;
-        //   return response.status(200).json(urlObj);
-        // });
 
         // Save envelopeId to db
         return setEnvelopeId(envelopeId, 'InstallationService' , request.body.installationId, function() {
@@ -524,7 +530,7 @@ installationRouter.post('/getinstallationembeddedurl', function(request, respons
     });
 
     req.on('error', function(err) {
-      console.log(err);
+      logger.error(err);
       response.send('error: ' + err.message);
     });
 
@@ -534,6 +540,8 @@ installationRouter.post('/getinstallationembeddedurl', function(request, respons
 
 //POST http://localhost:3000/installations/getInstallationEmbeddedUrl2
 installationRouter.post('/getInstallationEmbeddedUrl2', function(request, response) {
+  logger.info("InstallationRoutes: Handling POST /getInstallationEmbeddedUrl2 request");
+
   var installerName = request.body.installerName;
   var installerId = request.body.contractorId;
   var envelopeId = request.body.envelopeId;

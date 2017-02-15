@@ -13,6 +13,9 @@ var helpers = require('./src/server/helpers/common');
 var webhook = helpers.webhook;
 //end of helpers import
 
+//Logger
+var logger = require('./src/server/config/logger');
+
 //webpack hot load
 var webpack = require('webpack');
 var webpackConfig = require('./config/webpack.config');
@@ -26,6 +29,7 @@ app.use(require("webpack-hot-middleware")(compiler));
 //starting point of our app
 app.use(express.static('dist'));
 app.get('/', function(req, res) {
+  logger.info("Main route: Handling GET / request");
   res.sendFile(path.join(__dirname, './src/client/index.html'));
 });
 //end of our app's starting point
@@ -35,12 +39,13 @@ app.post('/', bodyParser.text({
   limit: '50mb',
   type: '*/xml'
   }), function(request, response) {
+
+    logger.info('Main route: Handling POST / request');
     var contentType = request.headers['content-type'] || '',
       mime = contentType.split(';')[0];
-    // console.log(mime);
-    // console.log("webhook request body: " + JSON.stringify(request.body));
+
     webhook(request.body);
-    response.send("Received!");
+    response.send('Received!');
 });
 
 //importing routes
@@ -58,5 +63,5 @@ app.use('/common', common);
 app.use('/auth', auth);
 
 app.listen(3000, function(err) {
-  console.log('Listening at http://... 3000');
+  logger.info('Listening at http://... 3000');
 });

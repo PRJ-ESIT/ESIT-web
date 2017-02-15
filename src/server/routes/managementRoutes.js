@@ -1,12 +1,14 @@
 var config = require("../config/config");
 var http = require("http");
 var querystring = require('querystring');
+var logger = require('../config/logger');
 
 var express     = require('express');
 var managementRouter = express.Router();
 
 //GET http://localhost:3000/management/getunscheduled
 managementRouter.get('/getunscheduled', function(request, response) {
+  logger.info("ManagementRoutes: Handling GET /getunscheduled request");
 
   var options = {
     host: config.crudIP,
@@ -81,6 +83,7 @@ managementRouter.get('/getunscheduled', function(request, response) {
 
 //GET http://localhost:3000/management/getallcustomers
 managementRouter.get('/getallcustomers', function(request, response) {
+  logger.info("ManagementRoutes: Handling GET /getallcustomers request");
 
   var options = {
     host: config.crudIP,
@@ -116,6 +119,7 @@ managementRouter.get('/getallcustomers', function(request, response) {
 
 //GET http://localhost:3000/management/getallemployees
 managementRouter.get('/getallemployees', function(request, response) {
+  logger.info("ManagementRoutes: Handling GET /getallemployees request");
 
   var options = {
     host: config.crudIP,
@@ -151,6 +155,8 @@ managementRouter.get('/getallemployees', function(request, response) {
 
 //GET http://localhost:3000/management/getoneemployee
 managementRouter.get('/getoneemployee', function(request, response) {
+  logger.info("ManagementRoutes: Handling GET /getoneemployee request");
+
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -185,6 +191,8 @@ managementRouter.get('/getoneemployee', function(request, response) {
 
 //GET http://localhost:3000/management/getonecustomer
 managementRouter.get('/getonecustomer', function(request, response) {
+  logger.info("ManagementRoutes: Handling GET /getonecustomer request");
+
   var options = {
     host: config.crudIP,
     port: 8080,
@@ -219,6 +227,8 @@ managementRouter.get('/getonecustomer', function(request, response) {
 
 //POST http://localhost:3000/management/newemployee
 managementRouter.post('/newemployee', function(request, response) {
+  logger.info("ManagementRoutes: Handling POST /newemployee request");
+
   var jsonObj = querystring.stringify({
     //homeowner's info
     fname: request.body.fname,
@@ -264,7 +274,7 @@ managementRouter.post('/newemployee', function(request, response) {
   });
 
   req.on('error', function(err) {
-    console.log('error message');
+    logger.error('error message');
     //response.send('error: ' + err.message);
   });
 
@@ -275,6 +285,8 @@ managementRouter.post('/newemployee', function(request, response) {
 //GET http://localhost:3000/management/files
 // Get files from box.com
 managementRouter.get('/files', function(request, response) {
+  logger.info("ManagementRoutes: Handling GET /files request");
+
   // Get the user's files in their root folder.  Box uses folder ID "0" to
   // represent the user's root folder, where we'll be putting all their files.
   config.adminAPIClient.folders.getItems('0', null, function(err, data) {
@@ -291,6 +303,8 @@ managementRouter.get('/files', function(request, response) {
 //GET http://localhost:3000/management/thumbnail/:id
 // Get box thumbnail
 managementRouter.get('/thumbnail/:id', function(req, res) {
+  logger.info("ManagementRoutes: Handling GET /thumbnail/:id request");
+
   // API call to get the thumbnail for a file.  This can return either the
   // specific thumbnail image or a URL pointing to a placeholder thumbnail.
   config.adminAPIClient.files.getThumbnail(req.params.id, {}, function(err, data) {
@@ -316,6 +330,8 @@ managementRouter.get('/thumbnail/:id', function(req, res) {
 //GET http://localhost:3000/management/download/:id
 // Download box.com file
 managementRouter.get('/download/:id', function(req, res) {
+  logger.info("ManagementRoutes: Handling GET /download/:id request");
+
   // API call to get the temporary download URL for the user's file
   config.adminAPIClient.files.getDownloadURL(req.params.id, null, function(err, url) {
 
