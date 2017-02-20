@@ -16,15 +16,27 @@ var webhook = helpers.webhook;
 //Logger
 var logger = require('./src/server/config/logger');
 
-//webpack hot load
-var webpack = require('webpack');
-var webpackConfig = require('./config/webpack.config');
-var compiler = webpack(webpackConfig);
-app.use(require("webpack-dev-middleware")(compiler, {
-    noInfo: true, publicPath: webpackConfig.output.publicPath
-}));
-app.use(require("webpack-hot-middleware")(compiler));
-//end of webpack hot load
+//no hot load in production
+if(process.env.NODE_ENV === "development") {
+  //webpack hot load
+  var webpack = require('webpack');
+  var webpackConfig = require('./config/webpack.development.config');
+  var compiler = webpack(webpackConfig);
+  app.use(require("webpack-dev-middleware")(compiler, {
+      noInfo: true, publicPath: webpackConfig.output.publicPath
+  }));
+  app.use(require("webpack-hot-middleware")(compiler));
+  //end of webpack hot load
+}
+
+//middleware to serve gzip to the client, production only
+if(process.env.NODE_ENV === "production") {
+  app.get('*.js', function (req, res, next) {
+    req.url = req.url + '.gz';
+    res.set('Content-Encoding', 'gzip');
+    next();
+  });
+}
 
 //starting point of our app
 app.use(express.static('dist'));
