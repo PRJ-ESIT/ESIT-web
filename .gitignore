@@ -1,6 +1,7 @@
 node_modules/
 dist/
-logs/
+logs/development.log
+logs/production.log
 
 ios/platforms/ios/build/
 ios/platforms/ios/www/
