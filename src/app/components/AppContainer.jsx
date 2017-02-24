@@ -20,7 +20,7 @@ export default class AppContainer extends React.Component {
     this.clearCredentials = this.clearCredentials.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     var role = window.sessionStorage.getItem("role"); //Get item
     var userId = window.sessionStorage.getItem("userId"); //Get item
     var userName = window.sessionStorage.getItem("userName"); //Get item

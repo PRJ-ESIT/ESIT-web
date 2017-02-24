@@ -124,10 +124,14 @@ export default class NewSale extends React.Component {
               for (var employee in allSalesReps) {
                 allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
               }
-              // Format time
+              // Format Datetime object for Safari
               var t = sale.installationDateTime.split(/[- :]/);
               var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
               var minDate = new Date(2000, 0, 1);
+
+              //Format Date object (dateSigned field) for Safari
+              var dateSigned = sale.dateSigned.split(/[- :]/);
+              dateSigned = new Date(dateSigned[0], dateSigned[1]-1, dateSigned[2]);
 
               _this.setState({
                 fname: sale.firstName ? sale.firstName : '',
@@ -149,15 +153,17 @@ export default class NewSale extends React.Component {
                 salesRepName: sale.salesRepId ? allEmployees[sale.salesRepId] : '',
                 minDate: minDate,
                 allSalesReps: allSalesReps,
+                dateSigned: dateSigned,
               });
             }
           };
-            httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=salesperson", true);
+
+          httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=salesperson", true);
           httpReq.send(null);
         }
       };
-      httpRequest.open('GET', "http://" + IP + "/sales/getone?id="
-        + _this.props.id, true);
+
+      httpRequest.open('GET', "http://" + IP + "/sales/getone?id=" + _this.props.id, true);
       httpRequest.send(null);
     } else if (this.props.status == 'create') {
       var httpRequest = new XMLHttpRequest();
