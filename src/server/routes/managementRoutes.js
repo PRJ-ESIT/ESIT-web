@@ -6,6 +6,11 @@ var logger = require('../config/logger');
 var express     = require('express');
 var managementRouter = express.Router();
 
+//importing helpers
+var helpers = require('../helpers/common');
+var setStatus = helpers.setStatus;
+//end of helpers import
+
 //GET http://localhost:3000/management/getunscheduled
 managementRouter.get('/getunscheduled', function(request, response) {
   logger.info("ManagementRoutes: Handling GET /getunscheduled request");
@@ -151,6 +156,17 @@ managementRouter.get('/getallemployees', function(request, response) {
     });
 
     req.end();
+});
+
+//PUT http://localhost:3000/management/updateemployeestatus
+managementRouter.put('/toggleemployeestatus', function(request, response) {
+  logger.info("ManagementRoutes: Handling PUT /toggleemployeestatus request");
+
+    //web service toggles the status, so we leave the status parameter empty
+    setStatus(request.body.employeeId, "Employee", "", function(obj, statusCode) {
+      logger.info("Status code: " + statusCode);
+      return response.status(200).json(obj);
+    });
 });
 
 //GET http://localhost:3000/management/getoneemployee

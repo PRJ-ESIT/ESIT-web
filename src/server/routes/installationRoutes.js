@@ -168,6 +168,17 @@ installationRouter.get('/getone', function(request, response) {
     req.end();
 });
 
+//PUT http://localhost:3000/installations/cancel
+installationRouter.put('/cancel', function(request, response) {
+  logger.info("InstallationRoutes: Handling PUT /cancel request");
+
+    //web service toggles the status, so we leave the status parameter empty
+    setStatus(request.body.installationId, "Installation", "Cancelled", function(obj, statusCode) {
+      logger.info("Status code: " + statusCode);
+      return response.status(200).json(obj);
+    });
+});
+
 //GET http://localhost:3000/installations/closefirstiframe
 installationRouter.get('/closefirstiframe', function(req, res) {
   logger.info("InstallationRoutes: Handling GET /closefirstiframe request");

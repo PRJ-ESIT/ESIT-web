@@ -125,6 +125,17 @@ saleRouter.post('/create', function(request, response) {
   })
 });
 
+//PUT http://localhost:3000/sales/cancel
+saleRouter.put('/cancel', function(request, response) {
+  logger.info("SaleRoutes: Handling PUT /cancel request");
+
+    //web service toggles the status, so we leave the status parameter empty
+    setStatus(request.body.saleId, "Sale", "Cancelled", function(obj, statusCode) {
+      logger.info("Status code: " + statusCode);
+      return response.status(200).json(obj);
+    });
+});
+
 //helper function to create a sale
 var createSale = function (requestBody, callback) {
   logger.info('in createSale()');
