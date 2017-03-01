@@ -25,6 +25,17 @@ export default class LoginScreen extends React.Component {
     this.enterHandler = this.enterHandler.bind(this);
   }
 
+  //TODO - check if Chrome autofill works for the password without this workaround
+  //once React 16 is released. If yes - remove refs from the username and password fields.
+  //https://github.com/callemall/material-ui/issues/718
+  componentDidMount() {
+    setTimeout(() => {
+        if(this.refs.username.getValue()) {
+            this.refs.password.setState({...this.refs.password.state, hasValue: true})
+        }
+    }, 100)
+  }
+
   getChildContext() {
     return { muiTheme: getMuiTheme(baseTheme) };
   }
@@ -43,7 +54,6 @@ export default class LoginScreen extends React.Component {
 
   login() {
     if(!validateEmail(this.state.loginTxtField)) {
-      console.log('login validated, its incorrect');
       if(!validations.isPassword(this.state.passwordTxtField)) {
         this.setState({
           loginErrorText: 'Only haracters and numbers are allowed. Must be > 6 characters long',
@@ -56,7 +66,6 @@ export default class LoginScreen extends React.Component {
         });
       }
     } else if(!validations.isPassword(this.state.passwordTxtField)) {
-      console.log('password validated, its incorrect');
       this.setState({
         loginErrorText: '',
         passwordErrorText: 'Must include at least 1 character, 1 number, one of the special characters !@#$%^&* and have at least 8 characters',
@@ -79,10 +88,8 @@ export default class LoginScreen extends React.Component {
       httpRequest.onreadystatechange = function() {
         if (this.readyState == 4) {
           if(this.status == 200) {
-            console.log('everything worked');
             let token = JSON.parse(httpRequest.responseText);
             var userInfo = token.token.split("_");
-            console.log(userInfo);
             _this.props.setCredentials(userInfo[0], userInfo[1], userInfo[2], userInfo[3]);
           } else{
             _this.setState({
@@ -110,6 +117,7 @@ export default class LoginScreen extends React.Component {
         <div className="mid">
           <div className="loginLogo">esit</div>
           <TextField
+            ref="username"
             hintText="john_doe@email.com"
             hintStyle={{color: "white"}}
             floatingLabelText="Email"
@@ -123,6 +131,7 @@ export default class LoginScreen extends React.Component {
             maxLength="50"
           /><br />
           <TextField
+            ref="password"
             hintText="<your_secure_password>"
             hintStyle={{color: "white"}}
             floatingLabelText="Password"

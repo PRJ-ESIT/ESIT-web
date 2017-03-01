@@ -243,7 +243,7 @@ var setStatus = function(id, type, status, callback) {
 
     res.on('end', function() {
       var obj = JSON.parse(output);
-      callback(obj);
+      callback(obj, res.statusCode);
     });
 
   });

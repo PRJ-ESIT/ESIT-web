@@ -46,10 +46,13 @@ export default class AllEmployees extends React.Component {
       sortBy: 'id',
       sortDir: null,
     }
-    this.handleSelection = this.handleSelection.bind(this);
   }
 
   componentDidMount() {
+    this.getallemployees();
+  }
+
+  getallemployees = () => {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
@@ -104,7 +107,25 @@ export default class AllEmployees extends React.Component {
     });
   }
 
-  handleSelection(selectedRows) {
+  handleDeactivate = () => {
+    let data = {
+      employeeId: this.state.selectedId,
+    };
+
+    var _this = this;
+    var request = new XMLHttpRequest();
+    request.open('PUT', 'http://' + IP + '/management/toggleemployeestatus', true);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        _this.getallemployees();
+      }
+    };
+
+    request.send(JSON.stringify(data));
+  }
+
+  handleSelection = (selectedRows) => {
     if(selectedRows.length == 1) {
       this.setState({
         currentSelected: true,
@@ -178,11 +199,20 @@ export default class AllEmployees extends React.Component {
             {this.state.currentSelected ?
               <ToolbarGroup>
                 <ToolbarSeparator />
-                <RaisedButton label="Edit" primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "newEmployee")}} />
-                <RaisedButton label="Details" primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}/>
-                <RaisedButton label="Deactivate" primary={true} />
+                <RaisedButton label="Edit"
+                  primary={true}
+                  onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "newEmployee")}}
+                />
+                <RaisedButton
+                  label="Details"
+                  primary={true}
+                  onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
+                />
+                <RaisedButton
+                  label="Deactivate"
+                  primary={true}
+                  onTouchTap={(e) => {e.preventDefault(); this.handleDeactivate()}}
+                />
               </ToolbarGroup>
             : null }
           </ToolbarGroup>
