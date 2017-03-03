@@ -4,13 +4,13 @@ import { AppBar, FlatButton  } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LeftMenu from './LeftMenu.jsx';
-import Dashboard from './dashboard/Dashboard.jsx';
+import DashboardContainer from './dashboard/DashboardContainer.jsx';
 import SaleContainer from './sales/SaleContainer.jsx';
 import NewSale from './sales/NewSale.jsx';
 import AllSales from './sales/AllSales.jsx';
 import InstallationContainer from './installations/InstallationContainer.jsx';
 import CompleteInstallation from './installations/CompleteInstallation.jsx';
-import AllInstallations from './installations/AllInstallations.jsx';
+import InstallationTableContainer from './installations/installation-table/InstallationTableContainer.jsx';
 import ScheduleInstallation from './management/ScheduleInstallation.jsx';
 import NewEmployee from './management/NewEmployee.jsx';
 import AllEmployees from './management/AllEmployees.jsx';
@@ -20,14 +20,14 @@ import Documents from './sales/Documents.jsx';
 import { IP } from '../../../config/config.js';
 
 const defaultProps = {
-  dashboard: Dashboard,
+  dashboard: DashboardContainer,
   newSale: SaleContainer,
   editSale: NewSale,
   allSales: AllSales,
   documents: Documents,
   completeInstallation: InstallationContainer,
   editInstallation: CompleteInstallation,
-  allInstallations: AllInstallations,
+  allInstallations: InstallationTableContainer,
   scheduleInstallation: ScheduleInstallation,
   newEmployee: NewEmployee,
   allEmployees: AllEmployees,
@@ -41,7 +41,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       leftMenuOpen: false,
-      currentContent: Dashboard,
+      currentContent: DashboardContainer,
       saleStepIndex: 0,
       installationStepIndex: 0,
       selectedInstallationId: undefined,

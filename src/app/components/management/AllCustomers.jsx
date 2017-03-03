@@ -179,7 +179,7 @@ export default class AllCustomers extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow className={'trow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
+            <TableRow className={'trow headerRow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '130px' }} tooltip="Customer's Email">Email</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Customer's Phone Number">Home Phone</TableHeaderColumn>

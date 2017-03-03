@@ -1,37 +1,12 @@
 import React from 'react';
-import { FlatButton, Toolbar, ToolbarTitle } from 'material-ui';
-import RecentSales from './RecentSales.jsx';
-import RecentInstallations from './RecentInstallations.jsx';
-import { IP } from '../../../../config/config.js';
+import { Toolbar, ToolbarTitle } from 'material-ui';
+import RecentSales from './tables/RecentSales.jsx';
+import RecentInstallations from './tables/RecentInstallations.jsx';
 
 export default class Dashboard extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      allSales: undefined,
-      allInstallations: undefined,
-    };
-  }
-  componentDidMount() {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-
-        let allSales = JSON.parse(httpRequest.responseText).data.sales;
-        let allInstallations = JSON.parse(httpRequest.responseText).data.installations;
-
-        _this.setState({
-          allSales: allSales,
-          allInstallations: allInstallations,
-        });
-      }
-    };
-
-    httpRequest.open('GET', "http://" + IP + "/common/dashboard?id=" + this.props.userId, true);
-    httpRequest.send(null);
   }
 
   render() {
@@ -46,7 +21,7 @@ export default class Dashboard extends React.Component {
               <Toolbar className="salesInstallationToolBar">
                 <ToolbarTitle text={this.props.role == "salesperson" ? "Your Recent Sales" : "Recent Sales"} />
               </Toolbar>
-              <RecentSales allSales={this.state.allSales}/>
+              <RecentSales allSales={this.props.allSales}/>
             </div>
           : null }
           {this.props.role == "admin" || this.props.role == "manager" || this.props.role == "installer" ?
@@ -54,7 +29,7 @@ export default class Dashboard extends React.Component {
               <Toolbar className="salesInstallationToolBar">
                 <ToolbarTitle text={this.props.role == "installer" ? "Your Recent Installations" : "Recent Installations"}/>
               </Toolbar>
-              <RecentInstallations allInstallations={this.state.allInstallations}/>
+              <RecentInstallations allInstallations={this.props.allInstallations}/>
             </div>
           : null }
         </div>

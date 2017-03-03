@@ -230,7 +230,7 @@ export default class AllEmployees extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow className={'trow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
+            <TableRow className={'trow headerRow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '110px' }} tooltip="Employee Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }} tooltip="Employee Role">Role</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Email">Email</TableHeaderColumn>

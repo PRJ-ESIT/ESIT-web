@@ -235,7 +235,7 @@ export default class AllSales extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
+            <TableRow className={'headerRow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Customer's Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '125px' }} tooltip="Product Sold">Product</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '75px' }} tooltip="Sale Date">Date</TableHeaderColumn>
