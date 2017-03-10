@@ -8,8 +8,8 @@ import DashboardContainer from './dashboard/DashboardContainer.jsx';
 import SaleContainer from './sales/SaleContainer.jsx';
 import NewSale from './sales/NewSale.jsx';
 import AllSales from './sales/AllSales.jsx';
-import InstallationContainer from './installations/InstallationContainer.jsx';
-import CompleteInstallation from './installations/CompleteInstallation.jsx';
+import InstallationStepper from './installations/complete-installation/InstallationStepper.jsx';
+import InstallationForm from './installations/complete-installation/installation-form/InstallationForm.jsx';
 import InstallationTableContainer from './installations/installation-table/InstallationTableContainer.jsx';
 import ScheduleInstallation from './management/ScheduleInstallation.jsx';
 import NewEmployee from './management/NewEmployee.jsx';
@@ -25,8 +25,8 @@ const defaultProps = {
   editSale: NewSale,
   allSales: AllSales,
   documents: Documents,
-  completeInstallation: InstallationContainer,
-  editInstallation: CompleteInstallation,
+  completeInstallation: InstallationStepper,
+  editInstallation: InstallationForm,
   allInstallations: InstallationTableContainer,
   scheduleInstallation: ScheduleInstallation,
   newEmployee: NewEmployee,

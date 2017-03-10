@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatButton, RaisedButton } from 'material-ui';
-import { IP } from '../../../../config/config.js';
+import { IP } from '../../../../../../config/config.js';
 
 const styles = {
   imageInput: {
@@ -16,35 +16,19 @@ const styles = {
   button: {
     margin: 12,
   },
-  exampleImageInput: {
-    cursor: 'pointer',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: '100%',
-    opacity: 0,
-  },
 };
 
-export default class CameraComponent extends React.Component {
+export default class InstallationCamera extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
       installationPictures: [],
-      uploadedPictures: 0,
       installationFiles: [],
       isCordova: undefined,
       disableButton: true,
     };
-
-    this.cameraClickHandler = this.cameraClickHandler.bind(this);
-    this.iOSUploadClickHandler = this.iOSUploadClickHandler.bind(this);
-    this.iOSUploadSingleFile = this.iOSUploadSingleFile.bind(this);
-    this.clearCache = this.clearCache.bind(this);
   }
 
   componentWillMount() {
@@ -53,43 +37,22 @@ export default class CameraComponent extends React.Component {
     });
   }
 
-  componentDidMount() {
-    console.log(this.props.id);
-    console.log(this.props.folderId);
-    console.log("file: ", this.refs.file);
-
-    // var httpRequest = new XMLHttpRequest();
-    // let _this = this;
-    // httpRequest.onreadystatechange = function() {
-    //   if (this.readyState == 4 && this.status == 200) {
-    //     let installations = JSON.parse(httpRequest.responseText).installations;
-    //     _this.setState({
-    //       installations: installations
-    //     });
-    //
-    //   }
-    // };
-    //
-    // httpRequest.open('GET', "http://" + IP + "/scheduledinstallations", true);
-    // httpRequest.send(null);
-  }
-
   componentDidUpdate(nextProps, nextState) {
-    if(this.state.uploadedPictures > 0 && this.state.uploadedPictures == this.state.installationPictures.length) {
+    if(this.props.uploadedPictures > 0 && this.props.uploadedPictures == this.state.installationPictures.length) {
       this.props.handleInstallationNext();
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(this.state.uploadedPictures != nextState.uploadedPictures) {
-      if (nextState.uploadedPictures < this.state.installationPictures.length) {
+    if(this.props.uploadedPictures != nextProps.uploadedPictures) {
+      if (nextProps.uploadedPictures < this.state.installationPictures.length) {
         return false;
       }
     }
     return true;
   }
 
-  cameraClickHandler() {
+  cameraClickHandler = () => {
     var _this = this;
     var userMessages = {
       noCamera: "The device doesn't have a working camera",
@@ -287,99 +250,26 @@ export default class CameraComponent extends React.Component {
     //Start point, check if Camera exists on a device
     isCameraPresent();
   }
-  iOSUploadClickHandler() {
+
+  iOSUploadClickHandler = () => {
     for(var i = 0; i < this.state.installationPictures.length; i++)
     {
-      console.log('in the loop');
-      console.log(this.state.installationPictures[i]);
-      this.iOSUploadSingleFile(this.state.installationPictures[i]);
+      this.props.actions.iOSUploadSingleFile(this.state.installationPictures[i]);
     }
   }
 
-  clearCache() {
+  clearCache = () => {
     navigator.camera.cleanup();
   }
 
-  iOSUploadSingleFile(file_URI) {
-    var retries = 0;
-    var fileURI = file_URI;
-    var _this = this;
-    var win = function (r) {
-      console.log("Code = " + r.responseCode);
-      console.log("Response = " + r.response);
-      _this.clearCache();
-      retries = 0;
-      _this.setState({
-        uploadedPictures: _this.state.uploadedPictures + 1,
-      });
-    }
-
-    var fail = function (error) {
-      alert("An error has occurred: Code = " + error.code);
-      console.log("upload error source " + error.source);
-      console.log("upload error target " + error.target);
-
-      if (retries == 0) {
-        retries ++
-        setTimeout(function() {
-          _this.iOSUploadSingleFile(fileURI)
-        }, 1000)
-      } else {
-        retries = 0;
-        _this.clearCache();
-        alert('Ups. Something wrong happens!');
-      }
-    }
-
-    var options = new FileUploadOptions();
-    options.fileKey = "file";
-    options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
-    options.mimeType = "image/jpeg";
-    options.params = {
-      folderId: this.props.folderId,
-      id: this.props.id,
-      type: "Installation"
-    }; // if we need to send parameters to the server request
-    var ft = new FileTransfer();
-    ft.upload(fileURI, encodeURI("http://" + IP + "/common/upload"), win, fail, options);
+  enableButtons = (value) => {
+    this.setState({
+      disableButton: value,
+    });
   }
 
-  desktopUploadClickHandler() {
-    var fd = new FormData();
-    fd.append('type', 'Installation');
-    fd.append('folderId', this.props.folderId);
-    fd.append('id', this.props.id);
-
-    console.log(this.state.installationFiles);
-    for (var i = 0; i < this.state.installationFiles.length; i++) {
-      fd.append('file' + i, this.state.installationFiles[i]);
-    }
-    console.log("fd:", fd);
-
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let response = JSON.parse(httpRequest.responseText);
-        console.log("response: ", response);
-        if (response.success == true) {
-          _this.props.handleInstallationNext({
-            status: response.installation.status,
-          });
-        } else {
-        _this.setState({
-          disableButton: false,
-        });
-        }
-
-      }
-    };
-    httpRequest.open('POST', "http://" + IP + '/common/upload', true);
-    httpRequest.send(fd);
-
-    this.setState({
-      disableButton: true,
-    });
+  desktopUploadClickHandler = () => {
+    this.props.actions.desktopUploadAllFiles(this.state.installationFiles, this.enableButtons);
   }
 
   selectImagesHandler() {
@@ -462,7 +352,7 @@ export default class CameraComponent extends React.Component {
             style={styles.button}
             containerElement="label"
           >
-            <input ref="file" type="file" name="images[]" style={styles.exampleImageInput} multiple
+            <input ref="file" type="file" name="images[]" style={styles.imageInput} multiple
               onChange={(evt) => this.selectImagesHandler(evt)}/>
           </RaisedButton>
         </div>
