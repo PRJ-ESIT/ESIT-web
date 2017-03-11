@@ -3,8 +3,7 @@ import {
   Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
   SelectField, MenuItem, DatePicker, RaisedButton, TimePicker, Paper,
 } from 'material-ui';
-import { validations, dateHelpers } from '../helpers/common.js';
-import { IP } from '../../../../config/config.js';
+import { validations, dateHelpers } from '../../helpers/common.js';
 
 export default class ScheduleInstallation extends React.Component {
   constructor(props) {
@@ -32,22 +31,15 @@ export default class ScheduleInstallation extends React.Component {
       installerValidated: false,
       installationDateValidated: false,
       installationTimeValidated: false,
-
-      allSales: undefined,
-      allInstallers: undefined,
     }
 
   }
 
-  componentDidMount() {
-    this.getInstallationInfo();
-  }
-
   handleRowSelected(selectedRows) {
     if(selectedRows.length == 1) {
-      var dt = this.state.allSales[selectedRows[0]].installationDateTime.split(/[- :]/);
+      var dt = this.props.allSales[selectedRows[0]].installationDateTime.split(/[- :]/);
       this.setState({
-        sale: this.state.allSales[selectedRows[0]],
+        sale: this.props.allSales[selectedRows[0]],
         selectedNum: selectedRows[0],
         installationDate: new Date(dt[0], dt[1]-1, dt[2], dt[3], dt[4], dt[5]),
         installationDateErr: '',
@@ -167,26 +159,8 @@ export default class ScheduleInstallation extends React.Component {
     return time.getHours() + ":" + mins.slice(-2);
   }
 
-  getInstallationInfo() {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allSales = JSON.parse(httpRequest.responseText).data.sales;
-        let allInstallers = JSON.parse(httpRequest.responseText).data.installers;
-
-        _this.setState({
-          allSales: allSales,
-          allInstallers: allInstallers,
-        });
-      }
-    };
-
-    httpRequest.open('GET', "http://" + IP + "/management/getunscheduled", true);
-    httpRequest.send(null);
-  }
-
   createNewInstallation() {
+
     //combining the date and time objects and converting them to MySQL DATETIME format
     var finalDate = new Date(this.state.installationDate);
     var hours = this.state.installationTime.getHours();
@@ -201,18 +175,7 @@ export default class ScheduleInstallation extends React.Component {
       folderId: this.state.sale.folderId,
     };
 
-    var _this = this;
-    var request = new XMLHttpRequest();
-    request.open('POST', "http://" + IP + '/installations/create', true);
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 201) {
-        _this.getInstallationInfo();
-      }
-      //#TODO receive Sale number and add it to the state
-    };
-
-    request.send(JSON.stringify(data));
+    this.props.actions.createNewInstallation(data);
   }
 
   render() {
@@ -231,7 +194,7 @@ export default class ScheduleInstallation extends React.Component {
             </TableRow>
           </TableHeader>
           <TableBody deselectOnClickaway={false}>
-            {this.state.allSales? this.state.allSales.map( (row, index) => (
+            {this.props.allSales? this.props.allSales.map( (row, index) => (
               <TableRow key={index} selected={index == this.state.selectedNum ? true : false}>
                 <TableRowColumn>{row.name}</TableRowColumn>
                 <TableRowColumn>{row.address}</TableRowColumn>
@@ -255,7 +218,7 @@ export default class ScheduleInstallation extends React.Component {
           errorStyle={{float: "left"}}
           style={{ paddingLeft: "20px", verticalAlign: 'bottom' }}
         >
-          {this.state.allInstallers ? this.state.allInstallers.map((installer, index) => (
+          {this.props.allInstallers ? this.props.allInstallers.map((installer, index) => (
             <MenuItem key={index} value={installer.employeeNumber} primaryText={installer.name} />
           ))
           : null }

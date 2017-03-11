@@ -1,11 +1,10 @@
 import React from 'react';
 import {
   TextField, SelectField, MenuItem, RadioButton, RadioButtonGroup,
-  Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  Checkbox, Divider, DatePicker, RaisedButton,
+  Checkbox, DatePicker, RaisedButton,
 } from 'material-ui';
-import { validations } from '../helpers/common.js';
-import { IP } from '../../../../config/config.js';
+import { validations } from '../../../helpers/common.js';
+import { IP } from '../../../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
@@ -24,7 +23,7 @@ const provinces = [
   <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
-export default class CompleteInstallation extends React.Component {
+export default class InstallationForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -598,7 +597,6 @@ export default class CompleteInstallation extends React.Component {
       });
     }
   }
-
 
   validateAllFields() {
     if (this.state.fnameValidated &&

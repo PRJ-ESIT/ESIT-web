@@ -3,35 +3,35 @@ import '../../client/styles/style.scss';
 import { AppBar, FlatButton  } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import LeftMenu from './LeftMenu.jsx';
+import LeftMenu from './left-menu/LeftMenu.jsx';
 import DashboardContainer from './dashboard/DashboardContainer.jsx';
-import SaleContainer from './sales/SaleContainer.jsx';
-import NewSale from './sales/NewSale.jsx';
-import AllSales from './sales/AllSales.jsx';
-import InstallationContainer from './installations/InstallationContainer.jsx';
-import CompleteInstallation from './installations/CompleteInstallation.jsx';
+import SaleStepper from './sales/create-sale/SaleStepper.jsx';
+import SaleForm from './sales/create-sale/sale-form/SaleForm.jsx';
+import SaleTableContainer from './sales/sale-table/SaleTableContainer.jsx';
+import InstallationStepper from './installations/complete-installation/InstallationStepper.jsx';
+import InstallationForm from './installations/complete-installation/installation-form/InstallationForm.jsx';
 import InstallationTableContainer from './installations/installation-table/InstallationTableContainer.jsx';
-import ScheduleInstallation from './management/ScheduleInstallation.jsx';
-import NewEmployee from './management/NewEmployee.jsx';
-import AllEmployees from './management/AllEmployees.jsx';
-import AllCustomers from './management/AllCustomers.jsx';
-import Documents from './sales/Documents.jsx';
+import ScheduleInstallationContainer from './management/installation-schedule/ScheduleInstallationContainer.jsx';
+import EmployeeForm from './management/employee-form/EmployeeForm.jsx';
+import EmployeeTableContainer from './management/employee-table/EmployeeTableContainer.jsx';
+import CustomerTableContainer from './management/customer-table/CustomerTableContainer.jsx';
+import DocumentsContainer from './sales/documents/DocumentsContainer.jsx';
 
 import { IP } from '../../../config/config.js';
 
 const defaultProps = {
   dashboard: DashboardContainer,
-  newSale: SaleContainer,
-  editSale: NewSale,
-  allSales: AllSales,
-  documents: Documents,
-  completeInstallation: InstallationContainer,
-  editInstallation: CompleteInstallation,
+  newSale: SaleStepper,
+  editSale: SaleForm,
+  allSales: SaleTableContainer,
+  documents: DocumentsContainer,
+  completeInstallation: InstallationStepper,
+  editInstallation: InstallationForm,
   allInstallations: InstallationTableContainer,
-  scheduleInstallation: ScheduleInstallation,
-  newEmployee: NewEmployee,
-  allEmployees: AllEmployees,
-  allCustomers: AllCustomers
+  scheduleInstallation: ScheduleInstallationContainer,
+  newEmployee: EmployeeForm,
+  allEmployees: EmployeeTableContainer,
+  allCustomers: CustomerTableContainer,
 };
 
 

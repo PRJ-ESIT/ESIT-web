@@ -4,8 +4,8 @@ import {
   RaisedButton, FlatButton, DatePicker, TimePicker,
   Toggle, Checkbox, SelectField, MenuItem
 } from 'material-ui';
-import { validations, dateHelpers } from '../helpers/common.js';
-import { IP } from '../../../../config/config.js';
+import { validations, dateHelpers } from '../../../helpers/common.js';
+import { IP } from '../../../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
@@ -24,7 +24,7 @@ const provinces = [
   <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
-export default class NewSale extends React.Component {
+export default class SaleForm extends React.Component {
 
   constructor(props) {
     super(props);

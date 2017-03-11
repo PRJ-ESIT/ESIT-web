@@ -1,7 +1,7 @@
 import React from 'react';
 import {CircularProgress} from 'material-ui';
 
-export default class DocuSignInstallation extends React.Component {
+export default class DocuSignCompletionClient extends React.Component {
   componentDidMount() {
     let _this = this;
     let data = {
