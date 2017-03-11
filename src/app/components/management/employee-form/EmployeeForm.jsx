@@ -3,9 +3,8 @@ import {
   Toolbar, ToolbarTitle, TextField, MenuItem,
   RaisedButton, SelectField, DatePicker,
 } from 'material-ui';
-import { validations } from '../helpers/common.js';
-import { IP } from '../../../../config/config.js';
-import { dateHelpers } from '../helpers/common.js';
+import { validations, dateHelpers } from '../../helpers/common.js';
+import { IP } from '../../../../../config/config.js';
 
 // Provinces for SelectField
 const provinces = [
@@ -24,7 +23,7 @@ const provinces = [
   <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
 
-export default class NewEmployee extends React.Component {
+export default class EmployeeForm extends React.Component {
 
   constructor(props) {
     super(props);

@@ -1,29 +1,50 @@
 import React from 'react';
-import InstallationCamera from './InstallationCamera.jsx';
+import SaleCamera from './SaleCamera.jsx';
 import { IP } from '../../../../../../config/config.js';
 
-export default class InstallationCameraContainer extends React.Component {
+export default class SaleCameraContainer extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      uploadedPictures: 0,
+      sale: undefined
     };
   }
+
+  componentWillMount() {
+    //fetching a new Sale, since the sale carried from the previous element doesn't have an envelopeId
+    this.getSaleDetails(this.props.sale.salesNumber);
+  }
+
+  getSaleDetails = (saleId) => {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        let sale = JSON.parse(httpRequest.responseText).sale;
+        _this.setState({
+          sale: sale,
+        });
+      }
+    }
+
+    httpRequest.open('GET', "http://" + IP + "/sales/getone?id="
+      + saleId, true);
+    httpRequest.send(null);
+  }
+
+
+
 
   iOSUploadSingleFile = (file_URI) => {
     var retries = 0;
     var fileURI = file_URI;
     var _this = this;
     var win = function (r) {
-      console.log("Code = " + r.responseCode);
-      console.log("Response = " + r.response);
       _this.clearCache();
       retries = 0;
-      _this.setState({
-        uploadedPictures: _this.state.uploadedPictures + 1,
-      });
+      _this.props.handleInstallationNext();
     }
 
     var fail = function (error) {
@@ -34,7 +55,7 @@ export default class InstallationCameraContainer extends React.Component {
       if (retries == 0) {
         retries ++
         setTimeout(function() {
-          _this.iOSUploadSingleFile(fileURI)
+            _this.iOSUploadSingleFile(fileURI)
         }, 1000)
       } else {
         retries = 0;
@@ -48,36 +69,33 @@ export default class InstallationCameraContainer extends React.Component {
     options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
     options.mimeType = "image/jpeg";
     options.params = {
-      folderId: this.props.folderId,
+      folderId: this.state.sale.folderId,
       id: this.props.id,
-      type: "Installation"
+      type: "Sale"
     }; // if we need to send parameters to the server request
     var ft = new FileTransfer();
     ft.upload(fileURI, encodeURI("http://" + IP + "/common/upload"), win, fail, options);
   }
 
-  desktopUploadAllFiles = (installationFiles, enableButtons) =>{
+  clearCache = () => {
+    navigator.camera.cleanup();
+  }
+
+  desktopUploadSingleFile = (file_URI, saleFile, enableButtons) => {
     var fd = new FormData();
-    fd.append('type', 'Installation');
-    fd.append('folderId', this.props.folderId);
-    fd.append('id', this.props.id);
+    fd.append('type', 'Sale');
+    fd.append('folderId', this.state.sale.folderId);
+    fd.append('id', this.state.sale.salesNumber);
+    fd.append('file', saleFile);
 
-    console.log(installationFiles);
-    for (var i = 0; i < installationFiles.length; i++) {
-      fd.append('file' + i, installationFiles[i]);
-    }
-    console.log("fd:", fd);
-
-    var httpRequest = new XMLHttpRequest();
     let _this = this;
+    var httpRequest = new XMLHttpRequest();
+
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         let response = JSON.parse(httpRequest.responseText);
-        console.log("response: ", response);
         if (response.success == true) {
-          _this.props.handleInstallationNext({
-            status: response.installation.status,
-          });
+          _this.props.handleSaleNext();
         } else {
           enableButtons(false);
         }
@@ -86,23 +104,18 @@ export default class InstallationCameraContainer extends React.Component {
     httpRequest.open('POST', "http://" + IP + '/common/upload', true);
     httpRequest.send(fd);
 
-    enableButtons(true);
-  }
-
-  clearCache = () => {
-    navigator.camera.cleanup();
+    enableButtons(true)
   }
 
   render() {
     var actions = {
       iOSUploadSingleFile: this.iOSUploadSingleFile,
-      desktopUploadAllFiles: this.desktopUploadAllFiles,
+      desktopUploadSingleFile: this.desktopUploadSingleFile,
     };
 
     return (
-      <InstallationCamera
+      <SaleCamera
         actions={actions}
-        uploadedPictures={this.state.uploadedPictures}
         {...this.props}
       />
     );

@@ -2,8 +2,7 @@ import React from 'react';
 import { TextField, FlatButton } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import { validateEmail, validations } from './helpers/common.js';
-import { IP } from './../../../config/config.js';
+import { validateEmail, validations } from '../helpers/common.js';
 
 export default class LoginScreen extends React.Component {
 
@@ -18,11 +17,14 @@ export default class LoginScreen extends React.Component {
       loginErrorText: '',
       passwordErrorText: ''
     }
+  }
 
-    this.login = this.login.bind(this);
-    this.handleLoginTextFieldChange = this.handleLoginTextFieldChange.bind(this);
-    this.handlePasswordTextFieldChange = this.handlePasswordTextFieldChange.bind(this);
-    this.enterHandler = this.enterHandler.bind(this);
+  componentWillUpdate(nextProps, nextState) {
+    if(this.props.loginStatus == true && nextProps.loginStatus == false) {
+      this.setState({
+        passwordErrorText: "Your login or password doesn't match our records",
+      })
+    }
   }
 
   //TODO - check if Chrome autofill works for the password without this workaround
@@ -30,9 +32,9 @@ export default class LoginScreen extends React.Component {
   //https://github.com/callemall/material-ui/issues/718
   componentDidMount() {
     setTimeout(() => {
-        if(this.refs.username.getValue()) {
-            this.refs.password.setState({...this.refs.password.state, hasValue: true})
-        }
+      if(this.refs.username.getValue()) {
+        this.refs.password.setState({...this.refs.password.state, hasValue: true})
+      }
     }, 100)
   }
 
@@ -40,19 +42,19 @@ export default class LoginScreen extends React.Component {
     return { muiTheme: getMuiTheme(baseTheme) };
   }
 
-  handleLoginTextFieldChange(e) {
+  handleLoginTextFieldChange = (e) => {
     this.setState({
       loginTxtField: e.target.value
     });
   }
 
-  handlePasswordTextFieldChange(e) {
+  handlePasswordTextFieldChange = (e) => {
     this.setState({
       passwordTxtField: e.target.value
     });
   }
 
-  login() {
+  login = () => {
     if(!validateEmail(this.state.loginTxtField)) {
       if(!validations.isPassword(this.state.passwordTxtField)) {
         this.setState({
@@ -81,28 +83,11 @@ export default class LoginScreen extends React.Component {
         password: this.state.passwordTxtField,
       };
 
-      var _this = this;
-      var httpRequest = new XMLHttpRequest();
-      httpRequest.open('POST', "http://" + IP + "/auth/login", true);
-      httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4) {
-          if(this.status == 200) {
-            let token = JSON.parse(httpRequest.responseText);
-            var userInfo = token.token.split("_");
-            _this.props.setCredentials(userInfo[0], userInfo[1], userInfo[2], userInfo[3]);
-          } else{
-            _this.setState({
-              passwordErrorText: "Your login or password doesn't match our records",
-            });
-          }
-        }
-      };
-      httpRequest.send(JSON.stringify(data));
+      this.props.actions.login(data);
     }
   }
 
-  enterHandler(e) {
+  enterHandler = (e) => {
     if (e.key == 'Enter') {
       this.login();
     }

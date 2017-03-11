@@ -1,6 +1,6 @@
 import React from 'react';
 import App from './App.jsx';
-import LoginScreen from './LoginScreen.jsx';
+import LoginScreenContainer from './auth/LoginScreenContainer.jsx';
 import ReactDOM from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -73,7 +73,7 @@ export default class AppContainer extends React.Component {
       if(this.state.loggedIn) {
         return <App logout={this.clearCredentials} userId={this.state.userId} userName={this.state.userName} role={this.state.role}/>;
       } else {
-        return <LoginScreen setCredentials={this.setCredentials}/>;
+        return <LoginScreenContainer setCredentials={this.setCredentials}/>;
       }
   }
 }

@@ -17,7 +17,10 @@ export default class InstallationDetailsDialog extends React.Component {
           <FlatButton
             label="Edit"
             primary={true}
-            onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editInstallation")}}
+            onTouchTap={(e) => {
+              e.preventDefault();
+              this.props.editClickHandler("edit", this.props.installationDetails.installationNumber, "editInstallation")
+            }}
           />,
         ];
 

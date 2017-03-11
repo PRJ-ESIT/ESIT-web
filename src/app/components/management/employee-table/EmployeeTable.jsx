@@ -1,15 +1,13 @@
 import React from 'react';
 import {
   Toolbar, ToolbarTitle, ToolbarGroup, ToolbarSeparator,
-  Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn,
-  TextField, MenuItem, RaisedButton, Dialog, FlatButton
+  Table, TableBody, TableHeader, TableHeaderColumn,
+  TableRow, TableRowColumn, RaisedButton, FlatButton,
 } from 'material-ui';
-import Search from 'material-ui/svg-icons/action/search';
-import { IP } from '../../../../config/config.js';
-import { camelize } from '../helpers/common.js';
+import EmployeeDetailsDialog from './EmployeeDetailsDialog.jsx';
+import { camelize } from '../../helpers/common.js';
 
-
-export default class AllEmployees extends React.Component {
+export default class EmployeeTable extends React.Component {
 
   constructor(props) {
     super(props);
@@ -28,101 +26,46 @@ export default class AllEmployees extends React.Component {
       height: 'calc(100% - 72px)',
       //end of table state variables
 
-      //this variable keeps the state of a current selected row
-      currentSelected: false,
-      selectedNum: -1,
-
-      //an array to keep all employees data
-      allEmployees: undefined,
-
       // Modal state variable
       open: false,
-      // Modal content - employee details
-      employeeDetails: undefined,
-      hireDate: undefined,
 
       // Sorting variables
       filteredDataList: undefined,
       sortBy: 'id',
       sortDir: null,
+
+      //this variable keeps the state of a current selected row
+      currentSelected: false,
+      selectedNum: -1,
     }
   }
 
-  componentDidMount() {
-    this.getallemployees();
-  }
-
-  getallemployees = () => {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allEmployees = JSON.parse(httpRequest.responseText).employees;
-        _this.setState({
-          allEmployees: allEmployees,
-          filteredDataList: allEmployees,
-        });
-
-      }
-    };
-
-    httpRequest.open('GET', "http://" + IP + "/management/getallemployees", true);
-    httpRequest.send(null);
+  componentDidUpdate(prevProps, prevState) {
+    if(!this.state.filteredDataList && this.props.allEmployees) {
+      this.setState({
+        filteredDataList: this.getSortedRows(),
+      });
+    }
   }
 
   handleOpen = () => {
-    var httpRequest = new XMLHttpRequest();
-    let _this = this;
-    httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let employee = JSON.parse(httpRequest.responseText).employee;
-
-        // Format and save installation date for details modal
-        var tempDateTime;
-        if (employee.hireDate) {
-          tempDateTime = new Date(employee.hireDate);
-          tempDateTime = tempDateTime.toLocaleDateString();
-        } else {
-          tempDateTime = null;
-        }
-
-        _this.setState({
-          employeeDetails: employee,
-          hireDate: tempDateTime,
-        });
-      } else {
-        _this.setState({
-          open: true
-        });
-      }
-    };
-
-    httpRequest.open('GET', "http://" + IP + "/management/getoneemployee?id=" + this.state.selectedId, true);
-    httpRequest.send(null);
+    //fetch employee details
+    this.props.actions.getEmployeeDetails(this.state.selectedId);
+    //open a modal
+    this.setState({
+      open: true,
+    });
   }
 
   handleClose = () => {
+    this.props.actions.clearEmployeeDetails();
     this.setState({
       open: false
     });
   }
 
   handleDeactivate = () => {
-    let data = {
-      employeeId: this.state.selectedId,
-    };
-
-    var _this = this;
-    var request = new XMLHttpRequest();
-    request.open('PUT', 'http://' + IP + '/management/toggleemployeestatus', true);
-    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        _this.getallemployees();
-      }
-    };
-
-    request.send(JSON.stringify(data));
+    this.props.actions.toggleEmployeeStatus(this.state.selectedId);
   }
 
   handleSelection = (selectedRows) => {
@@ -141,40 +84,56 @@ export default class AllEmployees extends React.Component {
     }
   }
 
-  sortRowsBy(cellDataKey) {
-    cellDataKey = camelize(cellDataKey);
+  sortClickHandler(cellDataKey) {
     var sortDir = this.state.sortDir;
-    var sortBy = cellDataKey;
+    var sortBy = camelize(cellDataKey);
     if (sortBy === this.state.sortBy) {
       sortDir = this.state.sortDir === 'ASC' ? 'DESC' : 'ASC';
     } else {
       sortDir = 'DESC';
     }
-    var rows = this.state.filteredDataList.slice();
 
-    rows.sort((a, b) => {
-      var sortVal = 0;
-      if (a[sortBy] > b[sortBy]) {
-        sortVal = 1;
-      }
-      if (a[sortBy] < b[sortBy]) {
-        sortVal = -1;
-      }
-
-      if (sortDir === 'DESC') {
-        sortVal = sortVal * -1;
-      }
-      return sortVal;
-    });
+    //update filteredDataList object
+    var filteredDataList = this.getSortedRows(sortBy, sortDir);
 
     this.setState({
-      sortBy,
-      sortDir,
-      filteredDataList : rows,
+      sortBy: sortBy,
+      sortDir: sortDir,
+      filteredDataList: filteredDataList,
       currentSelected: false,
       selectedNum: -1,
       selectedId: '',
     });
+  }
+
+  getSortedRows = (sortBy, sortDir) => {
+    if(this.props.allEmployees) {
+      //if they are undefined - means this func was called from render, using variables from the state
+      if(!sortBy && !sortDir) {
+        var sortBy = this.state.sortBy;
+        var sortDir = this.state.sortDir;
+      }
+
+      var rows = this.props.allEmployees.slice();
+      rows.sort((a, b) => {
+        var sortVal = 0;
+        if (a[sortBy] > b[sortBy]) {
+          sortVal = 1;
+        }
+        if (a[sortBy] < b[sortBy]) {
+          sortVal = -1;
+        }
+
+        if (sortDir === 'DESC') {
+          sortVal = sortVal * -1;
+        }
+        return sortVal;
+      });
+
+      return rows;
+    } else {
+      return [];
+    }
   }
 
   render() {
@@ -230,7 +189,7 @@ export default class AllEmployees extends React.Component {
             adjustForCheckbox={this.state.showCheckboxes}
             enableSelectAll={this.state.enableSelectAll}
           >
-            <TableRow className={'trow headerRow'} onCellClick={(event) => (this.sortRowsBy(event.target.childNodes[2].textContent))}>
+            <TableRow className={'trow headerRow'} onCellClick={(event) => (this.sortClickHandler(event.target.childNodes[2].textContent))}>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '110px' }} tooltip="Employee Name">Name</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }} tooltip="Employee Role">Role</TableHeaderColumn>
               <TableHeaderColumn className={'tableRowHeaderColumn'} style={{ width: '100px' }} tooltip="Email">Email</TableHeaderColumn>
@@ -241,11 +200,11 @@ export default class AllEmployees extends React.Component {
           </TableHeader>
           <TableBody
             displayRowCheckbox={this.state.showCheckboxes}
-            deselectOnClickaway={false}
+            deselectOnClickaway={true}
             showRowHover={this.state.showRowHover}
             stripedRows={this.state.stripedRows}
           >
-            {this.state.filteredDataList ? this.state.filteredDataList.map( (row, index) => (
+            {this.getSortedRows().map((row, index) => (
               <TableRow selected={index == this.state.selectedNum ? true : false} key={index} className={'trow'}>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '110px' }}>{row.name}</TableRowColumn>
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '60px' }}>{row.role}</TableRowColumn>
@@ -255,30 +214,16 @@ export default class AllEmployees extends React.Component {
                 <TableRowColumn className={'tableRowHeaderColumn'} style={{ width: '30px' }}>{row.isActive.toString()}</TableRowColumn>
               </TableRow>
               ))
-            : null }
+            }
           </TableBody>
         </Table>
-        <Dialog
-          title="Installation Details"
-          actions={actions}
-          modal={true}
-          open={this.state.open}
-        >
-          {this.state.employeeDetails ?
-            <div>
-              <strong>First Name</strong>: {this.state.employeeDetails.firstName} <br />
-              <strong>Last Name</strong>: {this.state.employeeDetails.lastName} <br />
-              <strong>Employee Role</strong>: {this.state.employeeDetails.role} <br />
-              <strong>Hire Date</strong>: {this.state.hireDate} <br />
-              <strong>Address</strong>: {this.state.employeeDetails.address} <br />
-              <strong>City</strong>: {this.state.employeeDetails.city} <br />
-              <strong>Province</strong>: {this.state.employeeDetails.province} <br />
-              <strong>Postal Code</strong>: {this.state.employeeDetails.postalCode} <br />
-              <strong>Email</strong>: {this.state.employeeDetails.email} <br />
-              <strong>Home Phone</strong>: {this.state.employeeDetails.homePhone} <br />
-              <strong>Cell Phone</strong>: {this.state.employeeDetails.cellPhone} <br />
-            </div> : null}
-        </Dialog>
+
+        { this.state.open ?
+          <EmployeeDetailsDialog
+            employeeDetails={this.props.employeeDetails}
+            handleClose={this.handleClose}
+            editClickHandler={this.props.editClickHandler} />
+        : null }
       </div>
     );
   }

@@ -258,10 +258,6 @@ export default class InstallationCamera extends React.Component {
     }
   }
 
-  clearCache = () => {
-    navigator.camera.cleanup();
-  }
-
   enableButtons = (value) => {
     this.setState({
       disableButton: value,

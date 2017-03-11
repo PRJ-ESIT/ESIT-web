@@ -15,7 +15,7 @@ export default class InstallationTableContainer extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.getAllInstallations();
   }
 
@@ -89,7 +89,6 @@ export default class InstallationTableContainer extends React.Component {
 
   render() {
     var actions = {
-      getAllInstallations: this.getAllInstallations,
       cancelInstallation: this.cancelInstallation,
       getInstallationDetails: this.getInstallationDetails,
       clearInstallationDetails: this.clearInstallationDetails,
