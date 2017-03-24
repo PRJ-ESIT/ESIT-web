@@ -35,8 +35,15 @@ managementRouter.get('/getunscheduled', function(request, response) {
       });
 
       res.on('end', function() {
-        //saving all the completed sales from the current request
-        var sales = JSON.parse(output).sales;
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
+          var sales = JSON.parse(output).sales;
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
 
         //fetching all the installers from crud
         var options = {
@@ -49,38 +56,55 @@ managementRouter.get('/getunscheduled', function(request, response) {
           }
         };
 
-        var reqs = http.request(options, function(resp)
-          {
-            var output = '';
-            resp.setEncoding('utf8');
+        var reqs = http.request(options, function(resp) {
+          var output = '';
+          resp.setEncoding('utf8');
 
-            resp.on('data', function (chunk) {
-              output += chunk;
-            });
-
-            resp.on('end', function() {
-                var installers = JSON.parse(output).employees;
-
-                var entry = {
-                  data: {
-                    'sales': sales,
-                    'installers': installers
-                  }
-                };
-                return response.status(200).json(entry);
-            });
+          resp.on('data', function (chunk) {
+            output += chunk;
           });
 
-          reqs.on('error', function(err) {
-              //response.send('error: ' + err.message);
-          });
+          resp.on('end', function() {
+            logger.info('StatusCode: ' + res.statusCode);
+            try {
+              //saving all the completed sales from the current request
+              var installers = JSON.parse(output).employees;
+            } catch (err) {
+              logger.error('Unable to parse response as JSON', err);
+              logger.debug(output);
+              return response.status(res.statusCode).send();
+            }
 
-          reqs.end();
+            var entry = {
+              data: {
+                'sales': sales,
+                'installers': installers
+              }
+            };
+            return response.status(200).json(entry);
+          });
+        });
+
+        reqs.on('error', function(err) {
+          if (err.code === "ECONNREFUSED") {
+            logger.error("Web service refused connection");
+            return response.status(503).send();
+          }
+          logger.error(err);
+          return response.status(503).send();
+        });
+
+        reqs.end();
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -110,13 +134,26 @@ managementRouter.get('/getallcustomers', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -146,13 +183,26 @@ managementRouter.get('/getallemployees', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -165,7 +215,11 @@ managementRouter.put('/toggleemployeestatus', function(request, response) {
     //web service toggles the status, so we leave the status parameter empty
     setStatus(request.body.employeeId, "Employee", "", function(obj, statusCode) {
       logger.info("Status code: " + statusCode);
-      return response.status(200).json(obj);
+      if(obj) {
+        return response.status(statusCode).json(obj);
+      } else {
+        return response.status(statusCode).send();
+      }
     });
 });
 
@@ -193,13 +247,26 @@ managementRouter.get('/getoneemployee', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -229,13 +296,26 @@ managementRouter.get('/getonecustomer', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -282,16 +362,19 @@ managementRouter.post('/newemployee', function(request, response) {
     });
 
     res.on('end', function() {
-      //#TODO remove tempObj and forward the SaleNumber from crud instead
-      var tempObj = {'a': 'b'};
-      return response.status(201).json(tempObj);
+      logger.info('StatusCode: ' + res.statusCode);
+      return response.status(res.statusCode).send();
     });
 
   });
 
   req.on('error', function(err) {
-    logger.error('error message');
-    //response.send('error: ' + err.message);
+    if (err.code === "ECONNREFUSED") {
+      logger.error("Web service refused connection");
+      return response.status(503).send();
+    }
+    logger.error(err);
+    return response.status(503).send();
   });
 
   req.write(jsonObj);

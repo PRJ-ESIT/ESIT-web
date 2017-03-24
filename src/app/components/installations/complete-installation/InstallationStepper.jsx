@@ -5,6 +5,7 @@ import SelectInstallationContainer from './select-installation/SelectInstallatio
 import DocuSignCompletionClient from './docusign-completion-client/DocuSignCompletionClient.jsx';
 import DocuSignCompletionInstaller from './docusign-completion-installer/DocuSignCompletionInstaller.jsx';
 import InstallationCameraContainer from './installation-camera/InstallationCameraContainer.jsx';
+import CompletedInstallation from './installation-completed/CompletedInstallation.jsx';
 
 export default class InstallationStepper extends React.Component {
   constructor(props) {
@@ -14,19 +15,26 @@ export default class InstallationStepper extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <SelectInstallationContainer userId={this.props.userId} handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} menuClickHandler={this.props.menuClickHandler} />;
+        return <SelectInstallationContainer handleSnackbar={this.props.handleSnackbar} userId={this.props.userId} handleInstallationNext={this.props.handleInstallationNext} menuClickHandler={this.props.menuClickHandler} />;
       case 1:
-        return <InstallationCameraContainer handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} id={this.props.selectedInstallationId} folderId={this.props.folderId} />
+        return <InstallationCameraContainer handleSnackbar={this.props.handleSnackbar} handleResetStepper={this.props.handleResetStepper} handleInstallationNext={this.props.handleInstallationNext} id={this.props.selectedInstallationId} folderId={this.props.folderId} />
       case 2:
-        return <InstallationForm handleInstallationNext={this.props.handleInstallationNext} handleInstallationPrev={this.props.handleInstallationPrev} status={'create'} id={this.props.selectedInstallationId} />;
+        return <InstallationForm handleSnackbar={this.props.handleSnackbar} handleResetStepper={this.props.handleResetStepper} handleInstallationNext={this.props.handleInstallationNext} status={'create'} id={this.props.selectedInstallationId} />;
       case 3:
         return <DocuSignCompletionClient installation={this.props.installationObj} getInstallationEmbeddedUrl={this.props.getInstallationEmbeddedUrl}/>;
       case 4:
         return <DocuSignCompletionInstaller envelopeId={this.props.envelopeId} installation={this.props.installationObj} getInstallationEmbeddedUrl2={this.props.getInstallationEmbeddedUrl2} />;
       case 5:
-        return 'Installation Completed!'
+        return <CompletedInstallation handleResetStepper={this.props.handleResetStepper} menuClickHandler={this.props.menuClickHandler}/>
       default:
         return 'You messed up :)';
+    }
+  }
+
+  componentWillUnmount() {
+    //we don't want to clear the state when the whole screen is replaced with DocuSign forms
+    if(this.props.installationStepIndex != 3 && this.props.installationStepIndex != 4) {
+      this.props.handleResetStepper();
     }
   }
 
@@ -49,6 +57,9 @@ export default class InstallationStepper extends React.Component {
           </Step>
           <Step>
             <StepLabel>Installer Sign</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Installation Completed!</StepLabel>
           </Step>
         </Stepper>
         <div style={{height: '90%'}}>

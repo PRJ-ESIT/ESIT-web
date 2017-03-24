@@ -91,25 +91,33 @@ export default class EmployeeForm extends React.Component {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          let employee = JSON.parse(httpRequest.responseText).employee;
-          // Format time
-          var tempDateTime = new Date(employee.hireDate);
+        if (this.readyState == 4) {
+          if (this.status == 200) {
+            let employee = JSON.parse(httpRequest.responseText).employee;
+            // Format time
+            var tempDateTime = new Date(employee.hireDate);
 
-          _this.setState({
-            employeeType: employee.role ? employee.role : '',
-            hireDate: tempDateTime ? tempDateTime : '',
-            fname: employee.firstName ? employee.firstName : '',
-            lname: employee.lastName ? employee.lastName : '',
-            email: employee.email ? employee.email : '',
-            homePhone: employee.homePhone ? employee.homePhone : '',
-            cellPhone: employee.cellPhone ? employee.cellPhone : '',
-            address: employee.address ? employee.address : '',
-            unitNum: employee.unit ? employee.unit : '',
-            city: employee.city ? employee.city : '',
-            province: employee.province ? employee.province : '',
-            postalCode: employee.postalCode ? employee.postalCode : '',
-          });
+            _this.setState({
+              employeeType: employee.role ? employee.role : '',
+              hireDate: tempDateTime ? tempDateTime : '',
+              fname: employee.firstName ? employee.firstName : '',
+              lname: employee.lastName ? employee.lastName : '',
+              email: employee.email ? employee.email : '',
+              homePhone: employee.homePhone ? employee.homePhone : '',
+              cellPhone: employee.cellPhone ? employee.cellPhone : '',
+              address: employee.address ? employee.address : '',
+              unitNum: employee.unit ? employee.unit : '',
+              city: employee.city ? employee.city : '',
+              province: employee.province ? employee.province : '',
+              postalCode: employee.postalCode ? employee.postalCode : '',
+            });
+            //503 is triggered when Tomcat is down
+          } else if(this.status == 503) {
+            _this.props.handleSnackbar('Internal server error :-(', true);
+            //if node is down, or there is no Internet - this error will be displayed
+          } else {
+            _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          }
         }
       };
 
@@ -446,10 +454,17 @@ export default class EmployeeForm extends React.Component {
     request.open('POST', "http://" + IP + '/management/newemployee', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 201) {
-        _this.props.menuClickHandler("dashboard");
+      if (this.readyState == 4) {
+        if (this.status == 201) {
+          _this.props.menuClickHandler("dashboard");
+        //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
-      //#TODO add error check and display `Snackbar` in both success or fail cases
     };
 
     request.send(JSON.stringify(data));

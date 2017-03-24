@@ -40,13 +40,26 @@ saleRouter.get('/getall', function(request, response) {
       });
 
       res.on('end', function() {
-          var sales = JSON.parse(output);
-          return response.status(200).json(sales);
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
+          var obj = JSON.parse(output);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -76,13 +89,26 @@ saleRouter.get('/getone', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -116,24 +142,27 @@ saleRouter.post('/create', function(request, response) {
     salesRepId: request.body.salesRepId,
   });
 
-  createSale(jsonObj, function (saleObj) {
+  createSale(jsonObj, function (saleObj, statusCode) {
     if(saleObj) {
-      return response.status(201).json(saleObj);
+      return response.status(statusCode).json(saleObj);
     } else {
-      return response.status(400);
+      return response.status(statusCode).send();
     }
-  })
+  });
 });
 
 //PUT http://localhost:3000/sales/cancel
 saleRouter.put('/cancel', function(request, response) {
   logger.info("SaleRoutes: Handling PUT /cancel request");
 
-    //web service toggles the status, so we leave the status parameter empty
-    setStatus(request.body.saleId, "Sale", "Cancelled", function(obj, statusCode) {
-      logger.info("Status code: " + statusCode);
-      return response.status(200).json(obj);
-    });
+  setStatus(request.body.saleId, "Sale", "Cancelled", function(obj, statusCode) {
+    logger.info("Status code: " + statusCode);
+    if(obj) {
+      return response.status(statusCode).json(obj);
+    } else {
+      return response.status(statusCode).send();
+    }
+  });
 });
 
 //helper function to create a sale
@@ -160,14 +189,26 @@ var createSale = function (requestBody, callback) {
     });
 
     res.on('end', function() {
-      var saleObj = JSON.parse(output);
-      callback(saleObj);
+      logger.info('StatusCode: ' + res.statusCode);
+      try {
+        //saving all the completed sales from the current request
+        var saleObj = JSON.parse(output);
+        callback(saleObj, res.statusCode);
+      } catch (err) {
+        logger.error('Unable to parse response as JSON', err);
+        logger.debug(output);
+        return callback(false, res.statusCode);
+      }
     });
   });
 
   req.on('error', function(err) {
-    logger.error('error message');
-    //response.send('error: ' + err.message);
+    if (err.code === "ECONNREFUSED") {
+      logger.error("Web service refused connection");
+      return callback(false, 503);
+    }
+    logger.error(err);
+    return callback(false, 503);
   });
 
   req.write(requestBody);
@@ -380,7 +421,16 @@ saleRouter.post('/getsaleembeddedurl', function(request, response) {
       });
 
       res.on('end', function() {
-        var obj = JSON.parse(output);
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          //saving all the completed sales from the current request
+          var obj = JSON.parse(output);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
+
         var envelopeId = obj.envelopeId;
 
         // Save envelopeId to db
@@ -395,7 +445,7 @@ saleRouter.post('/getsaleembeddedurl', function(request, response) {
 
     req.on('error', function(err) {
       logger.error(err);
-      response.send('error: ' + err.message);
+      return response.status(500).send();
     });
 
     req.write(body);

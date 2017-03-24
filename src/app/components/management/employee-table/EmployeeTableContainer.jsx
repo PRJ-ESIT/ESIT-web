@@ -24,12 +24,19 @@ export default class EmployeeTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allEmployees = JSON.parse(httpRequest.responseText).employees;
-        _this.setState({
-          allEmployees: allEmployees,
-        });
-
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let allEmployees = JSON.parse(httpRequest.responseText).employees;
+          _this.setState({
+            allEmployees: allEmployees,
+          });
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
     };
 
@@ -41,22 +48,30 @@ export default class EmployeeTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let employee = JSON.parse(httpRequest.responseText).employee;
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let employee = JSON.parse(httpRequest.responseText).employee;
 
-        // Format and save hire date for details modal
-        var tempDateTime;
-        if (employee.hireDate) {
-          tempDateTime = new Date(employee.hireDate);
-          tempDateTime = tempDateTime.toLocaleDateString();
+          // Format and save hire date for details modal
+          var tempDateTime;
+          if (employee.hireDate) {
+            tempDateTime = new Date(employee.hireDate);
+            tempDateTime = tempDateTime.toLocaleDateString();
+          } else {
+            tempDateTime = null;
+          }
+
+          employee.hireDate = tempDateTime;
+          _this.setState({
+            employeeDetails: employee,
+          });
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
         } else {
-          tempDateTime = null;
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
         }
-
-        employee.hireDate = tempDateTime;
-        _this.setState({
-          employeeDetails: employee,
-        });
       }
     };
 
@@ -74,8 +89,16 @@ export default class EmployeeTableContainer extends React.Component {
     request.open('PUT', 'http://' + IP + '/management/toggleemployeestatus', true);
     request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        _this.getallemployees();
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          _this.getallemployees();
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
     };
 

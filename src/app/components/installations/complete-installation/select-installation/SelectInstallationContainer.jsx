@@ -17,12 +17,19 @@ export default class SelectInstallationContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let installations = JSON.parse(httpRequest.responseText).installations;
-        _this.setState({
-          installations: installations
-        });
-
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let installations = JSON.parse(httpRequest.responseText).installations;
+          _this.setState({
+            installations: installations
+          });
+        //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
     };
 

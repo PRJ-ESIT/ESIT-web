@@ -23,11 +23,19 @@ export default class InstallationTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allInstallations = JSON.parse(httpRequest.responseText).installations;
-        _this.setState({
-          allInstallations: allInstallations,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let allInstallations = JSON.parse(httpRequest.responseText).installations;
+          _this.setState({
+            allInstallations: allInstallations,
+          });
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
     };
 
@@ -39,23 +47,31 @@ export default class InstallationTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let installation = JSON.parse(httpRequest.responseText).installation;
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let installation = JSON.parse(httpRequest.responseText).installation;
 
-        // Format and save installation date for details modal
-        var tempDateTime;
-        if (installation.installationDateTime) {
-          tempDateTime = new Date(installation.installationDateTime);
-          tempDateTime = tempDateTime.toLocaleString();
+          // Format and save installation date for details modal
+          var tempDateTime;
+          if (installation.installationDateTime) {
+            tempDateTime = new Date(installation.installationDateTime);
+            tempDateTime = tempDateTime.toLocaleString();
+          } else {
+            tempDateTime = null;
+          }
+
+          installation.installationDate = tempDateTime;
+
+          _this.setState({
+            installationDetails: installation,
+          });
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
         } else {
-          tempDateTime = null;
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
         }
-
-        installation.installationDate = tempDateTime;
-
-        _this.setState({
-          installationDetails: installation,
-        });
       }
     };
 
@@ -73,8 +89,16 @@ export default class InstallationTableContainer extends React.Component {
     request.open('PUT', 'http://' + IP + '/installations/cancel', true);
     request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        _this.getAllInstallations();
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          _this.getAllInstallations();
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
     };
 

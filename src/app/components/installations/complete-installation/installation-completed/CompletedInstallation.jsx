@@ -3,15 +3,15 @@ import { RaisedButton } from 'material-ui';
 
 const style = {
   margin: 12,
-  width: '150px',
+  width: '180px',
 };
 
-export default class CompletedSale extends React.Component {
+export default class CompletedInstallation extends React.Component {
 
   render() {
     return (
       <div className="completionImageWrapper">
-        <span className="completionText">The Sale is Completed!</span>
+        <span className="completionText">The Installation is Completed!</span>
         <div className="completionImage">
           <svg style={{width: '75%', height:'75%'}} version="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" enableBackground="new 0 0 48 48">
             <circle fill="#4CAF50" cx="24" cy="24" r="21"/>
@@ -29,7 +29,7 @@ export default class CompletedSale extends React.Component {
           </div>
           <div>
             <RaisedButton
-              label="New Sale"
+              label="New Installation"
               primary={true}
               style={style}
               onTouchTap={(e) => {e.preventDefault(); this.props.handleResetStepper()}}

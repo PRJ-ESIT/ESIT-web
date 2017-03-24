@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   TextField, SelectField, MenuItem, RadioButton, RadioButtonGroup,
-  Checkbox, DatePicker, RaisedButton,
+  Checkbox, DatePicker, RaisedButton, FlatButton, Dialog
 } from 'material-ui';
 import { validations } from '../../../helpers/common.js';
 import { IP } from '../../../../../../config/config.js';
@@ -22,6 +22,12 @@ const provinces = [
   <MenuItem key={12} value={"YT"} primaryText="Yukon" />,
   <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
+
+const styles = {
+  dialog: {
+    width: '60%',
+  },
+};
 
 export default class InstallationForm extends React.Component {
 
@@ -120,94 +126,113 @@ export default class InstallationForm extends React.Component {
       installation: undefined,
 
       allInstallers: undefined,
+
+      //Start Over confirmation Dialog
+      dialogOpen: false,
     };
   }
 
   componentDidMount() {
-    if(this.props.status == "edit" || this.props.status == "create"){
+    if(this.props.status == "edit" || this.props.status == "create") {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          let installation = JSON.parse(httpRequest.responseText).installation;
-          // Format time
-          var t = installation.installationDateTime.split(/[- :]/);
-          var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-          var minDate = new Date(2000, 0, 1);
+        if (this.readyState == 4) {
+          if(this.status == 200) {
+            let installation = JSON.parse(httpRequest.responseText).installation;
+            // Format time
+            var t = installation.installationDateTime.split(/[- :]/);
+            var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+            var minDate = new Date(2000, 0, 1);
 
-          var httpReq = new XMLHttpRequest();
-          httpReq.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              let allInstallers = JSON.parse(httpReq.responseText).employees;
+            var httpReq = new XMLHttpRequest();
+            httpReq.onreadystatechange = function() {
+              if (this.readyState == 4) {
+                if(this.status == 200) {
+                  let allInstallers = JSON.parse(httpReq.responseText).employees;
 
-              _this.setState({
-                // salesNumber: sale.salesNumber,
-                fname: installation.customerFirstName ? installation.customerFirstName : '',
-                lname: installation.customerLastName ? installation.customerLastName : '',
-                address: installation.address ? installation.address : '',
-                unitNum: installation.unit ? installation.unit : '',
-                city: installation.city ? installation.city : '',
-                province: installation.province ? installation.province : '',
-                postalCode: installation.postalCode ? installation.postalCode : '',
-                enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
-                email: installation.email ? installation.email : '',
-                homePhone: installation.homePhone ? installation.homePhone : '',
-                cellPhone: installation.cellPhone ? installation.cellPhone : '',
-                sqft: installation.sqFootage ? installation.sqFootage : '',
-                residents: installation.residents ? installation.residents : '',
-                pool: installation.hasPool ? installation.hasPool : '',
-                bathrooms: installation.bathrooms ? installation.bathrooms : '',
-                installedDate: tempDateTime ? tempDateTime : '',
-                installerId: installation.installerId ? installation.installerId : '',
-                installerName: installation.installerName ? installation.installerName : '',
-                minDate: minDate,
-                allInstallers: allInstallers,
-                installation: installation,
+                  _this.setState({
+                    // salesNumber: sale.salesNumber,
+                    fname: installation.customerFirstName ? installation.customerFirstName : '',
+                    lname: installation.customerLastName ? installation.customerLastName : '',
+                    address: installation.address ? installation.address : '',
+                    unitNum: installation.unit ? installation.unit : '',
+                    city: installation.city ? installation.city : '',
+                    province: installation.province ? installation.province : '',
+                    postalCode: installation.postalCode ? installation.postalCode : '',
+                    enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
+                    email: installation.email ? installation.email : '',
+                    homePhone: installation.homePhone ? installation.homePhone : '',
+                    cellPhone: installation.cellPhone ? installation.cellPhone : '',
+                    sqft: installation.sqFootage ? installation.sqFootage : '',
+                    residents: installation.residents ? installation.residents : '',
+                    pool: installation.hasPool ? installation.hasPool : '',
+                    bathrooms: installation.bathrooms ? installation.bathrooms : '',
+                    installedDate: tempDateTime ? tempDateTime : '',
+                    installerId: installation.installerId ? installation.installerId : '',
+                    installerName: installation.installerName ? installation.installerName : '',
+                    minDate: minDate,
+                    allInstallers: allInstallers,
+                    installation: installation,
 
-                // Set program type
-                program1: installation.product == "Whole Home Filter" ? true : false,
-                program2: installation.product == "Whole Home D-Scaler" ? true : false,
-                program3: installation.product == "Whole Home Combo" ? true : false,
+                    // Set program type
+                    program1: installation.product == "Whole Home Filter" ? true : false,
+                    program2: installation.product == "Whole Home D-Scaler" ? true : false,
+                    program3: installation.product == "Whole Home Combo" ? true : false,
 
-                fnameValidated: installation.customerFirstName ? true : false,
-                lnameValidated: installation.customerLastName ? true : false,
-                addressValidated: installation.address ? true : false,
-                unitValidated: true,
-                cityValidated: installation.city ? true : false,
-                provinceValidated: installation.province ? true : false,
-                postalCodeValidated: installation.postalCode ? true : false,
-                enbridgeValidated: installation.enbridgeNum ? true : false,
-                emailValidated: installation.email ? true : false,
-                homePhoneValidated: installation.homePhone ? true : false,
-                cellPhoneValidated: installation.cellPhone ? true : false,
-                sqftValidated: installation.sqFootage ? true : false,
-                residentsValidated: installation.residents ? true : false,
-                poolValidated: installation.hasPool ? true : false,
-                bathroomsValidated: installation.bathrooms ? true : false,
-                installedDateValidated: tempDateTime ? true : false,
-                installerValidated: installation.installerName ? true : false,
-              });
-            }
-          };
+                    fnameValidated: installation.customerFirstName ? true : false,
+                    lnameValidated: installation.customerLastName ? true : false,
+                    addressValidated: installation.address ? true : false,
+                    unitValidated: true,
+                    cityValidated: installation.city ? true : false,
+                    provinceValidated: installation.province ? true : false,
+                    postalCodeValidated: installation.postalCode ? true : false,
+                    enbridgeValidated: installation.enbridgeNum ? true : false,
+                    emailValidated: installation.email ? true : false,
+                    homePhoneValidated: installation.homePhone ? true : false,
+                    cellPhoneValidated: installation.cellPhone ? true : false,
+                    sqftValidated: installation.sqFootage ? true : false,
+                    residentsValidated: installation.residents ? true : false,
+                    poolValidated: installation.hasPool ? true : false,
+                    bathroomsValidated: installation.bathrooms ? true : false,
+                    installedDateValidated: tempDateTime ? true : false,
+                    installerValidated: installation.installerName ? true : false,
+                  });
+                  //503 is triggered when Tomcat is down
+                } else if(this.status == 503) {
+                  _this.props.handleSnackbar('Internal server error :-(', true);
+                  //if node is down, or there is no Internet - this error will be displayed
+                } else {
+                  _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+                }
+              }
+            };
 
-          httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=installer", true);
-          httpReq.send(null);
+            httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=installer", true);
+            httpReq.send(null);
+
+            //503 is triggered when Tomcat is down
+          } else if(this.status == 503) {
+            _this.props.handleSnackbar('Internal server error :-(', true);
+            //if node is down, or there is no Internet - this error will be displayed
+          } else {
+            _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          }
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/installations/getone?id="
-        + this.props.id, true);
+      httpRequest.open('GET', "http://" + IP + "/installations/getone?id=" + this.props.id, true);
       httpRequest.send(null);
     }
   }
 
-  handleTextChange(fieldname, event) {
+  handleTextChange = (fieldname, event) => {
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
   };
 
-  handleSelectChange(fieldname, event, index, value) {
+  handleSelectChange = (fieldname, event, index, value) => {
     var obj = {};
     // Special case for installers
     if(fieldname == "installerId") {
@@ -219,7 +244,7 @@ export default class InstallationForm extends React.Component {
     this.setState(obj);
   }
 
-  handleRadioChange(fieldname, event, value) {
+  handleRadioChange = (fieldname, event, value) => {
     var obj = {};
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
@@ -227,13 +252,13 @@ export default class InstallationForm extends React.Component {
     this.setState(obj);
   }
 
-  handleCheckboxChange(fieldname, event, isInputChecked) {
+  handleCheckboxChange = (fieldname, event, isInputChecked) => {
     var obj = {};
     obj[fieldname] = isInputChecked;
     this.setState(obj);
   }
 
-  handleProgramCheckboxChange(fieldname1, fieldname2, fieldname3, event, isInputChecked) {
+  handleProgramCheckboxChange = (fieldname1, fieldname2, fieldname3, event, isInputChecked) => {
     var obj = {};
     if (!isInputChecked) {
       obj[fieldname1] = isInputChecked;
@@ -247,12 +272,50 @@ export default class InstallationForm extends React.Component {
     this.setState(obj);
   }
 
-  handleDateChange(fieldname, event, date) {
+  handleDateChange = (fieldname, event, date) => {
     var obj = {};
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = date;
     this.setState(obj);
+  }
+
+  handleOpen = () => {
+    this.setState({dialogOpen: true});
+  }
+
+  handleClose = () => {
+    this.setState({dialogOpen: false});
+  }
+
+  renderDialog = () => {
+    //Confirmation Dialog actions
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Confirm"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={(e) => {e.preventDefault(); this.props.handleResetStepper()}}
+      />,
+    ];
+    return (
+      <Dialog
+        title="Warning"
+        actions={actions}
+        modal={false}
+        open={this.state.dialogOpen}
+        onRequestClose={this.handleClose}
+        contentStyle={styles.dialog}
+      >
+        Are you sure you want to start over? This form will not be saved.
+        You will be able to resume a current Installation from the Dashboard or Complete Installation pages.
+      </Dialog>
+    );
   }
 
   validateFName() {
@@ -1210,11 +1273,11 @@ export default class InstallationForm extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{margin: '50px'}}>
+        <div className="formActionButtons">
           <RaisedButton
-            label={this.props.status === 'create' ? 'Back' : 'Cancel'}
-            secondary={this.props.status === 'create' ? false : true}
-            onTouchTap={(e) => {e.preventDefault(); this.props.status === 'create' ? this.props.handleInstallationPrev() : this.props.menuClickHandler("dashboard")}}
+            label={this.props.status === 'create' ? 'Start over' : 'Cancel'}
+            secondary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.props.status === 'create' ? this.handleOpen() : this.props.menuClickHandler("dashboard")}}
           />
           <RaisedButton
             label={this.props.status === 'create' ? 'Next' : 'Update'}
@@ -1222,6 +1285,7 @@ export default class InstallationForm extends React.Component {
             onTouchTap={(e) => {e.preventDefault(); this.validateForm()}}
           />
         </div>
+        {this.renderDialog()}
       </div>
     );
   }

@@ -333,6 +333,11 @@ h2 {
   padding-bottom: 50px;
 }
 
+.formActionButtons {
+  display: flex;
+  justify-content: space-between;
+  margin: 50px;
+}
 
 //*******************************//
 //End of New Employee page styles//
@@ -439,16 +444,60 @@ h2 {
 .finishWrapper {
   order: 3;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
+
 }
 
 .finishButton {
-  order: 1;
   width: 200px;
   margin-bottom: 5%;
-  margin-right: 5%;
 }
 
 //********************************************//
 //End of the Styling for the Camera Components//
 //********************************************//
+
+
+//******************************************************************//
+//Start of the Styling for the Sale/Installation Complete components//
+//******************************************************************//
+
+.completionImageWrapper {
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.completionText {
+  font-family: "Damion", cursive !important;
+  font-size: 60px !important;
+  order: 1;
+  flex-basis: 10%;
+  flex-grow: 1;
+}
+
+.completionImage {
+  order: 2;
+  flex-basis: 30%;
+  flex-grow: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.completionButtonsWrapper {
+  order: 3;
+  flex-basis: 60%;
+  flex-grow: 1;
+  width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+//****************************************************************//
+//End of the Styling for the Sale/Installation Complete components//
+//****************************************************************//

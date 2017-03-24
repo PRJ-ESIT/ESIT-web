@@ -113,53 +113,69 @@ export default class SaleForm extends React.Component {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          let sale = JSON.parse(httpRequest.responseText).sale;
-          var httpReq = new XMLHttpRequest();
-          httpReq.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              let allSalesReps = JSON.parse(httpReq.responseText).employees;
-              // Create employee object, indexed by employeeNumber
-              var allEmployees = {};
-              for (var employee in allSalesReps) {
-                allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
+        if (this.readyState == 4) {
+          if(this.status == 200) {
+            let sale = JSON.parse(httpRequest.responseText).sale;
+            var httpReq = new XMLHttpRequest();
+            httpReq.onreadystatechange = function() {
+              if (this.readyState == 4) {
+                if(this.status == 200) {
+                  let allSalesReps = JSON.parse(httpReq.responseText).employees;
+                  // Create employee object, indexed by employeeNumber
+                  var allEmployees = {};
+                  for (var employee in allSalesReps) {
+                    allEmployees[allSalesReps[employee].employeeNumber] = allSalesReps[employee].name;
+                  }
+                  // Format Datetime object for Safari
+                  var t = sale.installationDateTime.split(/[- :]/);
+                  var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+                  var minDate = new Date(2000, 0, 1);
+
+                  //Format Date object (dateSigned field) for Safari
+                  var dateSigned = sale.dateSigned.split(/[- :]/);
+                  dateSigned = new Date(dateSigned[0], dateSigned[1]-1, dateSigned[2]);
+
+                  _this.setState({
+                    fname: sale.firstName ? sale.firstName : '',
+                    lname: sale.lastName ? sale.lastName : '',
+                    address: sale.address ? sale.address : '',
+                    unitNum: sale.unit ? sale.unit : '',
+                    city: sale.city ? sale.city : '',
+                    province: sale.province ? sale.province : '',
+                    postalCode: sale.postalCode ? sale.postalCode : '',
+                    enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
+                    email: sale.email ? sale.email : '',
+                    programType: sale.programId ? sale.programId : '',
+                    homePhone: sale.homePhone ? sale.homePhone : '',
+                    cellPhone: sale.cellPhone ? sale.cellPhone : '',
+                    installationDate: tempDateTime ? tempDateTime : '',
+                    installationTime: tempDateTime ? tempDateTime : '',
+                    notes: sale.notes ? sale.notes : '',
+                    salesRepId: sale.salesRepId ? sale.salesRepId : '',
+                    salesRepName: sale.salesRepId ? allEmployees[sale.salesRepId] : '',
+                    minDate: minDate,
+                    allSalesReps: allSalesReps,
+                    dateSigned: dateSigned,
+                  });
+                  //503 is triggered when Tomcat is down
+                } else if(this.status == 503) {
+                  _this.props.handleSnackbar('Internal server error :-(', true);
+                  //if node is down, or there is no Internet - this error will be displayed
+                } else {
+                  _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+                }
               }
-              // Format Datetime object for Safari
-              var t = sale.installationDateTime.split(/[- :]/);
-              var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-              var minDate = new Date(2000, 0, 1);
+            };
 
-              //Format Date object (dateSigned field) for Safari
-              var dateSigned = sale.dateSigned.split(/[- :]/);
-              dateSigned = new Date(dateSigned[0], dateSigned[1]-1, dateSigned[2]);
-
-              _this.setState({
-                fname: sale.firstName ? sale.firstName : '',
-                lname: sale.lastName ? sale.lastName : '',
-                address: sale.address ? sale.address : '',
-                unitNum: sale.unit ? sale.unit : '',
-                city: sale.city ? sale.city : '',
-                province: sale.province ? sale.province : '',
-                postalCode: sale.postalCode ? sale.postalCode : '',
-                enbridge: sale.enbridgeNum ? sale.enbridgeNum : '',
-                email: sale.email ? sale.email : '',
-                programType: sale.programId ? sale.programId : '',
-                homePhone: sale.homePhone ? sale.homePhone : '',
-                cellPhone: sale.cellPhone ? sale.cellPhone : '',
-                installationDate: tempDateTime ? tempDateTime : '',
-                installationTime: tempDateTime ? tempDateTime : '',
-                notes: sale.notes ? sale.notes : '',
-                salesRepId: sale.salesRepId ? sale.salesRepId : '',
-                salesRepName: sale.salesRepId ? allEmployees[sale.salesRepId] : '',
-                minDate: minDate,
-                allSalesReps: allSalesReps,
-                dateSigned: dateSigned,
-              });
-            }
-          };
-
-          httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=salesperson", true);
-          httpReq.send(null);
+            httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=salesperson", true);
+            httpReq.send(null);
+            //503 is triggered when Tomcat is down
+          } else if(this.status == 503) {
+            _this.props.handleSnackbar('Internal server error :-(', true);
+            //if node is down, or there is no Internet - this error will be displayed
+          } else {
+            _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          }
         }
       };
 
@@ -169,12 +185,20 @@ export default class SaleForm extends React.Component {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          let allSalesReps = JSON.parse(httpRequest.responseText).employees;
+        if (this.readyState == 4) {
+          if(this.status == 200) {
+            let allSalesReps = JSON.parse(httpRequest.responseText).employees;
 
-          _this.setState({
-            allSalesReps: allSalesReps,
-          });
+            _this.setState({
+              allSalesReps: allSalesReps,
+            });
+            //503 is triggered when Tomcat is down
+          } else if(this.status == 503) {
+            _this.props.handleSnackbar('Internal server error :-(', true);
+            //if node is down, or there is no Internet - this error will be displayed
+          } else {
+            _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          }
         }
       };
 
@@ -585,14 +609,22 @@ export default class SaleForm extends React.Component {
     request.open('POST', "http://" + IP + '/sales/create', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 201) {
-        let saleObject = {
-            saleObj: JSON.parse(request.responseText).sale
+      if (this.readyState == 4) {
+        if (this.status == 201) {
+          let saleObject = {
+              saleObj: JSON.parse(request.responseText).sale
+          }
+          // Alternatively return sales rep name in newly created sale object
+          saleObject.saleObj["salesRepName"] = _this.state.salesRepName;
+          // Passing the new sale object to the next component (DocuSign form)
+          _this.props.handleSaleNext(saleObject);
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
         }
-        // Alternatively return sales rep name in newly created sale object
-        saleObject.saleObj["salesRepName"] = _this.state.salesRepName;
-        // Passing the new sale object to the next component (DocuSign form)
-        _this.props.handleSaleNext(saleObject);
       }
     };
 
@@ -866,7 +898,7 @@ export default class SaleForm extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{margin: '50px'}}>
+        <div className="formActionButtons">
           <RaisedButton
             label={'Cancel'}
             secondary={true}

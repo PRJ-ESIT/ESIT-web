@@ -13,15 +13,22 @@ export default class SaleStepper extends React.Component {
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
-        return <SaleForm handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} status={'create'} menuClickHandler={this.props.menuClickHandler} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
+        return <SaleForm handleSnackbar={this.props.handleSnackbar} handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} status={'create'} menuClickHandler={this.props.menuClickHandler} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
       case 1:
         return <DocuSignSale sale={this.props.saleObj} handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} getEmbeddedUrl={this.props.getEmbeddedUrl} />;
       case 2:
-        return <SaleCameraContainer handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} sale={this.props.saleObj}/>
+        return <SaleCameraContainer handleSnackbar={this.props.handleSnackbar} handleSalePrev={this.props.handleSalePrev} handleSaleNext={this.props.handleSaleNext} sale={this.props.saleObj} handleResetStepper={this.props.handleResetStepper}/>
       case 3:
-        return <CompletedSale />;
+        return <CompletedSale handleResetStepper={this.props.handleResetStepper} menuClickHandler={this.props.menuClickHandler}/>;
       default:
         return 'You messed up :)';
+    }
+  }
+
+  componentWillUnmount() {
+    //we don't want to clear the state when the whole screen is replaced with a DocuSign form
+    if(this.props.saleStepIndex != 1) {
+      this.props.handleResetStepper();
     }
   }
 

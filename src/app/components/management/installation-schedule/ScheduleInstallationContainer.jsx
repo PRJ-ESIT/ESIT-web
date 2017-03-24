@@ -23,14 +23,22 @@ export default class ScheduleInstallationContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allSales = JSON.parse(httpRequest.responseText).data.sales;
-        let allInstallers = JSON.parse(httpRequest.responseText).data.installers;
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let allSales = JSON.parse(httpRequest.responseText).data.sales;
+          let allInstallers = JSON.parse(httpRequest.responseText).data.installers;
 
-        _this.setState({
-          allSales: allSales,
-          allInstallers: allInstallers,
-        });
+          _this.setState({
+            allSales: allSales,
+            allInstallers: allInstallers,
+          });
+          //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
     };
 
@@ -44,8 +52,16 @@ export default class ScheduleInstallationContainer extends React.Component {
     request.open('POST', "http://" + IP + '/installations/create', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 201) {
-        _this.getInstallationInfo();
+      if (this.readyState == 4) {
+        if (this.status == 201) {
+          _this.getInstallationInfo();
+        //503 is triggered when Tomcat is down
+        } else if(this.status == 503) {
+          _this.props.handleSnackbar('Internal server error :-(', true);
+          //if node is down, or there is no Internet - this error will be displayed
+        } else {
+          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+        }
       }
       //#TODO receive Sale number and add it to the state
     };
