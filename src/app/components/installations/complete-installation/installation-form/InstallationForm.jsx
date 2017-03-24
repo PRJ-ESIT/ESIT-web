@@ -198,12 +198,8 @@ export default class InstallationForm extends React.Component {
                     installedDateValidated: tempDateTime ? true : false,
                     installerValidated: installation.installerName ? true : false,
                   });
-                  //503 is triggered when Tomcat is down
-                } else if(this.status == 503) {
-                  _this.props.handleSnackbar('Internal server error :-(', true);
-                  //if node is down, or there is no Internet - this error will be displayed
                 } else {
-                  _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+                  _this.props.handleSnackbar('', true, this.status);
                 }
               }
             };
@@ -211,12 +207,8 @@ export default class InstallationForm extends React.Component {
             httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=installer", true);
             httpReq.send(null);
 
-            //503 is triggered when Tomcat is down
-          } else if(this.status == 503) {
-            _this.props.handleSnackbar('Internal server error :-(', true);
-            //if node is down, or there is no Internet - this error will be displayed
           } else {
-            _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+            _this.props.handleSnackbar('', true, this.status);
           }
         }
       };

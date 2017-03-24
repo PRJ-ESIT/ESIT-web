@@ -23,12 +23,8 @@ export default class SelectInstallationContainer extends React.Component {
           _this.setState({
             installations: installations
           });
-        //503 is triggered when Tomcat is down
-        } else if(this.status == 503) {
-          _this.props.handleSnackbar('Internal server error :-(', true);
-          //if node is down, or there is no Internet - this error will be displayed
         } else {
-          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          _this.props.handleSnackbar('', true, this.status);
         }
       }
     };

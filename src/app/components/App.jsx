@@ -77,12 +77,33 @@ export default class App extends React.Component {
     return { muiTheme: getMuiTheme(baseTheme) };
   }
 
-  handleSnackbar = (message, error) => {
-    this.setState({
-      open: true,
-      message: message,
-      error: error,
-    });
+  //message - should be empty for errors, but should contain text for confirmations
+  //error - boolean, true for red (error) snackbars, and false for green (confirmation) snackbars
+  //statusCode - number, we should handle as many as possible
+  handleSnackbar = (message, error, statusCode) => {
+    if(message.length == 0) {
+      //all error status codes are handled in here
+      if(statusCode == 503) {
+        this.setState({
+          open: true,
+          message: 'Internal server error :-(',
+          error: error,
+        });
+      } else {
+        this.setState({
+          open: true,
+          message: 'Couldn\'t connect to the server',
+          error: error,
+        });
+      }
+    } else {
+      //display confirmation and custom error snackbars here (message shouldn't be empty)
+      this.setState({
+        open: true,
+        message: message,
+        error: error,
+      });
+    }
   }
 
   //Snackbar handler
@@ -201,12 +222,8 @@ export default class App extends React.Component {
           _this.setState({
             docuSignURL: url,
           });
-          //503 is triggered when Tomcat is down
-        } else if(this.status == 503) {
-          _this.props.handleSnackbar('Internal server error :-(', true);
-          //if node is down, or there is no Internet - this error will be displayed
         } else {
-          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          _this.props.handleSnackbar('', true, this.status);
         }
       }
     };
@@ -229,12 +246,8 @@ export default class App extends React.Component {
             docuSignURL: url,
             envelopeId: eId,
           });
-          //503 is triggered when Tomcat is down
-        } else if(this.status == 503) {
-          _this.props.handleSnackbar('Internal server error :-(', true);
-          //if node is down, or there is no Internet - this error will be displayed
         } else {
-          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          _this.props.handleSnackbar('', true, this.status);
         }
       }
     };
@@ -255,12 +268,8 @@ export default class App extends React.Component {
           _this.setState({
             docuSignURL: url,
           });
-          //503 is triggered when Tomcat is down
-        } else if(this.status == 503) {
-          _this.props.handleSnackbar('Internal server error :-(', true);
-          //if node is down, or there is no Internet - this error will be displayed
         } else {
-          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          _this.props.handleSnackbar('', true, this.status);
         }
       }
     };

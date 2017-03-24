@@ -111,12 +111,8 @@ export default class EmployeeForm extends React.Component {
               province: employee.province ? employee.province : '',
               postalCode: employee.postalCode ? employee.postalCode : '',
             });
-            //503 is triggered when Tomcat is down
-          } else if(this.status == 503) {
-            _this.props.handleSnackbar('Internal server error :-(', true);
-            //if node is down, or there is no Internet - this error will be displayed
           } else {
-            _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+            _this.props.handleSnackbar('', true, this.status);
           }
         }
       };
@@ -457,12 +453,8 @@ export default class EmployeeForm extends React.Component {
       if (this.readyState == 4) {
         if (this.status == 201) {
           _this.props.menuClickHandler("dashboard");
-        //503 is triggered when Tomcat is down
-        } else if(this.status == 503) {
-          _this.props.handleSnackbar('Internal server error :-(', true);
-          //if node is down, or there is no Internet - this error will be displayed
         } else {
-          _this.props.handleSnackbar('Couldn\'t connect to the server', true);
+          _this.props.handleSnackbar('', true, this.status);
         }
       }
     };
