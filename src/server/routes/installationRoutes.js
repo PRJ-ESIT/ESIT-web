@@ -161,6 +161,71 @@ installationRouter.post('/create', function(request, response) {
   req.end();
 });
 
+//PUT http://localhost:3000/installations/update
+installationRouter.put('/update', function(request, response) {
+  logger.info("InstallationRoutes: Handling PUT /update request");
+
+  var jsonObj = querystring.stringify({
+      sqft: request.body.sqft,
+      bathrooms: request.body.bathrooms,
+      residents: request.body.residents,
+      pool: request.body.pool,
+      notes: request.body.notes,
+      installedDate: request.body.installedDate,
+  });
+
+  logger.debug('Sending request for id: ' + request.query.id);
+  logger.debug('New data:' + jsonObj);
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'PUT',
+    path: '/crud/InstallationService/updateInstallation/' + request.query.id,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      logger.info("Status code: " + res.statusCode);
+      //check for status 200 and set the installation status to "Installed"
+      if(res.statusCode == 200) {
+        setStatus(request.query.id, "Installation", "Installed", function(obj, statusCode) {
+          logger.info("Status code: " + statusCode);
+          if(!!obj) {
+            return response.status(statusCode).json(obj);
+          } else {
+            return response.status(statusCode).send();
+          }
+        });
+      } else {
+        return response.status(res.statusCode).send();
+      }
+    });
+  });
+
+  req.on('error', function(err) {
+    if (err.code === "ECONNREFUSED") {
+      logger.error("Web service refused connection");
+      return response.status(503).send();
+    }
+    logger.error(err);
+    return response.status(503).send();
+  });
+
+  req.write(jsonObj);
+  req.end();
+});
+
 //GET http://localhost:3000/installations/getone
 installationRouter.get('/getone', function(request, response) {
   logger.info("InstallationRoutes: Handling GET /getone request");

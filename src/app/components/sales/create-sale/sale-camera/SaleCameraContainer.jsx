@@ -103,6 +103,7 @@ export default class SaleCameraContainer extends React.Component {
           }
         } else {
           _this.props.handleSnackbar('', true, this.status);
+          enableButtons(false);
         }
       }
     };

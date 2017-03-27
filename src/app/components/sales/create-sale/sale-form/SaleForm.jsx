@@ -105,11 +105,13 @@ export default class SaleForm extends React.Component {
       installationTimeValidated: false,
 
       allSalesReps: undefined,
+
+      editMode: false,
     };
   }
 
   componentDidMount() {
-    if(this.props.status == "edit"){
+    if(this.props.status == "edit") {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
@@ -156,7 +158,11 @@ export default class SaleForm extends React.Component {
                     minDate: minDate,
                     allSalesReps: allSalesReps,
                     dateSigned: dateSigned,
+
+                    //setting the state variable for the 'Edit mode'
+                    editMode: true,
                   });
+                  _this.props.handleSnackbar('Sale has been signed, edit is not allowed', true, this.status);
                 } else {
                   _this.props.handleSnackbar('', true, this.status);
                 }
@@ -623,6 +629,7 @@ export default class SaleForm extends React.Component {
             <div className="newEmployeeFormBox">
               <h2 className="headings">Homeowner Information</h2>
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="First Name"
                 hintText="John"
                 maxLength="50"
@@ -636,6 +643,7 @@ export default class SaleForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Last Name"
                 hintText="Doe"
                 maxLength="50"
@@ -647,6 +655,7 @@ export default class SaleForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Address"
                 hintText="123 Fake Street"
                 maxLength="50"
@@ -660,6 +669,7 @@ export default class SaleForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Unit #"
                 hintText="7e"
                 maxLength="10"
@@ -671,6 +681,7 @@ export default class SaleForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="City"
                 hintText="Toronto"
                 maxLength="80"
@@ -684,6 +695,7 @@ export default class SaleForm extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
+                disabled={this.state.editMode}
                 style={{ verticalAlign: 'bottom' }}
                 floatingLabelText="Province"
                 floatingLabelFixed={false}
@@ -699,6 +711,7 @@ export default class SaleForm extends React.Component {
               </SelectField>
               <br />
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Postal Code"
                 hintText="M4B 5V9"
                 maxLength="7"
@@ -712,6 +725,7 @@ export default class SaleForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Enbridge Gas #"
                 hintText="1234567890"
                 maxLength="20"
@@ -723,6 +737,7 @@ export default class SaleForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Home Phone"
                 hintText="416-123-4567"
                 type="tel"
@@ -737,6 +752,7 @@ export default class SaleForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Cell Phone"
                 hintText="416-123-4567"
                 type="tel"
@@ -749,6 +765,7 @@ export default class SaleForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Email"
                 hintText="name@domain.com"
                 type="email"
@@ -765,21 +782,24 @@ export default class SaleForm extends React.Component {
                   valueSelected={this.state.programType}
                   onChange={this.handleRadioChange.bind(this, "programType")}>
                   <RadioButton
+                    disabled={this.state.editMode}
                     value="1"
                     label="Whole Home Filter"
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     value="2"
-                    label="Whole Home Descaler"
+                    label="Whole Home D-Scaler"
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     value="3"
                     label="Whole Home Combo"
                   />
                 </RadioButtonGroup>
                 <TextField
-                  floatingLabelText=" "
                   disabled={true}
+                  floatingLabelText=" "
                   className="full-width"
                   errorText={this.state.programTypeErr}
                   errorStyle={{float: "left"}}
@@ -788,9 +808,9 @@ export default class SaleForm extends React.Component {
               </div>
               <h2 className="headings">Installation & Delivery</h2>
               <TextField
+                disabled={true}
                 floatingLabelText="Delivery Charges"
                 value={this.state.deliveryCharges}
-                disabled={true}
               />
               &nbsp;
               &nbsp;
@@ -813,6 +833,7 @@ export default class SaleForm extends React.Component {
               <br />
               <div style={{ display: 'inline-block' }}>
                 <DatePicker
+                  disabled={this.state.editMode}
                   hintText="2017-08-20" container="inline"
                   floatingLabelText="Installation Date"
                   minDate={this.state.minDate}
@@ -830,6 +851,7 @@ export default class SaleForm extends React.Component {
               &nbsp;
               <div style={{ display: 'inline-block' }}>
                 <TimePicker
+                  disabled={this.state.editMode}
                   hintText="Installation Time"
                   floatingLabelText="Installation Time"
                   value={this.state.installationTime}
@@ -841,6 +863,7 @@ export default class SaleForm extends React.Component {
               </div>
               <br />
               <TextField
+                disabled={this.state.editMode}
                 hintText="Additional Notes"
                 floatingLabelText="Notes"
                 maxLength="300"
@@ -865,6 +888,7 @@ export default class SaleForm extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
+                disabled={this.state.editMode}
                 style={{ verticalAlign: 'bottom' }}
                 floatingLabelText="Sales Representative"
                 floatingLabelFixed={false}
@@ -889,6 +913,7 @@ export default class SaleForm extends React.Component {
             onTouchTap={(e) => {e.preventDefault(); this.props.menuClickHandler("dashboard")}}
           />
           <RaisedButton
+            disabled={this.state.editMode}
             label={this.props.status === 'create' ? 'Next' : 'Update'}
             primary={true}
             onTouchTap={(e) => {e.preventDefault(); this.validateRentalAgreement()}}

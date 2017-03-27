@@ -223,6 +223,66 @@ managementRouter.put('/toggleemployeestatus', function(request, response) {
     });
 });
 
+//PUT http://localhost:3000/management/updateemployee
+managementRouter.put('/updateemployee', function(request, response) {
+  logger.info("ManagementRoutes: Handling PUT /updateemployee request");
+
+  var jsonObj = querystring.stringify({
+    fname: request.body.fname,
+    lname: request.body.lname,
+    street: request.body.address,
+    unitNum: request.body.unitNum,
+    city: request.body.city,
+    province: request.body.province,
+    postalCode: request.body.postalCode,
+    email: request.body.email,
+    homePhone: request.body.homePhone,
+    cellPhone: request.body.cellPhone,
+    password: request.body.password,
+    hireDate: request.body.hireDate,
+    employeeType: request.body.employeeType
+  });
+
+  logger.debug('Sending request for id: ' + request.query.id);
+  logger.debug('New data:' + jsonObj);
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'PUT',
+    path: '/crud/EmployeeService/updateEmployee/' + request.query.id,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      logger.info("Status code: " + res.statusCode);
+      return response.status(res.statusCode).send();
+    });
+  });
+
+  req.on('error', function(err) {
+    if (err.code === "ECONNREFUSED") {
+      logger.error("Web service refused connection");
+      return response.status(503).send();
+    }
+    logger.error(err);
+    return response.status(503).send();
+  });
+
+  req.write(jsonObj);
+  req.end();
+});
+
 //GET http://localhost:3000/management/getoneemployee
 managementRouter.get('/getoneemployee', function(request, response) {
   logger.info("ManagementRoutes: Handling GET /getoneemployee request");
@@ -326,7 +386,7 @@ managementRouter.post('/newemployee', function(request, response) {
   logger.info("ManagementRoutes: Handling POST /newemployee request");
 
   var jsonObj = querystring.stringify({
-    //homeowner's info
+    //employee's info
     fname: request.body.fname,
     lname: request.body.lname,
     street: request.body.address,

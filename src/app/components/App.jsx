@@ -223,7 +223,7 @@ export default class App extends React.Component {
             docuSignURL: url,
           });
         } else {
-          _this.props.handleSnackbar('', true, this.status);
+          _this.handleSnackbar('', true, this.status);
         }
       }
     };
@@ -247,7 +247,7 @@ export default class App extends React.Component {
             envelopeId: eId,
           });
         } else {
-          _this.props.handleSnackbar('', true, this.status);
+          _this.handleSnackbar('', true, this.status);
         }
       }
     };
@@ -269,7 +269,7 @@ export default class App extends React.Component {
             docuSignURL: url,
           });
         } else {
-          _this.props.handleSnackbar('', true, this.status);
+          _this.handleSnackbar('', true, this.status);
         }
       }
     };

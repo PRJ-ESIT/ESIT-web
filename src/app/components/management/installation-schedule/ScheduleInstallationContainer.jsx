@@ -51,6 +51,7 @@ export default class ScheduleInstallationContainer extends React.Component {
       if (this.readyState == 4) {
         if (this.status == 201) {
           _this.getInstallationInfo();
+          _this.props.handleSnackbar('Installation has been scheduled', false);
         } else {
           _this.props.handleSnackbar('', true, this.status);
         }

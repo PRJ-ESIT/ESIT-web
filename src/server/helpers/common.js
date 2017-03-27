@@ -256,7 +256,7 @@ var setStatus = function(id, type, status, callback) {
     });
 
     res.on('end', function() {
-      logger.info("Status code: " + statusCode);
+      logger.info("Status code: " + res.statusCode);
       try {
         var obj = JSON.parse(output);
         callback(obj, res.statusCode);

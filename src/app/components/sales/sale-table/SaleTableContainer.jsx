@@ -87,6 +87,7 @@ export default class SaleTableContainer extends React.Component {
       if (this.readyState == 4) {
         if (this.status == 200) {
           _this.getAllSales();
+          _this.props.handleSnackbar('Sale has been cancelled', false, this.status);
         } else {
           _this.props.handleSnackbar('', true, this.status);
         }
