@@ -8,6 +8,7 @@ export default class DocuSignCompletionInstaller extends React.Component {
       // Installer Information
       contractorId: this.props.installation.installerId,
       installerName: this.props.installation.installerName,
+      installerEmail: this.props.installation.installerEmail,
       installedDate: this.props.installation.installedDate,
       installationId: this.props.installation.installationId,
       envelopeId: this.props.envelopeId,

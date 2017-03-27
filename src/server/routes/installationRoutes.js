@@ -675,7 +675,7 @@ installationRouter.post('/getInstallationEmbeddedUrl2', function(request, respon
   var installerName = request.body.installerName;
   var installerId = request.body.contractorId;
   var envelopeId = request.body.envelopeId;
-  var installerEmail = "installer@example.com";
+  var installerEmail = request.body.installerEmail;
   var returnUrl = "http://" + config.IP + "/installations/closesecondiframe?id=" + request.body.installationId;
 
   return getDocuSignUrl(envelopeId, returnUrl, installerEmail, installerName, installerId, function(urlObj, statusCode) {
