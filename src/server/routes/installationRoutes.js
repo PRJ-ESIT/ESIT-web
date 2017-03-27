@@ -325,7 +325,7 @@ installationRouter.post('/getinstallationembeddedurl', function(request, respons
       "emailSubject": "DocuSign API call - Embedded Sending Example",
       "templateId": config.docusign.installationTemplateId,
       "templateRoles": [{ // Installer
-        "email": "installer@example.com",
+        "email": request.body.installerEmail,
         "name": request.body.installerName,
         "roleName": "Installer",
         "clientUserId": request.body.contractorId,  // user-configurable
