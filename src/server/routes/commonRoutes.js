@@ -39,13 +39,25 @@ commonRouter.get('/allemployeesbyrole', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -75,56 +87,78 @@ commonRouter.get('/dashboard', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
           var sales = JSON.parse(output).sales;
-          //done with the sales, now retrieving the Installations
-          var options = {
-            host: config.crudIP,
-            port: 8080,
-            path: '/crud/InstallationService/getAllInstallations/' + request.query.id,
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
+
+        //done with the sales, now retrieving the Installations
+        var options = {
+          host: config.crudIP,
+          port: 8080,
+          path: '/crud/InstallationService/getAllInstallations/' + request.query.id,
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
+
+        var installRequest = http.request(options, function(resp) {
+          var output = '';
+          resp.setEncoding('utf8');
+          resp.on('data', function (chunk) {
+            output += chunk;
+          });
+          resp.on('end', function() {
+            logger.info('StatusCode: ' + resp.statusCode);
+            try {
+              var installations = JSON.parse(output).installations;
+            } catch (err) {
+              logger.error('Unable to parse response as JSON', err);
+              logger.debug(output);
+              return response.status(res.statusCode).send();
             }
-          };
 
-          var installRequest = http.request(options, function(resp)
-            {
-              var output = '';
-              resp.setEncoding('utf8');
+            var entry = {
+              data: {
+                'sales': sales,
+                'installations': installations
+              }
+            };
 
-              resp.on('data', function (chunk) {
-                output += chunk;
-              });
-
-              resp.on('end', function() {
-                  var installations = JSON.parse(output).installations;
-                  var entry = {
-                    data: {
-                      'sales': sales,
-                      'installations': installations
-                    }
-                  };
-
-                  // Get some of that sweet, sweet data!
-                  config.adminAPIClient.users.get(config.adminAPIClient.CURRENT_USER_ID, null, function(err, currentUser) {
-                    if(err) throw err;
-                    logger.debug('Hello, ' + currentUser.name + '!');
-                  });
-
-                  response.status(200).json(entry);
-              });
+            // Get some of that sweet, sweet data!
+            config.adminAPIClient.users.get(config.adminAPIClient.CURRENT_USER_ID, null, function(err, currentUser) {
+              if(err) throw err;
+              logger.debug('Hello, ' + currentUser.name + '!');
             });
 
-            installRequest.on('error', function(err) {
-                //response.send('error: ' + err.message);
-            });
+            return response.status(200).json(entry);
+          });
+        });
 
-            installRequest.end();
+        installRequest.on('error', function(err) {
+          if (err.code === "ECONNREFUSED") {
+            logger.error("Web service refused connection");
+            return response.status(503).send();
+          }
+          logger.error(err);
+          return response.status(503).send();
+        });
+        installRequest.end();
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -188,12 +222,20 @@ commonRouter.post('/upload', function(request, response) {
             }
 
             if(fields.type == "Sale") {
-              setStatus(fields.id, fields.type, "Paid", function(obj) {
-                return response.status(200).json({success: true, obj: obj});
+              setStatus(fields.id, fields.type, "Paid", function(obj, statusCode) {
+                if(obj) {
+                  return response.status(statusCode).json({success: true, obj: obj});
+                } else {
+                  return response.status(statusCode).send();
+                }
               });
             } else if(fields.type == "Installation") {
-              setStatus(fields.id, fields.type, "Documented", function(obj) {
-                return response.status(200).json({success: true, installation: obj.installation});
+              setStatus(fields.id, fields.type, "Documented", function(obj, statusCode) {
+                if(obj) {
+                  return response.status(statusCode).json({success: true, installation: obj.installation});
+                } else {
+                  return response.status(statusCode).send();
+                }
               });
             }
       });

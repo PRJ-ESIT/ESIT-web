@@ -39,13 +39,25 @@ installationRouter.get('/getall', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -75,13 +87,25 @@ installationRouter.get('/getallscheduled', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
 
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
 
     req.end();
@@ -118,16 +142,84 @@ installationRouter.post('/create', function(request, response) {
     });
 
     res.on('end', function() {
-      //#TODO remove tempObj and forward the SaleNumber from crud instead
-      var tempObj = {'a': 'b'};
-      return response.status(201).json(tempObj);
+      logger.info('StatusCode: ' + res.statusCode);
+      return response.status(res.statusCode).send();
     });
 
   });
 
   req.on('error', function(err) {
-    logger.error('error message');
-    //response.send('error: ' + err.message);
+    if (err.code === "ECONNREFUSED") {
+      logger.error("Web service refused connection");
+      return response.status(503).send();
+    }
+    logger.error(err);
+    return response.status(503).send();
+  });
+
+  req.write(jsonObj);
+  req.end();
+});
+
+//PUT http://localhost:3000/installations/update
+installationRouter.put('/update', function(request, response) {
+  logger.info("InstallationRoutes: Handling PUT /update request");
+
+  var jsonObj = querystring.stringify({
+      sqft: request.body.sqft,
+      bathrooms: request.body.bathrooms,
+      residents: request.body.residents,
+      pool: request.body.pool,
+      notes: request.body.notes,
+      installedDate: request.body.installedDate,
+  });
+
+  logger.debug('Sending request for id: ' + request.query.id);
+  logger.debug('New data:' + jsonObj);
+
+  var options = {
+    host: config.crudIP,
+    port: 8080,
+    method: 'PUT',
+    path: '/crud/InstallationService/updateInstallation/' + request.query.id,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(jsonObj)
+    }
+  };
+
+  var req = http.request(options, function(res) {
+    var output = '';
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+        output += chunk;
+    });
+
+    res.on('end', function() {
+      logger.info("Status code: " + res.statusCode);
+      //check for status 200 and set the installation status to "Installed"
+      if(res.statusCode == 200) {
+        setStatus(request.query.id, "Installation", "Installed", function(obj, statusCode) {
+          logger.info("Status code: " + statusCode);
+          if(!!obj) {
+            return response.status(statusCode).json(obj);
+          } else {
+            return response.status(statusCode).send();
+          }
+        });
+      } else {
+        return response.status(res.statusCode).send();
+      }
+    });
+  });
+
+  req.on('error', function(err) {
+    if (err.code === "ECONNREFUSED") {
+      logger.error("Web service refused connection");
+      return response.status(503).send();
+    }
+    logger.error(err);
+    return response.status(503).send();
   });
 
   req.write(jsonObj);
@@ -158,12 +250,24 @@ installationRouter.get('/getone', function(request, response) {
       });
 
       res.on('end', function() {
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
           var obj = JSON.parse(output);
-          return response.status(200).json(obj);
+          return response.status(res.statusCode).json(obj);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
       });
     });
     req.on('error', function(err) {
-        //response.send('error: ' + err.message);
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
+      logger.error(err);
+      return response.status(503).send();
     });
     req.end();
 });
@@ -172,11 +276,14 @@ installationRouter.get('/getone', function(request, response) {
 installationRouter.put('/cancel', function(request, response) {
   logger.info("InstallationRoutes: Handling PUT /cancel request");
 
-    //web service toggles the status, so we leave the status parameter empty
-    setStatus(request.body.installationId, "Installation", "Cancelled", function(obj, statusCode) {
-      logger.info("Status code: " + statusCode);
-      return response.status(200).json(obj);
-    });
+  setStatus(request.body.installationId, "Installation", "Cancelled", function(obj, statusCode) {
+    logger.info("Status code: " + statusCode);
+    if(!!obj) {
+      return response.status(statusCode).json(obj);
+    } else {
+      return response.status(statusCode).send();
+    }
+  });
 });
 
 //GET http://localhost:3000/installations/closefirstiframe
@@ -184,7 +291,7 @@ installationRouter.get('/closefirstiframe', function(req, res) {
   logger.info("InstallationRoutes: Handling GET /closefirstiframe request");
 
   if (req.query.event == 'signing_complete') {
-    setStatus(req.query.id, "Installation", "Customer Signed", function() {
+    setStatus(req.query.id, "Installation", "Customer Signed", function(obj, statusCode) {
       res.sendFile(path.join(__dirname + '../../../client/closeinstallationoneiframe.html'));
     });
   }
@@ -197,7 +304,7 @@ installationRouter.get('/closesecondiframe', function(req, res) {
   logger.info("InstallationRoutes: Handling GET /closesecondiframe request");
 
   if (req.query.event == 'signing_complete') {
-    setStatus(req.query.id, "Installation", "Installer Signed", function() {
+    setStatus(req.query.id, "Installation", "Installer Signed", function(obj, statusCode) {
       res.sendFile(path.join(__dirname + '../../../client/closeinstallationtwoiframe.html'));
     });
   }
@@ -525,7 +632,15 @@ installationRouter.post('/getinstallationembeddedurl', function(request, respons
       });
 
       res.on('end', function() {
-        var obj = JSON.parse(output);
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          var obj = JSON.parse(output);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
+
         var envelopeId = obj.envelopeId;
 
         // Save envelopeId to db
@@ -541,8 +656,12 @@ installationRouter.post('/getinstallationembeddedurl', function(request, respons
     });
 
     req.on('error', function(err) {
+      if (err.code === "ECONNREFUSED") {
+        logger.error("Web service refused connection");
+        return response.status(503).send();
+      }
       logger.error(err);
-      response.send('error: ' + err.message);
+      return response.status(503).send();
     });
 
     req.write(body);
@@ -559,8 +678,12 @@ installationRouter.post('/getInstallationEmbeddedUrl2', function(request, respon
   var installerEmail = "installer@example.com";
   var returnUrl = "http://" + config.IP + "/installations/closesecondiframe?id=" + request.body.installationId;
 
-  return getDocuSignUrl(envelopeId, returnUrl, installerEmail, installerName, installerId, function(urlObj) {
-    return response.status(200).json(urlObj);
+  return getDocuSignUrl(envelopeId, returnUrl, installerEmail, installerName, installerId, function(urlObj, statusCode) {
+    if(urlObj) {
+      return response.status(statusCode).json(urlObj);
+    } else {
+      return response.status(statusCode).send();
+    }
   });
 });
 

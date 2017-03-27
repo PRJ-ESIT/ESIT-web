@@ -17,12 +17,15 @@ export default class SelectInstallationContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let installations = JSON.parse(httpRequest.responseText).installations;
-        _this.setState({
-          installations: installations
-        });
-
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let installations = JSON.parse(httpRequest.responseText).installations;
+          _this.setState({
+            installations: installations
+          });
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 

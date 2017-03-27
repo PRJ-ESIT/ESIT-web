@@ -16,18 +16,22 @@ export default class CustomerTableContainer extends React.Component {
   }
 
   componentWillMount() {
-  	this.getAllCustomers();
+    this.getAllCustomers();
   }
 
   getAllCustomers = () => {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allCustomers = JSON.parse(httpRequest.responseText).customers;
-        _this.setState({
-          allCustomers: allCustomers,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let allCustomers = JSON.parse(httpRequest.responseText).customers;
+          _this.setState({
+            allCustomers: allCustomers,
+          });
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 
@@ -36,15 +40,18 @@ export default class CustomerTableContainer extends React.Component {
   }
 
   getCustomerDetails = (customerId) => {
-  	var httpRequest = new XMLHttpRequest();
+    var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let customer = JSON.parse(httpRequest.responseText).customer;
-
-        _this.setState({
-          customerDetails: customer,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let customer = JSON.parse(httpRequest.responseText).customer;
+          _this.setState({
+            customerDetails: customer,
+          });
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 

@@ -360,6 +360,13 @@ export default class InstallationCamera extends React.Component {
         <div className="finishWrapper">
           <RaisedButton
             className="finishButton"
+            label={'Back'}
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.props.handleResetStepper()}}
+            disabled={false}
+          />
+          <RaisedButton
+            className="finishButton"
             label={'Clear'}
             secondary={true}
             onTouchTap={(e) => {e.preventDefault(); this.desktopClearClickHandler()}}

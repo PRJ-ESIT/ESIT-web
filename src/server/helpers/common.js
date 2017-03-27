@@ -38,11 +38,16 @@ var setEnvelopeId = function(envelopeId, service, id, callback) {
     });
 
     res.on('end', function() {
-      var obj = JSON.parse(output);
-      logger.info('setEnvelopeId, onend: ' + service + " added: " + JSON.stringify(obj));
-      callback(obj);
+      logger.info('StatusCode: ' + res.statusCode);
+      try {
+        var obj = JSON.parse(output);
+        logger.info('setEnvelopeId, onend: ' + service + " added: " + JSON.stringify(obj));
+        callback(obj);
+      } catch (err) {
+        logger.error('Unable to parse response as JSON', err);
+        logger.debug(output);
+      }
     });
-
   });
 
   req.on('error', function(err) {
@@ -96,13 +101,21 @@ var getDocuSignUrl = function(envelopeId, returnUrl, email, userName, clientUser
       });
 
       res.on('end', function() {
-        var innerObj = JSON.parse(output);
-        callback(innerObj);
+        logger.info('StatusCode: ' + res.statusCode);
+        try {
+          var innerObj = JSON.parse(output);
+          callback(innerObj, res.statusCode);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          callback(undefined, res.statusCode);
+        }
       });
     });
 
     req.on('error', function(err) {
-      response.send('error: ' + err.message);
+      logger.error(err);
+      callback(undefined, res.statusCode);
     });
 
     req.write(body);
@@ -213,6 +226,7 @@ var webhook = function(data) {
 }
 
 //generic helper used to change statuses for both Sale and Installation objects
+//returns a statusCode with a JSON object in a case of success
 var setStatus = function(id, type, status, callback) {
   logger.info('in setStatus()');
 
@@ -242,15 +256,20 @@ var setStatus = function(id, type, status, callback) {
     });
 
     res.on('end', function() {
-      var obj = JSON.parse(output);
-      callback(obj, res.statusCode);
+      logger.info("Status code: " + res.statusCode);
+      try {
+        var obj = JSON.parse(output);
+        callback(obj, res.statusCode);
+      } catch (err) {
+        logger.error('Unable to parse response as JSON', err);
+        logger.debug(output);
+        callback(false, res.statusCode);
+      }
     });
-
   });
 
   req.on('error', function(err) {
-    logger.error('error message');
-    //response.send('error: ' + err.message);
+    callback(false, 503);
   });
 
   req.write(jsonObj);
@@ -309,9 +328,16 @@ var setFolderId = function(folderId, id, callback) {
     });
 
     res.on('end', function() {
-      var obj = JSON.parse(output);
-      logger.debug("setFolderId, onend: added " + JSON.stringify(obj));
-      callback(obj);
+      logger.info('StatusCode: ' + res.statusCode);
+      try {
+        var obj = JSON.parse(output);
+        logger.debug("setFolderId, onend: added " + JSON.stringify(obj));
+        callback(obj);
+      } catch (err) {
+        logger.error('Unable to parse response as JSON', err);
+        logger.debug(output);
+
+      }
     });
 
   });
@@ -361,9 +387,15 @@ var getFolderIdByEnvelopeId = function(envelopeId, callback) {
     });
 
     res.on('end', function() {
-      var obj = JSON.parse(output).sale;
-      logger.debug("folderId found: " + JSON.stringify(obj));
-      callback(obj);
+      logger.info('StatusCode: ' + res.statusCode);
+      try {
+        var obj = JSON.parse(output).sale;
+        logger.debug("folderId found: " + JSON.stringify(obj));
+        callback(obj);
+      } catch (err) {
+        logger.error('Unable to parse response as JSON', err);
+        logger.debug(output);
+      }
     });
 
   });

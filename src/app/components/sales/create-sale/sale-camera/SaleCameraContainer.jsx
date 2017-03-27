@@ -21,11 +21,15 @@ export default class SaleCameraContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let sale = JSON.parse(httpRequest.responseText).sale;
-        _this.setState({
-          sale: sale,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let sale = JSON.parse(httpRequest.responseText).sale;
+          _this.setState({
+            sale: sale,
+          });
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     }
 
@@ -33,9 +37,6 @@ export default class SaleCameraContainer extends React.Component {
       + saleId, true);
     httpRequest.send(null);
   }
-
-
-
 
   iOSUploadSingleFile = (file_URI) => {
     var retries = 0;
@@ -60,7 +61,7 @@ export default class SaleCameraContainer extends React.Component {
       } else {
         retries = 0;
         _this.clearCache();
-        alert('Ups. Something wrong happens!');
+        _this.props.handleSnackbar('Couldn\'t upload the file, try again', true);
       }
     }
 
@@ -92,11 +93,16 @@ export default class SaleCameraContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
 
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let response = JSON.parse(httpRequest.responseText);
-        if (response.success == true) {
-          _this.props.handleSaleNext();
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let response = JSON.parse(httpRequest.responseText);
+          if (response.success == true) {
+            _this.props.handleSaleNext();
+          } else {
+            enableButtons(false);
+          }
         } else {
+          _this.props.handleSnackbar('', true, this.status);
           enableButtons(false);
         }
       }

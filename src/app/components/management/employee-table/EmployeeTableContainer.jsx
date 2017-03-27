@@ -24,12 +24,15 @@ export default class EmployeeTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allEmployees = JSON.parse(httpRequest.responseText).employees;
-        _this.setState({
-          allEmployees: allEmployees,
-        });
-
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let allEmployees = JSON.parse(httpRequest.responseText).employees;
+          _this.setState({
+            allEmployees: allEmployees,
+          });
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 
@@ -41,22 +44,26 @@ export default class EmployeeTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let employee = JSON.parse(httpRequest.responseText).employee;
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let employee = JSON.parse(httpRequest.responseText).employee;
 
-        // Format and save hire date for details modal
-        var tempDateTime;
-        if (employee.hireDate) {
-          tempDateTime = new Date(employee.hireDate);
-          tempDateTime = tempDateTime.toLocaleDateString();
+          // Format and save hire date for details modal
+          var tempDateTime;
+          if (employee.hireDate) {
+            tempDateTime = new Date(employee.hireDate);
+            tempDateTime = tempDateTime.toLocaleDateString();
+          } else {
+            tempDateTime = null;
+          }
+
+          employee.hireDate = tempDateTime;
+          _this.setState({
+            employeeDetails: employee,
+          });
         } else {
-          tempDateTime = null;
+          _this.props.handleSnackbar('', true, this.status);
         }
-
-        employee.hireDate = tempDateTime;
-        _this.setState({
-          employeeDetails: employee,
-        });
       }
     };
 
@@ -74,8 +81,12 @@ export default class EmployeeTableContainer extends React.Component {
     request.open('PUT', 'http://' + IP + '/management/toggleemployeestatus', true);
     request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        _this.getallemployees();
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          _this.getallemployees();
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../client/styles/style.scss';
-import { AppBar, FlatButton  } from 'material-ui';
+import { AppBar, FlatButton, Snackbar, } from 'material-ui';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LeftMenu from './left-menu/LeftMenu.jsx';
@@ -34,6 +34,19 @@ const defaultProps = {
   allCustomers: CustomerTableContainer,
 };
 
+const styles = {
+  greenSnackbar: {
+    backgroundColor: 'teal',
+    color: 'coral',
+    textAlign: 'center',
+  },
+
+  redSnackbar: {
+    backgroundColor: '#860e0e',
+    color: 'coral',
+    textAlign: 'center',
+  }
+};
 
 export default class App extends React.Component {
 
@@ -53,23 +66,54 @@ export default class App extends React.Component {
       saleObj: undefined,
       envelopeId: undefined,
       folderId: undefined,
-    }
 
-    this.handleLogout = this.handleLogout.bind(this);
-    this.menuClickHandler = this.menuClickHandler.bind(this);
-    this.appBarClickHandler = this.appBarClickHandler.bind(this);
-    this.editClickHandler = this.editClickHandler.bind(this);
-    this.getEmbeddedUrl = this.getEmbeddedUrl.bind(this);
-    this.getInstallationEmbeddedUrl = this.getInstallationEmbeddedUrl.bind(this);
-    this.getInstallationEmbeddedUrl2 = this.getInstallationEmbeddedUrl2.bind(this);
-    this.closeIframe = this.closeIframe.bind(this);
+      //snackbar state
+      message: '',
+      open: false,
+    }
   }
 
   getChildContext() {
     return { muiTheme: getMuiTheme(baseTheme) };
   }
 
-  handleLogout() {
+  //message - should be empty for errors, but should contain text for confirmations
+  //error - boolean, true for red (error) snackbars, and false for green (confirmation) snackbars
+  //statusCode - number, we should handle as many as possible
+  handleSnackbar = (message, error, statusCode) => {
+    if(message.length == 0) {
+      //all error status codes are handled in here
+      if(statusCode == 503) {
+        this.setState({
+          open: true,
+          message: 'Internal server error :-(',
+          error: error,
+        });
+      } else {
+        this.setState({
+          open: true,
+          message: 'Couldn\'t connect to the server',
+          error: error,
+        });
+      }
+    } else {
+      //display confirmation and custom error snackbars here (message shouldn't be empty)
+      this.setState({
+        open: true,
+        message: message,
+        error: error,
+      });
+    }
+  }
+
+  //Snackbar handler
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  }
+
+  handleLogout = () => {
     this.props.logout();
   }
 
@@ -105,6 +149,22 @@ export default class App extends React.Component {
     this.setState({installationStepIndex: installationStepIndex - 1});
   }
 
+  handleResetStepper = () => {
+    this.setState({
+      leftMenuOpen: false,
+      saleStepIndex: 0,
+      installationStepIndex: 0,
+      selectedInstallationId: undefined,
+      status: "",
+      formId: undefined,
+      docuSignUrl: undefined,
+      installationObj: undefined,
+      saleObj: undefined,
+      envelopeId: undefined,
+      folderId: undefined,
+    })
+  }
+
   getRightButtons() {
     var rightButtonsStyle = {
       'height': '40px',
@@ -127,7 +187,7 @@ export default class App extends React.Component {
     );
   }
 
-  menuClickHandler(contentName) {
+  menuClickHandler = (contentName) => {
     this.setState({
       currentContent: this.props[contentName],
       leftMenuOpen: false,
@@ -135,7 +195,7 @@ export default class App extends React.Component {
     });
   }
 
-  appBarClickHandler() {
+  appBarClickHandler = () => {
     if(this.state.leftMenuOpen) {
       this.setState({leftMenuOpen: false});
     } else {
@@ -143,10 +203,7 @@ export default class App extends React.Component {
     }
   }
 
-  editClickHandler(status, id, contentName) {
-    console.log(status);
-    console.log(id);
-    console.log(contentName);
+  editClickHandler = (status, id, contentName) => {
     this.setState({
       currentContent: this.props[contentName],
       status: status,
@@ -155,15 +212,19 @@ export default class App extends React.Component {
   }
 
   // For Sales Forms
-  getEmbeddedUrl(data) {
+  getEmbeddedUrl = (data) => {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let url = JSON.parse(httpRequest.responseText).url;
-        _this.setState({
-          docuSignURL: url,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let url = JSON.parse(httpRequest.responseText).url;
+          _this.setState({
+            docuSignURL: url,
+          });
+        } else {
+          _this.handleSnackbar('', true, this.status);
+        }
       }
     };
 
@@ -173,17 +234,21 @@ export default class App extends React.Component {
   }
 
   // For customer
-  getInstallationEmbeddedUrl(data) {
+  getInstallationEmbeddedUrl = (data) => {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let url = JSON.parse(httpRequest.responseText).url;
-        let eId = JSON.parse(httpRequest.responseText).envelopeId;
-        _this.setState({
-          docuSignURL: url,
-          envelopeId: eId,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let url = JSON.parse(httpRequest.responseText).url;
+          let eId = JSON.parse(httpRequest.responseText).envelopeId;
+          _this.setState({
+            docuSignURL: url,
+            envelopeId: eId,
+          });
+        } else {
+          _this.handleSnackbar('', true, this.status);
+        }
       }
     };
 
@@ -193,15 +258,19 @@ export default class App extends React.Component {
   }
 
   // For installer
-  getInstallationEmbeddedUrl2(data) {
+  getInstallationEmbeddedUrl2 = (data) => {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let url = JSON.parse(httpRequest.responseText).url;
-        _this.setState({
-          docuSignURL: url,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let url = JSON.parse(httpRequest.responseText).url;
+          _this.setState({
+            docuSignURL: url,
+          });
+        } else {
+          _this.handleSnackbar('', true, this.status);
+        }
       }
     };
 
@@ -210,9 +279,7 @@ export default class App extends React.Component {
     httpRequest.send(JSON.stringify(data));
   }
 
-  closeIframe(message) {
-    console.log(message);
-    console.log('I  AM HERE');
+  closeIframe = (message) => {
     if(message == "Sale forms are signed") {
       this.setState({
         docuSignURL: undefined,
@@ -290,9 +357,18 @@ export default class App extends React.Component {
               selectedInstallationId={this.state.selectedInstallationId} installationObj={this.state.installationObj}
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
               getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj}
-              folderId={this.state.folderId} userId={this.props.userId} userName={this.props.userName} role={this.props.role}/>
+              folderId={this.state.folderId} userId={this.props.userId} userName={this.props.userName} role={this.props.role}
+              handleResetStepper={this.handleResetStepper} handleSnackbar={this.handleSnackbar}/>
           </div>
         </div>
+        <Snackbar
+          open={this.state.open}
+          message={this.state.message}
+          autoHideDuration={4000}
+          onRequestClose={this.handleRequestClose}
+          contentStyle={{fontSize: '18px'}}
+          bodyStyle={this.state.error ? styles.redSnackbar : styles.greenSnackbar}
+        />
       </div>
     );
   }

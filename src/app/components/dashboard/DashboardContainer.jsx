@@ -20,15 +20,18 @@ export default class DashboardContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
+      if (this.readyState == 4) {
+        if(this.status == 200) {
+          let allSales = JSON.parse(httpRequest.responseText).data.sales;
+          let allInstallations = JSON.parse(httpRequest.responseText).data.installations;
 
-        let allSales = JSON.parse(httpRequest.responseText).data.sales;
-        let allInstallations = JSON.parse(httpRequest.responseText).data.installations;
-
-        _this.setState({
-          allSales: allSales,
-          allInstallations: allInstallations,
-        });
+          _this.setState({
+            allSales: allSales,
+            allInstallations: allInstallations,
+          });
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 

@@ -76,7 +76,7 @@ export default class EmployeeForm extends React.Component {
       addressValidated: false,
       unitValidated: false,
       cityValidated: false,
-      proviceValidated: false,
+      provinceValidated: false,
       postalCodeValidated: false,
       emailValidated: false,
       homePhoneValidated: false,
@@ -91,25 +91,52 @@ export default class EmployeeForm extends React.Component {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          let employee = JSON.parse(httpRequest.responseText).employee;
-          // Format time
-          var tempDateTime = new Date(employee.hireDate);
+        if (this.readyState == 4) {
+          if (this.status == 200) {
+            let employee = JSON.parse(httpRequest.responseText).employee;
+            // Format time
+            var tempDateTime = new Date(employee.hireDate);
 
-          _this.setState({
-            employeeType: employee.role ? employee.role : '',
-            hireDate: tempDateTime ? tempDateTime : '',
-            fname: employee.firstName ? employee.firstName : '',
-            lname: employee.lastName ? employee.lastName : '',
-            email: employee.email ? employee.email : '',
-            homePhone: employee.homePhone ? employee.homePhone : '',
-            cellPhone: employee.cellPhone ? employee.cellPhone : '',
-            address: employee.address ? employee.address : '',
-            unitNum: employee.unit ? employee.unit : '',
-            city: employee.city ? employee.city : '',
-            province: employee.province ? employee.province : '',
-            postalCode: employee.postalCode ? employee.postalCode : '',
-          });
+            _this.setState({
+              employeeType: employee.role ? employee.role : '',
+              hireDate: tempDateTime ? tempDateTime : '',
+              fname: employee.firstName ? employee.firstName : '',
+              lname: employee.lastName ? employee.lastName : '',
+              email: employee.email ? employee.email : '',
+              homePhone: employee.homePhone ? employee.homePhone : '',
+              cellPhone: employee.cellPhone ? employee.cellPhone : '',
+              address: employee.address ? employee.address : '',
+              unitNum: employee.unit ? employee.unit : '',
+              city: employee.city ? employee.city : '',
+              province: employee.province ? employee.province : '',
+              postalCode: employee.postalCode ? employee.postalCode : '',
+
+
+              /* State for the EDIT */
+              //if it's edit - unit and password fields are optional
+              //so set passwordValidated to true by default
+              passwordValidated: true,
+              passwordRepeatValidated: true,
+              unitValidated: true,
+
+              //assuming that all the fields retrieved from the database are validated
+              employeeTypeValidated: employee.role ? true : false,
+
+              hireDateValidated: tempDateTime ? true : false,
+              fnameValidated: employee.firstName ? true : false,
+              lnameValidated: employee.lastName ? true : false,
+              addressValidated: employee.address ? true : false,
+              cityValidated: employee.city ? true : false,
+              provinceValidated: employee.province ? true : false,
+              postalCodeValidated: employee.postalCode ? true : false,
+              emailValidated: employee.email ? true : false,
+              homePhoneValidated: employee.homePhone ? true : false,
+              cellPhoneValidated: employee.cellPhone ? true : false,
+              /* End of the State for Edit */
+            });
+          } else {
+            _this.props.handleSnackbar('', true, this.status);
+          }
         }
       };
 
@@ -334,52 +361,50 @@ export default class EmployeeForm extends React.Component {
   }
 
   validatePassword() {
-    if (validations.isPassword(this.state.password) &&
-      validations.maxLength(this.state.password, 20)) {
-
-      let repeatPswd = this.state.repeatPassword;
-      let repeatPasswordErr = '';
-      let validated = true;
-
-      if (!(validations.isExisty(repeatPswd) &&
-        !validations.isEmpty(repeatPswd) &&
-        repeatPswd == this.state.password)) {
-
-        repeatPasswordErr = 'Doesn\'t match the password entered';
-        validated = false;
-      }
-
+    //in the Edit mode passwords are optional, checking if it's empty
+    if (this.props.status == "edit" && this.state.password == '') {
       this.setState({
         passwordErr: '',
-        repeatPasswordErr: repeatPasswordErr,
-        passwordValidated: validated,
+        passwordValidated: true,
       });
+
+      //in the 'Create' scenario empty password is not an option
     } else {
-      this.setState({
-        passwordErr: 'Minimum 8 characters and 1 character, 1 number, 1 special character (!@#$%^&*)',
-        passwordValidated: false,
-      });
+      if (validations.isPassword(this.state.password) &&
+        validations.maxLength(this.state.password, 20)) {
+
+        this.setState({
+          passwordErr: '',
+          passwordValidated: true,
+        });
+      } else {
+        this.setState({
+          passwordErr: 'Minimum 8 characters and 1 character, 1 number, 1 special character (!@#$%^&*)',
+          passwordValidated: false,
+        });
+      }
     }
   }
 
+  //this function just checks whether a repeated password is the same as the original entry
   validatePasswordRepeat() {
     let repeatPswd = this.state.repeatPassword;
-    if (validations.isExisty(repeatPswd) &&
-      !validations.isEmpty(repeatPswd) &&
-      repeatPswd == this.state.password) {
-
+    if (repeatPswd == this.state.password) {
       this.setState({
         repeatPasswordErr: '',
         passwordRepeatValidated: true,
-        passwordValidated: true,
       });
     } else {
       this.setState({
         repeatPasswordErr: 'Doesn\'t match the password entered',
         passwordRepeatValidated: false,
-        passwordValidated: false,
       });
     }
+  }
+
+  validatePasswords() {
+    this.validatePassword();
+    this.validatePasswordRepeat();
   }
 
   validateAllFields() {
@@ -397,8 +422,14 @@ export default class EmployeeForm extends React.Component {
         this.state.cellPhoneValidated &&
         this.state.passwordValidated &&
         this.state.passwordRepeatValidated) {
-      //everything is validated, creating a new Employee
-      this.createNewEmployee();
+      //everything is validated
+
+      if(this.props.status == "edit") {
+        this.updateEmployee();
+      } else {
+        //creating a new Employee
+        this.createNewEmployee();
+      }
 
     } else {
       this.validateEmployeeType();
@@ -413,8 +444,7 @@ export default class EmployeeForm extends React.Component {
       this.validateEmail();
       this.validateHomePhone();
       this.validateCellPhone();
-      this.validatePassword();
-      this.validatePasswordRepeat();
+      this.validatePasswords();
     }
   }
 
@@ -446,10 +476,55 @@ export default class EmployeeForm extends React.Component {
     request.open('POST', "http://" + IP + '/management/newemployee', true);
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 201) {
-        _this.props.menuClickHandler("dashboard");
+      if (this.readyState == 4) {
+        if (this.status == 201) {
+          _this.props.handleSnackbar('Employee created successfully', false, this.status);
+          _this.props.menuClickHandler("dashboard");
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
-      //#TODO add error check and display `Snackbar` in both success or fail cases
+    };
+
+    request.send(JSON.stringify(data));
+  }
+
+  updateEmployee() {
+    var date = this.state.hireDate;
+    date = date.getFullYear()
+      + "-" + dateHelpers.twoDigits(1 + date.getMonth())
+      + "-" + dateHelpers.twoDigits(date.getDate());
+
+    let data = {
+      fname: this.state.fname,
+      lname: this.state.lname,
+      address: this.state.address,
+      unitNum: this.state.unitNum,
+      city: this.state.city,
+      province: this.state.province,
+      postalCode: this.state.postalCode,
+      email: this.state.email,
+      homePhone: this.state.homePhone,
+      cellPhone: this.state.cellPhone,
+      password: this.state.password,
+      hireDate: date,
+      isActive: true,
+      employeeType: this.state.employeeType,
+    };
+
+    var _this = this;
+    var request = new XMLHttpRequest();
+    request.open('PUT', 'http://' + IP + '/management/updateemployee?id=' + this.props.id, true);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    request.onreadystatechange = function() {
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          _this.props.handleSnackbar('Employee updated successfully', false, this.status);
+          _this.props.menuClickHandler("dashboard");
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
+      }
     };
 
     request.send(JSON.stringify(data));
@@ -624,7 +699,7 @@ export default class EmployeeForm extends React.Component {
                 maxLength="20"
                 value={this.state.password}
                 onChange={this.handleTextChange.bind(this, 'password')}
-                onBlur={this.validatePassword.bind(this)}
+                onBlur={this.validatePasswords.bind(this)}
                 errorText={this.state.passwordErr}
                 errorStyle={{float: "left"}}
               />
@@ -637,7 +712,7 @@ export default class EmployeeForm extends React.Component {
                 maxLength="20"
                 value={this.state.repeatPassword}
                 onChange={this.handleTextChange.bind(this, 'repeatPassword')}
-                onBlur={this.validatePasswordRepeat.bind(this)}
+                onBlur={this.validatePasswords.bind(this)}
                 errorText={this.state.repeatPasswordErr}
                 errorStyle={{float: "left"}}
               />
@@ -653,7 +728,7 @@ export default class EmployeeForm extends React.Component {
               <RaisedButton
                 onTouchTap={(e) => {e.preventDefault(); this.validateAllFields()}}
                 style={{float: 'right'}}
-                label="Create"
+                label={this.props.status === 'edit' ? 'Update' : 'Create'}
                 primary={true}
               />
             </div>

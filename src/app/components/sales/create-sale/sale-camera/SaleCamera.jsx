@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatButton, RaisedButton } from 'material-ui';
+import { FlatButton, RaisedButton, Dialog } from 'material-ui';
 
 const styles = {
   button: {
@@ -15,6 +15,9 @@ const styles = {
     width: '100%',
     opacity: 0,
   },
+  dialog: {
+    width: '60%',
+  },
 };
 
 export default class SaleCamera extends React.Component {
@@ -28,6 +31,8 @@ export default class SaleCamera extends React.Component {
       sale: undefined,
       isCordova: undefined,
       disableButton: true,
+
+      dialogOpen: false,
     };
   }
 
@@ -272,6 +277,44 @@ export default class SaleCamera extends React.Component {
     })
   }
 
+  handleOpen = () => {
+    this.setState({dialogOpen: true});
+  }
+
+  handleClose = () => {
+    this.setState({dialogOpen: false});
+  }
+
+  renderDialog = () => {
+    //Confirmation Dialog actions
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Confirm"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={(e) => {e.preventDefault(); this.props.handleResetStepper()}}
+      />,
+    ];
+    return (
+      <Dialog
+        title="Warning"
+        actions={actions}
+        modal={false}
+        open={this.state.dialogOpen}
+        onRequestClose={this.handleClose}
+        contentStyle={styles.dialog}
+      >
+        Are you sure you want to start over? Pictures will not be saved.
+        You will be able to resume a current Sale from the Dashboard or from the All Sales page.
+      </Dialog>
+    );
+  }
+
   getCordovaUI = () => {
     var rightButtonsStyle = {
       'height': '40px',
@@ -299,11 +342,19 @@ export default class SaleCamera extends React.Component {
         <div className="finishWrapper">
           <RaisedButton
             className="finishButton"
+            label={'Start New Sale'}
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
+            disabled={false}
+          />
+          <RaisedButton
+            className="finishButton"
             label={'Upload'}
             primary={true}
             onTouchTap={(e) => {e.preventDefault(); this.iOSUploadClickHandler()}}
           />
         </div>
+        {this.renderDialog()}
        </div>
     );
   }
@@ -328,19 +379,27 @@ export default class SaleCamera extends React.Component {
         <div className="finishWrapper">
           <RaisedButton
             className="finishButton"
+            label={'Start New Sale'}
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
+            disabled={false}
+          />
+          <RaisedButton
+            className="finishButton"
             label={'Clear'}
             secondary={true}
             onTouchTap={(e) => {e.preventDefault(); this.desktopClearClickHandler()}}
             disabled={this.state.disableButton}
-            />
+          />
           <RaisedButton
             className="finishButton"
             label={'Upload'}
             primary={true}
             onTouchTap={(e) => {e.preventDefault(); this.desktopUploadClickHandler()}}
             disabled={this.state.disableButton}
-            />
+          />
         </div>
+        {this.renderDialog()}
       </div>
     );
   }

@@ -39,7 +39,7 @@ export default class InstallationCameraContainer extends React.Component {
       } else {
         retries = 0;
         _this.clearCache();
-        alert('Ups. Something wrong happens!');
+        _this.props.handleSnackbar('Couldn\'t upload the file, try again', true);
       }
     }
 
@@ -62,24 +62,25 @@ export default class InstallationCameraContainer extends React.Component {
     fd.append('folderId', this.props.folderId);
     fd.append('id', this.props.id);
 
-    console.log(installationFiles);
     for (var i = 0; i < installationFiles.length; i++) {
       fd.append('file' + i, installationFiles[i]);
     }
-    console.log("fd:", fd);
 
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let response = JSON.parse(httpRequest.responseText);
-        console.log("response: ", response);
-        if (response.success == true) {
-          _this.props.handleInstallationNext({
-            status: response.installation.status,
-          });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let response = JSON.parse(httpRequest.responseText);
+          if (response.success == true) {
+            _this.props.handleInstallationNext({
+              status: response.installation.status,
+            });
+          } else {
+            enableButtons(false);
+          }
         } else {
-          enableButtons(false);
+          _this.props.handleSnackbar('', true, this.status);
         }
       }
     };

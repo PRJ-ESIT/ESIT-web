@@ -23,7 +23,7 @@ export default class LoginScreenContainer extends React.Component {
           let token = JSON.parse(httpRequest.responseText);
           var userInfo = token.token.split("_");
           _this.props.setCredentials(userInfo[0], userInfo[1], userInfo[2], userInfo[3]);
-        } else{
+        } else {
           _this.setState({
             loginSucceeded: false,
           });

@@ -23,11 +23,15 @@ export default class SaleTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let allSales = JSON.parse(httpRequest.responseText).sales;
-        _this.setState({
-          allSales: allSales,
-        });
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let allSales = JSON.parse(httpRequest.responseText).sales;
+          _this.setState({
+            allSales: allSales,
+          });
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 
@@ -39,22 +43,26 @@ export default class SaleTableContainer extends React.Component {
     var httpRequest = new XMLHttpRequest();
     let _this = this;
     httpRequest.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        let sale = JSON.parse(httpRequest.responseText).sale;
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let sale = JSON.parse(httpRequest.responseText).sale;
 
-        // Format and save sale date for details modal
-        var tempDateTime;
-        if (sale.installationDateTime) {
-          tempDateTime = new Date(sale.installationDateTime);
-          tempDateTime = tempDateTime.toLocaleString();
+          // Format and save sale date for details modal
+          var tempDateTime;
+          if (sale.installationDateTime) {
+            tempDateTime = new Date(sale.installationDateTime);
+            tempDateTime = tempDateTime.toLocaleString();
+          } else {
+            tempDateTime = null;
+          }
+          sale.installationDate = tempDateTime;
+
+          _this.setState({
+            saleDetails: sale,
+          });
         } else {
-          tempDateTime = null;
+          _this.props.handleSnackbar('', true, this.status);
         }
-        sale.installationDate = tempDateTime;
-
-        _this.setState({
-          saleDetails: sale,
-        });
       }
     };
 
@@ -75,14 +83,19 @@ export default class SaleTableContainer extends React.Component {
 
     var _this = this;
     var request = new XMLHttpRequest();
-    request.open('PUT', 'http://' + IP + '/sales/cancel', true);
-    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        _this.getAllSales();
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          _this.getAllSales();
+          _this.props.handleSnackbar('Sale has been cancelled', false, this.status);
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
       }
     };
 
+    request.open('PUT', 'http://' + IP + '/sales/cancel', true);
+    request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     request.send(JSON.stringify(data));
   }
 

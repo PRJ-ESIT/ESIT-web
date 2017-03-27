@@ -34,13 +34,18 @@ authRouter.post('/login', function(request, response) {
     });
 
     res.on('end', function() {
-      //#TODO remove tempObj and forward the SaleNumber from crud instead
-      var tempObj = {'a': 'b'};
-      if(res.statusCode == 400) {
-        return response.status(400).json(tempObj);
-      } else if(res.statusCode == 200) {
-        var token = JSON.parse(output);
-        return response.status(200).json(token);
+      logger.info('StatusCode: ' + res.statusCode);
+      if(res.statusCode == 200) {
+        try {
+          var token = JSON.parse(output);
+          return response.status(res.statusCode).json(token);
+        } catch (err) {
+          logger.error('Unable to parse response as JSON', err);
+          logger.debug(output);
+          return response.status(res.statusCode).send();
+        }
+      } else {
+        return response.status(res.statusCode).send();
       }
     });
   });

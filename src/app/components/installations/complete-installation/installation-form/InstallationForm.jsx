@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   TextField, SelectField, MenuItem, RadioButton, RadioButtonGroup,
-  Checkbox, DatePicker, RaisedButton,
+  Checkbox, DatePicker, RaisedButton, FlatButton, Dialog
 } from 'material-ui';
-import { validations } from '../../../helpers/common.js';
+import { validations, dateHelpers } from '../../../helpers/common.js';
 import { IP } from '../../../../../../config/config.js';
 
 // Provinces for SelectField
@@ -22,6 +22,12 @@ const provinces = [
   <MenuItem key={12} value={"YT"} primaryText="Yukon" />,
   <MenuItem key={13} value={"NU"} primaryText="Nunavut" />,
 ];
+
+const styles = {
+  dialog: {
+    width: '60%',
+  },
+};
 
 export default class InstallationForm extends React.Component {
 
@@ -120,94 +126,126 @@ export default class InstallationForm extends React.Component {
       installation: undefined,
 
       allInstallers: undefined,
+
+      //Start Over confirmation Dialog
+      dialogOpen: false,
+
+      editMode: false,
     };
   }
 
   componentDidMount() {
-    if(this.props.status == "edit" || this.props.status == "create"){
+    if(this.props.status == "edit" || this.props.status == "create") {
       var httpRequest = new XMLHttpRequest();
       let _this = this;
       httpRequest.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          let installation = JSON.parse(httpRequest.responseText).installation;
-          // Format time
-          var t = installation.installationDateTime.split(/[- :]/);
-          var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-          var minDate = new Date(2000, 0, 1);
+        if (this.readyState == 4) {
+          if(this.status == 200) {
+            let installation = JSON.parse(httpRequest.responseText).installation;
+            // Format time
+            var t = installation.installationDateTime.split(/[- :]/);
+            var tempDateTime = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+            var minDate = new Date(2000, 0, 1);
 
-          var httpReq = new XMLHttpRequest();
-          httpReq.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              let allInstallers = JSON.parse(httpReq.responseText).employees;
+            var httpReq = new XMLHttpRequest();
+            httpReq.onreadystatechange = function() {
+              if (this.readyState == 4) {
+                if(this.status == 200) {
+                  let allInstallers = JSON.parse(httpReq.responseText).employees;
 
-              _this.setState({
-                // salesNumber: sale.salesNumber,
-                fname: installation.customerFirstName ? installation.customerFirstName : '',
-                lname: installation.customerLastName ? installation.customerLastName : '',
-                address: installation.address ? installation.address : '',
-                unitNum: installation.unit ? installation.unit : '',
-                city: installation.city ? installation.city : '',
-                province: installation.province ? installation.province : '',
-                postalCode: installation.postalCode ? installation.postalCode : '',
-                enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
-                email: installation.email ? installation.email : '',
-                homePhone: installation.homePhone ? installation.homePhone : '',
-                cellPhone: installation.cellPhone ? installation.cellPhone : '',
-                sqft: installation.sqFootage ? installation.sqFootage : '',
-                residents: installation.residents ? installation.residents : '',
-                pool: installation.hasPool ? installation.hasPool : '',
-                bathrooms: installation.bathrooms ? installation.bathrooms : '',
-                installedDate: tempDateTime ? tempDateTime : '',
-                installerId: installation.installerId ? installation.installerId : '',
-                installerName: installation.installerName ? installation.installerName : '',
-                minDate: minDate,
-                allInstallers: allInstallers,
-                installation: installation,
+                  _this.setState({
+                    // salesNumber: sale.salesNumber,
+                    fname: installation.customerFirstName ? installation.customerFirstName : '',
+                    lname: installation.customerLastName ? installation.customerLastName : '',
+                    address: installation.address ? installation.address : '',
+                    unitNum: installation.unit ? installation.unit : '',
+                    city: installation.city ? installation.city : '',
+                    province: installation.province ? installation.province : '',
+                    postalCode: installation.postalCode ? installation.postalCode : '',
+                    enbridge: installation.enbridgeNum ? installation.enbridgeNum : '',
+                    email: installation.email ? installation.email : '',
+                    homePhone: installation.homePhone ? installation.homePhone : '',
+                    cellPhone: installation.cellPhone ? installation.cellPhone : '',
+                    sqft: installation.sqFootage ? installation.sqFootage : '',
+                    residents: installation.residents ? installation.residents : '',
+                    pool: installation.hasPool ? installation.hasPool : '',
+                    bathrooms: installation.bathrooms ? installation.bathrooms : '',
+                    installedDate: tempDateTime ? tempDateTime : '',
+                    installerId: installation.installerId ? installation.installerId : '',
+                    installerName: installation.installerName ? installation.installerName : '',
+                    minDate: minDate,
+                    allInstallers: allInstallers,
+                    installation: installation,
 
-                // Set program type
-                program1: installation.product == "Whole Home Filter" ? true : false,
-                program2: installation.product == "Whole Home D-Scaler" ? true : false,
-                program3: installation.product == "Whole Home Combo" ? true : false,
+                    // Set program type
+                    program1: installation.product == "Whole Home Filter" ? true : false,
+                    program2: installation.product == "Whole Home D-Scaler" ? true : false,
+                    program3: installation.product == "Whole Home Combo" ? true : false,
 
-                fnameValidated: installation.customerFirstName ? true : false,
-                lnameValidated: installation.customerLastName ? true : false,
-                addressValidated: installation.address ? true : false,
-                unitValidated: true,
-                cityValidated: installation.city ? true : false,
-                provinceValidated: installation.province ? true : false,
-                postalCodeValidated: installation.postalCode ? true : false,
-                enbridgeValidated: installation.enbridgeNum ? true : false,
-                emailValidated: installation.email ? true : false,
-                homePhoneValidated: installation.homePhone ? true : false,
-                cellPhoneValidated: installation.cellPhone ? true : false,
-                sqftValidated: installation.sqFootage ? true : false,
-                residentsValidated: installation.residents ? true : false,
-                poolValidated: installation.hasPool ? true : false,
-                bathroomsValidated: installation.bathrooms ? true : false,
-                installedDateValidated: tempDateTime ? true : false,
-                installerValidated: installation.installerName ? true : false,
-              });
-            }
-          };
+                    fnameValidated: installation.customerFirstName ? true : false,
+                    lnameValidated: installation.customerLastName ? true : false,
+                    addressValidated: installation.address ? true : false,
+                    unitValidated: true,
+                    cityValidated: installation.city ? true : false,
+                    provinceValidated: installation.province ? true : false,
+                    postalCodeValidated: installation.postalCode ? true : false,
+                    enbridgeValidated: installation.enbridgeNum ? true : false,
+                    emailValidated: installation.email ? true : false,
+                    homePhoneValidated: installation.homePhone ? true : false,
+                    cellPhoneValidated: installation.cellPhone ? true : false,
+                    sqftValidated: installation.sqFootage ? true : false,
+                    residentsValidated: installation.residents ? true : false,
+                    poolValidated: installation.hasPool ? true : false,
+                    bathroomsValidated: installation.bathrooms ? true : false,
+                    installedDateValidated: tempDateTime ? true : false,
+                    installerValidated: installation.installerName ? true : false,
 
-          httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=installer", true);
-          httpReq.send(null);
+                    //setting the state variable for the 'Edit mode'
+                    editMode: _this.props.status == "edit" ? true : false,
+
+                    //if it's 'Edit mode' - set all the acknowledgements to true
+                    acknowledgement1: _this.props.status == "edit" ? true : false,
+                    acknowledgement2: _this.props.status == "edit" ? true : false,
+                    acknowledgement3: _this.props.status == "edit" ? true : false,
+                    acknowledgement4: _this.props.status == "edit" ? true : false,
+                    checklist1: _this.props.status == "edit" ? 'yes' : '',
+                    checklist2: _this.props.status == "edit" ? 'yes' : '',
+                    checklist3: _this.props.status == "edit" ? 'yes' : '',
+                    checklist4: _this.props.status == "edit" ? 'yes' : '',
+                    checklist5: _this.props.status == "edit" ? 'yes' : '',
+                    checklist6: _this.props.status == "edit" ? 'yes' : '',
+                  });
+
+                  if(_this.props.status == "edit") {
+                    _this.props.handleSnackbar('Installation has been signed, edit is not allowed', true, this.status);
+                  }
+                } else {
+                  _this.props.handleSnackbar('', true, this.status);
+                }
+              }
+            };
+
+            httpReq.open('GET', "http://" + IP + "/common/allemployeesbyrole?role=installer", true);
+            httpReq.send(null);
+
+          } else {
+            _this.props.handleSnackbar('', true, this.status);
+          }
         }
       };
 
-      httpRequest.open('GET', "http://" + IP + "/installations/getone?id="
-        + this.props.id, true);
+      httpRequest.open('GET', "http://" + IP + "/installations/getone?id=" + this.props.id, true);
       httpRequest.send(null);
     }
   }
 
-  handleTextChange(fieldname, event) {
+  handleTextChange = (fieldname, event) => {
     var obj = {};
     obj[fieldname] = event.target.value;
     this.setState(obj);
   };
 
-  handleSelectChange(fieldname, event, index, value) {
+  handleSelectChange = (fieldname, event, index, value) => {
     var obj = {};
     // Special case for installers
     if(fieldname == "installerId") {
@@ -219,7 +257,7 @@ export default class InstallationForm extends React.Component {
     this.setState(obj);
   }
 
-  handleRadioChange(fieldname, event, value) {
+  handleRadioChange = (fieldname, event, value) => {
     var obj = {};
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
@@ -227,13 +265,13 @@ export default class InstallationForm extends React.Component {
     this.setState(obj);
   }
 
-  handleCheckboxChange(fieldname, event, isInputChecked) {
+  handleCheckboxChange = (fieldname, event, isInputChecked) => {
     var obj = {};
     obj[fieldname] = isInputChecked;
     this.setState(obj);
   }
 
-  handleProgramCheckboxChange(fieldname1, fieldname2, fieldname3, event, isInputChecked) {
+  handleProgramCheckboxChange = (fieldname1, fieldname2, fieldname3, event, isInputChecked) => {
     var obj = {};
     if (!isInputChecked) {
       obj[fieldname1] = isInputChecked;
@@ -247,12 +285,50 @@ export default class InstallationForm extends React.Component {
     this.setState(obj);
   }
 
-  handleDateChange(fieldname, event, date) {
+  handleDateChange = (fieldname, event, date) => {
     var obj = {};
     obj[fieldname + "Err"] = '';
     obj[fieldname + "Validated"] = true;
     obj[fieldname] = date;
     this.setState(obj);
+  }
+
+  handleOpen = () => {
+    this.setState({dialogOpen: true});
+  }
+
+  handleClose = () => {
+    this.setState({dialogOpen: false});
+  }
+
+  renderDialog = () => {
+    //Confirmation Dialog actions
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Confirm"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={(e) => {e.preventDefault(); this.props.handleResetStepper()}}
+      />,
+    ];
+    return (
+      <Dialog
+        title="Warning"
+        actions={actions}
+        modal={false}
+        open={this.state.dialogOpen}
+        onRequestClose={this.handleClose}
+        contentStyle={styles.dialog}
+      >
+        Are you sure you want to start over? This form will not be saved.
+        You will be able to resume a current Installation from the Dashboard or Complete Installation pages.
+      </Dialog>
+    );
   }
 
   validateFName() {
@@ -619,10 +695,9 @@ export default class InstallationForm extends React.Component {
         this.state.acknowledgementValidated &&
         this.state.installerValidated &&
         this.state.installedDateValidated) {
-      //everything was validated, send an httpRequest to create a new sale
+
+      //everything has been validated, returning true
       return true;
-      //FIXME this.createNewInstallation();
-      //TODO handle the case when users click 'Submit' multiple times
 
     } else {
       this.validateFName();
@@ -652,7 +727,7 @@ export default class InstallationForm extends React.Component {
 
   validateForm() {
     if (this.validateAllFields()) {
-      var obj = {
+      var docuSignObj = {
         installationObj: {
           installationId: this.props.id,
           customerFirstName: this.state.fname,
@@ -690,39 +765,39 @@ export default class InstallationForm extends React.Component {
           installedDate: this.state.installedDate,
           installerId: this.state.installerId,
           installerName: this.state.installerName,
-      }
+        }
       };
-      this.props.handleInstallationNext(obj);
+
+      //updating the installation and passing a prepared object for the next step
+      this.updateInstallation(docuSignObj);
+
+    } else {
+      this.props.handleSnackbar('Some fields didn\'t pass the validation', true);
     }
   }
 
-  createNewInstallation() {
+  updateInstallation(docuSignObj) {
     let data = {
-      fname: this.state.fname,
-      lname: this.state.lname,
-      address: this.state.address,
-      unitNum: this.state.unitNum,
-      city: this.state.city,
-      province: this.state.province,
-      postalCode: this.state.postalCode,
-      enbridge: this.state.enbridge,
-      email: this.state.email,
-      homePhone: this.state.homePhone,
-      cellPhone: this.state.cellPhone,
       sqft: this.state.sqft,
       bathrooms: this.state.bathrooms,
       residents: this.state.residents,
       pool: this.state.pool,
       notes: this.state.notes,
-      installedDate: this.state.installedDate,
-      installerId: this.state.installerId,
+      installedDate: dateHelpers.toMysqlFormat(this.state.installedDate),
     };
 
+    var _this = this;
     var request = new XMLHttpRequest();
-    request.open('PUT', 'http://' + IP + '/updateinstallation', true);
+    request.open('PUT', 'http://' + IP + '/installations/update?id=' + this.props.id, true);
     request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     request.onreadystatechange = function() {
-      //#TODO recieve Installation number and add it to the state
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          _this.props.handleInstallationNext(docuSignObj);
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
+      }
     };
 
     request.send(JSON.stringify(data));
@@ -736,6 +811,7 @@ export default class InstallationForm extends React.Component {
             <div className="newEmployeeFormBox">
               <h2 className="headings">Homeowner Information</h2>
               <TextField
+                disabled={true}
                 floatingLabelText="First Name"
                 hintText="John"
                 maxLength="50"
@@ -748,6 +824,7 @@ export default class InstallationForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={true}
                 floatingLabelText="Last Name"
                 hintText="Doe"
                 maxLength="50"
@@ -759,6 +836,7 @@ export default class InstallationForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={true}
                 floatingLabelText="Address"
                 hintText="123 Main Street"
                 maxLength="50"
@@ -771,6 +849,7 @@ export default class InstallationForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={true}
                 floatingLabelText="Unit #"
                 hintText="7e"
                 maxLength="10"
@@ -782,6 +861,7 @@ export default class InstallationForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={true}
                 floatingLabelText="City"
                 hintText="Toronto"
                 maxLength="80"
@@ -794,6 +874,7 @@ export default class InstallationForm extends React.Component {
               &nbsp;
               &nbsp;
               <SelectField
+                disabled={true}
                 style={{ verticalAlign: 'bottom' }}
                 floatingLabelText="Province"
                 floatingLabelFixed={false}
@@ -809,6 +890,7 @@ export default class InstallationForm extends React.Component {
               </SelectField>
               <br />
               <TextField
+                disabled={true}
                 floatingLabelText="Postal Code"
                 hintText="M4B 5V9"
                 maxLength="7"
@@ -821,6 +903,7 @@ export default class InstallationForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={true}
                 floatingLabelText="Enbridge Gas #"
                 hintText="1234567890"
                 maxLength="20"
@@ -832,6 +915,7 @@ export default class InstallationForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={true}
                 floatingLabelText="Email"
                 hintText="name@domain.com"
                 type="email"
@@ -845,6 +929,7 @@ export default class InstallationForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={true}
                 floatingLabelText="Home Phone"
                 hintText="(416) 123-4567"
                 type="tel"
@@ -857,6 +942,7 @@ export default class InstallationForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={true}
                 floatingLabelText="Cell Phone"
                 hintText="(416) 123-4567"
                 type="tel"
@@ -870,6 +956,7 @@ export default class InstallationForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="SQ Footage"
                 hintText="3000"
                 type="number"
@@ -884,6 +971,7 @@ export default class InstallationForm extends React.Component {
               />
               <br />
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Bathrooms"
                 hintText="3"
                 type="number"
@@ -899,6 +987,7 @@ export default class InstallationForm extends React.Component {
               &nbsp;
               &nbsp;
               <TextField
+                disabled={this.state.editMode}
                 floatingLabelText="Residents"
                 hintText="4"
                 type="number"
@@ -921,11 +1010,13 @@ export default class InstallationForm extends React.Component {
                   onChange={this.handleRadioChange.bind(this, "pool")}
                 >
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="1"
                     label="Yes"
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="0"
                     label="No"
@@ -945,34 +1036,40 @@ export default class InstallationForm extends React.Component {
 
               <h2 className="headings">Program Installation</h2>
               <Checkbox
+                disabled={true}
                 label="Whole Home Filter"
                 onCheck={this.handleProgramCheckboxChange.bind(this, "program1", "program2", "program3")}
                 checked={this.state.program1}
                 onBlur={this.validateProgram.bind(this)}
               />
               <Checkbox
+                disabled={true}
                 label="Whole Home D-Scaler"
                 onCheck={this.handleProgramCheckboxChange.bind(this, "program2", "program1", "program3")}
                 checked={this.state.program2}
                 onBlur={this.validateProgram.bind(this)}
               />
               <Checkbox
+                disabled={true}
                 label="Whole Home Combo"
                 onCheck={this.handleProgramCheckboxChange.bind(this, "program3", "program1", "program2")}
                 checked={this.state.program3}
                 onBlur={this.validateProgram.bind(this)}
               />
               <Checkbox
+                disabled={this.state.editMode}
                 label="Water Conservation System"
                 onCheck={this.handleCheckboxChange.bind(this, "program4")}
                 onBlur={this.validateProgram.bind(this)}
               />
               <Checkbox
+                disabled={this.state.editMode}
                 label="Installation Kit"
                 onCheck={this.handleCheckboxChange.bind(this, "program5")}
                 onBlur={this.validateProgram.bind(this)}
               />
               <Checkbox
+                disabled={this.state.editMode}
                 label="Bottling Kit"
                 onCheck={this.handleCheckboxChange.bind(this, "program6")}
                 onBlur={this.validateProgram.bind(this)}
@@ -996,12 +1093,14 @@ export default class InstallationForm extends React.Component {
                   onChange={this.handleTextChange.bind(this, "checklist1")}
                 >
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="yes"
                     label="Yes"
                     onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="no"
                     label="No"
@@ -1018,12 +1117,14 @@ export default class InstallationForm extends React.Component {
                   onChange={this.handleTextChange.bind(this, "checklist2")}
                   >
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="yes"
                     label="Yes"
                     onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="no"
                     label="No"
@@ -1040,12 +1141,14 @@ export default class InstallationForm extends React.Component {
                   onChange={this.handleTextChange.bind(this, "checklist3")}
                 >
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="yes"
                     label="Yes"
                     onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="no"
                     label="No"
@@ -1062,12 +1165,14 @@ export default class InstallationForm extends React.Component {
                   onChange={this.handleTextChange.bind(this, "checklist4")}
                 >
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="yes"
                     label="Yes"
                     onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="no"
                     label="No"
@@ -1084,12 +1189,14 @@ export default class InstallationForm extends React.Component {
                   onChange={this.handleTextChange.bind(this, "checklist5")}
                 >
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="yes"
                     label="Yes"
                     onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="no"
                     label="No"
@@ -1106,12 +1213,14 @@ export default class InstallationForm extends React.Component {
                   onChange={this.handleTextChange.bind(this, "checklist6")}
                 >
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="yes"
                     label="Yes"
                     onBlur={this.validateChecklist.bind(this)}
                   />
                   <RadioButton
+                    disabled={this.state.editMode}
                     className="radio"
                     value="no"
                     label="No"
@@ -1128,6 +1237,7 @@ export default class InstallationForm extends React.Component {
                 style={{height: '25px'}}
               />
               <TextField
+                disabled={this.state.editMode}
                 hintText="Additional Notes"
                 floatingLabelText="Notes"
                 maxLength="300"
@@ -1143,24 +1253,32 @@ export default class InstallationForm extends React.Component {
               <div>
                 <p>I hereby confirm the following statements:</p>
                 <Checkbox
+                  disabled={this.state.editMode}
+                  checked={this.state.acknowledgement1}
                   label="Installation was completed to my satisfaction."
                   value={this.state.acknowledgement1}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement1")}
                   onBlur={this.validateAcknowledgement.bind(this)}
                 />
                 <Checkbox
+                  disabled={this.state.editMode}
+                  checked={this.state.acknowledgement2}
                   label="The technician explained how to by-pass the filter and change the pre-filter."
                   value={this.state.acknowledgement2}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement2")}
                   onBlur={this.validateAcknowledgement.bind(this)}
                 />
                 <Checkbox
+                  disabled={this.state.editMode}
+                  checked={this.state.acknowledgement3}
                   label="I recieved the bottling kit."
                   value={this.state.acknowledgement3}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement3")}
                   onBlur={this.validateAcknowledgement.bind(this)}
                 />
                 <Checkbox
+                  disabled={this.state.editMode}
+                  checked={this.state.acknowledgement4}
                   label="My savings are not guaranteed."
                   value={this.state.acknowledgement4}
                   onCheck={this.handleCheckboxChange.bind(this, "acknowledgement4")}
@@ -1177,6 +1295,7 @@ export default class InstallationForm extends React.Component {
               />
               <div>
                 <SelectField
+                  disabled={true}
                   style={{ verticalAlign: 'bottom' }}
                   floatingLabelText="Installer"
                   floatingLabelFixed={false}
@@ -1194,6 +1313,7 @@ export default class InstallationForm extends React.Component {
                 &nbsp;
                 &nbsp;
                 <DatePicker
+                  disabled={this.state.editMode}
                   floatingLabelText="Installation Date"
                   hintText="2017-08-20"
                   container="inline"
@@ -1210,18 +1330,20 @@ export default class InstallationForm extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{margin: '50px'}}>
+        <div className="formActionButtons">
           <RaisedButton
-            label={this.props.status === 'create' ? 'Back' : 'Cancel'}
-            secondary={this.props.status === 'create' ? false : true}
-            onTouchTap={(e) => {e.preventDefault(); this.props.status === 'create' ? this.props.handleInstallationPrev() : this.props.menuClickHandler("dashboard")}}
+            label={this.props.status === 'create' ? 'Start over' : 'Cancel'}
+            secondary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.props.status === 'create' ? this.handleOpen() : this.props.menuClickHandler("dashboard")}}
           />
           <RaisedButton
+            disabled={this.state.editMode}
             label={this.props.status === 'create' ? 'Next' : 'Update'}
             primary={true}
             onTouchTap={(e) => {e.preventDefault(); this.validateForm()}}
           />
         </div>
+        {this.renderDialog()}
       </div>
     );
   }
