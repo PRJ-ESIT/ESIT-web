@@ -75,6 +75,7 @@ export default class InstallationForm extends React.Component {
       installedDate: {},
       installerId: '',
       installerName: '',
+      installerEmail: '',
       minDate: minDate,
       maxDate: maxDate,
 
@@ -173,6 +174,7 @@ export default class InstallationForm extends React.Component {
                     installedDate: tempDateTime ? tempDateTime : '',
                     installerId: installation.installerId ? installation.installerId : '',
                     installerName: installation.installerName ? installation.installerName : '',
+                    installerEmail: installation.installerEmail ? installation.installerEmail: '',
                     minDate: minDate,
                     allInstallers: allInstallers,
                     installation: installation,
@@ -765,6 +767,7 @@ export default class InstallationForm extends React.Component {
           installedDate: this.state.installedDate,
           installerId: this.state.installerId,
           installerName: this.state.installerName,
+          installerEmail: this.state.installerEmail,
         }
       };
 

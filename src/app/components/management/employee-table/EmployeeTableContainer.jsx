@@ -84,6 +84,7 @@ export default class EmployeeTableContainer extends React.Component {
       if (this.readyState == 4) {
         if (this.status == 200) {
           _this.getallemployees();
+          _this.props.handleSnackbar('Successfully updated the status', false);
         } else {
           _this.props.handleSnackbar('', true, this.status);
         }

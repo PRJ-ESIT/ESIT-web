@@ -608,8 +608,7 @@ export default class SaleForm extends React.Component {
           let saleObject = {
               saleObj: JSON.parse(request.responseText).sale
           }
-          // Alternatively return sales rep name in newly created sale object
-          saleObject.saleObj["salesRepName"] = _this.state.salesRepName;
+
           // Passing the new sale object to the next component (DocuSign form)
           _this.props.handleSaleNext(saleObject);
         } else {

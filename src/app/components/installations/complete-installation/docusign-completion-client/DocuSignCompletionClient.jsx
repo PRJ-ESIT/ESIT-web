@@ -49,6 +49,7 @@ export default class DocuSignCompletionClient extends React.Component {
       notes: this.props.installation.notes,
       contractorId: this.props.installation.installerId,
       installerName: this.props.installation.installerName,
+      installerEmail: this.props.installation.installerEmail,
       installedDate: this.props.installation.installedDate,
     };
     this.props.getInstallationEmbeddedUrl(data);
