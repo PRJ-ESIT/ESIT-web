@@ -85,6 +85,11 @@ export default class SaleTable extends React.Component {
     }
   }
 
+  handleResume = (status) => {
+    console.log('in handle resume');
+    console.log(status);
+  }
+
   sortClickHandler(cellDataKey) {
     var sortDir = this.state.sortDir;
     var sortBy = camelize(cellDataKey);
@@ -137,6 +142,41 @@ export default class SaleTable extends React.Component {
     }
   }
 
+  getToolbarActionButtons = () => {
+    let status = this.state.filteredDataList[this.state.selectedNum].status;
+    return (
+      <ToolbarGroup>
+        <ToolbarSeparator />
+        { status == "Created" || status == "Signed" ?
+        <RaisedButton
+          label="Resume"
+          secondary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.handleResume(status)}}
+        />
+        : null }
+        <RaisedButton
+          label="Edit"
+          primary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editSale")}}
+        />
+        <RaisedButton
+          label="Details"
+          primary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
+        />
+        { status == "Cancelled" ?
+          null
+        :
+          <RaisedButton
+            label="Cancel"
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.handleCancel()}}
+          />
+        }
+      </ToolbarGroup>
+    );
+  }
+
   render() {
     return (
       <div className="allCustomers">
@@ -144,24 +184,7 @@ export default class SaleTable extends React.Component {
           <ToolbarGroup>
             <ToolbarTitle text="View All Sales" className="mainFont" />
             {this.state.currentSelected ?
-              <ToolbarGroup>
-                <ToolbarSeparator />
-                <RaisedButton
-                  label="Edit"
-                  primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editSale")}}
-                />
-                <RaisedButton
-                  label="Details"
-                  primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
-                />
-                <RaisedButton
-                  label="Cancel"
-                  primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.handleCancel()}}
-                />
-              </ToolbarGroup>
+              this.getToolbarActionButtons()
             : null }
           </ToolbarGroup>
         </Toolbar>
