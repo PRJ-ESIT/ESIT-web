@@ -611,6 +611,11 @@ export default class SaleForm extends React.Component {
 
           // Passing the new sale object to the next component (DocuSign form)
           _this.props.handleSaleNext(saleObject);
+        } else if(this.status == 409) {
+          let obj = JSON.parse(request.responseText);
+          if(obj.errorMessage) {
+            _this.props.handleSnackbar(obj.errorMessage, true);
+          }
         } else {
           _this.props.handleSnackbar('', true, this.status);
         }
