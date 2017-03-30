@@ -164,11 +164,15 @@ export default class SaleTable extends React.Component {
           primary={true}
           onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
         />
-        <RaisedButton
-          label="Cancel"
-          primary={true}
-          onTouchTap={(e) => {e.preventDefault(); this.handleCancel()}}
-        />
+        { status == "Cancelled" ?
+          null
+        :
+          <RaisedButton
+            label="Cancel"
+            primary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.handleCancel()}}
+          />
+        }
       </ToolbarGroup>
     );
   }
