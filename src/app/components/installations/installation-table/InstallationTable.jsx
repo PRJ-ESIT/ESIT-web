@@ -85,6 +85,10 @@ export default class InstallationTable extends React.Component {
     }
   }
 
+  handleResume = (status) => {
+    console.log('in resume');
+    console.log(status);
+  }
   sortClickHandler(cellDataKey) {
     var sortDir = this.state.sortDir;
     var sortBy = camelize(cellDataKey);
@@ -137,6 +141,37 @@ export default class InstallationTable extends React.Component {
     }
   }
 
+  getToolbarActionButtons() {
+    let status = this.state.filteredDataList[this.state.selectedNum].status;
+    console.log(status);
+    return (
+      <ToolbarGroup>
+        <ToolbarSeparator />
+        { status == "Documented" || status == "Installed" || status == "Customer signed" || status == "Installer signed" ?
+          <RaisedButton
+            label="Resume"
+            secondary={true}
+            onTouchTap={(e) => {e.preventDefault(); this.handleResume(status)}}
+          />
+        : null }
+        <RaisedButton
+          label="Edit"
+          primary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editInstallation")}}
+        />
+        <RaisedButton
+          label="Details"
+          primary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
+        />
+        <RaisedButton
+          label="Cancel"
+          primary={true}
+          onTouchTap={(e) => {e.preventDefault(); this.handleCancel()}}
+        />
+      </ToolbarGroup>
+    );
+  }
   render() {
 
     return (
@@ -145,24 +180,7 @@ export default class InstallationTable extends React.Component {
           <ToolbarGroup>
             <ToolbarTitle text="View All Installations" className="mainFont" />
             {this.state.currentSelected ?
-              <ToolbarGroup>
-                <ToolbarSeparator />
-                <RaisedButton
-                  label="Edit"
-                  primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.props.editClickHandler("edit", this.state.selectedId, "editInstallation")}}
-                />
-                <RaisedButton
-                  label="Details"
-                  primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.handleOpen()}}
-                />
-                <RaisedButton
-                  label="Cancel"
-                  primary={true}
-                  onTouchTap={(e) => {e.preventDefault(); this.handleCancel()}}
-                />
-              </ToolbarGroup>
+              this.getToolbarActionButtons()
             : null }
           </ToolbarGroup>
         </Toolbar>
