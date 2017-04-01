@@ -21,7 +21,11 @@ export default class SelectInstallationContainer extends React.Component {
         if (this.status == 200) {
           let installations = JSON.parse(httpRequest.responseText).installations;
           _this.setState({
-            installations: installations
+            installations: installations,
+          });
+        } else if (this.status == 204) {
+          _this.setState({
+            installations: undefined,
           });
         } else {
           _this.props.handleSnackbar('', true, this.status);

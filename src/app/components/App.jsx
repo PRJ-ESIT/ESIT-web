@@ -263,7 +263,7 @@ export default class App extends React.Component {
     let _this = this;
     httpRequest.onreadystatechange = function() {
       if (this.readyState == 4) {
-        if (this.status == 200) {
+        if (this.status == 201) {
           let url = JSON.parse(httpRequest.responseText).url;
           _this.setState({
             docuSignURL: url,

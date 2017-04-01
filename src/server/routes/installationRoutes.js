@@ -679,6 +679,19 @@ installationRouter.post('/getInstallationEmbeddedUrl2', function(request, respon
   var returnUrl = "http://" + config.IP + "/installations/closesecondiframe?id=" + request.body.installationId;
 
   return getDocuSignUrl(envelopeId, returnUrl, installerEmail, installerName, installerId, function(urlObj, statusCode) {
+
+    //this is a hack
+    if(statusCode == 400) {
+      return getDocuSignUrl(envelopeId, returnUrl, installerEmail, installerName, installerId, function(urlObj, statusCode) {
+        if(urlObj) {
+          return response.status(statusCode).json(urlObj);
+        } else {
+          return response.status(statusCode).send();
+        }
+      });
+    }
+    //end of a hack
+
     if(urlObj) {
       return response.status(statusCode).json(urlObj);
     } else {
