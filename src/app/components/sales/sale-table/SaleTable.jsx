@@ -86,8 +86,13 @@ export default class SaleTable extends React.Component {
   }
 
   handleResume = (status) => {
-    console.log('in handle resume');
-    console.log(status);
+    if(status == "Created") {
+      //fetch the data and resume to the DocuSign step
+      console.log('Status - Created');
+    } else if(status == "Signed") {
+      //fetch the data and resume to the picture upload step
+      console.log('Status - Signed');
+    }
   }
 
   sortClickHandler(cellDataKey) {
