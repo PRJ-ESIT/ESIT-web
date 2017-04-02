@@ -86,9 +86,18 @@ export default class InstallationTable extends React.Component {
   }
 
   handleResume = (status) => {
-    console.log('in resume');
-    console.log(status);
+    if(status == "Documented") {
+      //fetch the data and resume the Installation process to the InstallationForm step
+      this.props.actions.resumeInstallationFormStep(this.state.selectedId);
+    } else if(status == "Installed") {
+      //fetch the data and resume the Installation process to the DocuSignCompletionClient step
+      console.log('Status - Installed');
+    } else if(status == "Customer signed") {
+      //fetch the data and resume the Installation process to the DocuSignCompletionInstaller step
+      console.log('Status - Customer Signed');
+    }
   }
+
   sortClickHandler(cellDataKey) {
     var sortDir = this.state.sortDir;
     var sortBy = camelize(cellDataKey);
@@ -143,7 +152,7 @@ export default class InstallationTable extends React.Component {
 
   getToolbarActionButtons() {
     let status = this.state.filteredDataList[this.state.selectedNum].status;
-    console.log(status);
+
     return (
       <ToolbarGroup>
         <ToolbarSeparator />

@@ -100,11 +100,20 @@ export default class InstallationTableContainer extends React.Component {
     });
   }
 
+  resumeInstallationFormStep = (installationId) => {
+    let data = {
+      selectedInstallationId: installationId,
+    };
+
+    this.props.resumeInstallation(2, data);
+  }
+
   render() {
     var actions = {
       cancelInstallation: this.cancelInstallation,
       getInstallationDetails: this.getInstallationDetails,
       clearInstallationDetails: this.clearInstallationDetails,
+      resumeInstallationFormStep: this.resumeInstallationFormStep,
     };
     return (
       <InstallationTable

@@ -160,6 +160,21 @@ export default class App extends React.Component {
     this.setState(dataObject);
   }
 
+  resumeInstallation = (stepIndex, dataObject) => {
+    console.log(dataObject);
+    if(stepIndex == 2) {
+      dataObject["currentContent"] = this.props["completeInstallation"];
+      dataObject["installationStepIndex"] = 2;
+      dataObject["status"] = "create";
+    } else if(stepIndex == 3) {
+
+    } else if(stepIndex == 4) {
+
+    }
+
+    this.setState(dataObject);
+  }
+
   handleResetStepper = () => {
     this.setState({
       leftMenuOpen: false,
@@ -369,7 +384,7 @@ export default class App extends React.Component {
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
               getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj}
               folderId={this.state.folderId} userId={this.props.userId} userName={this.props.userName} role={this.props.role}
-              handleResetStepper={this.handleResetStepper} handleSnackbar={this.handleSnackbar} resumeSale={this.resumeSale}/>
+              handleResetStepper={this.handleResetStepper} handleSnackbar={this.handleSnackbar} resumeSale={this.resumeSale} resumeInstallation={this.resumeInstallation}/>
           </div>
         </div>
         <Snackbar
