@@ -154,7 +154,8 @@ export default class App extends React.Component {
       dataObject["currentContent"] = this.props["newSale"];
       dataObject["saleStepIndex"] = 1;
     } else if(stepIndex == 2) {
-
+      dataObject["currentContent"] = this.props["newSale"];
+      dataObject["saleStepIndex"] = 2;
     }
 
     this.setState(dataObject);
