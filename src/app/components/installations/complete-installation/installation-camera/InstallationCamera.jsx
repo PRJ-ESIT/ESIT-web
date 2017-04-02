@@ -354,7 +354,21 @@ export default class InstallationCamera extends React.Component {
         </div>
         <div className="installPictureWrapper">
           {this.state.installationPictures.map((imgSrc, index) => (
-            <img key={index} src={imgSrc} className="installImageBox"/>
+            <svg
+              key={index}
+              width="30%"
+              height="30%"
+              style={{padding: '1%'}}
+            >
+              <image x="0" y="0"
+                width="100%"
+                height="100%"
+                xlinkHref={imgSrc}
+                strokeWidth="0.8"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
+              >
+              </image>
+            </svg>
           ))}
         </div>
         <div className="finishWrapper">

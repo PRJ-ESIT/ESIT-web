@@ -373,8 +373,20 @@ export default class SaleCamera extends React.Component {
               onChange={(evt) => this.selectImagesHandler(evt)}/>
           </RaisedButton>
         </div>
-        <div className="pictureWrapper">
-          <img className="imageBox" id="myImage" src={this.state.picturePath}/>
+        <div className="pictureWrapper" style={{padding: '10px'}}>
+          <svg
+            width="100%"
+            height="100%"
+          >
+            <image x="0" y="0"
+              width="100%"
+              height="100%"
+              xlinkHref={this.state.picturePath}
+              strokeWidth="0.8"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
+            >
+            </image>
+          </svg>
         </div>
         <div className="finishWrapper">
           <RaisedButton
