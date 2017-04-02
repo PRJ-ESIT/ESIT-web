@@ -168,7 +168,9 @@ export default class App extends React.Component {
       dataObject["installationStepIndex"] = 2;
       dataObject["status"] = "create";
     } else if(stepIndex == 3) {
-
+      dataObject["currentContent"] = this.props["completeInstallation"];
+      dataObject["installationStepIndex"] = 3;
+      dataObject["status"] = "create";
     } else if(stepIndex == 4) {
 
     }
