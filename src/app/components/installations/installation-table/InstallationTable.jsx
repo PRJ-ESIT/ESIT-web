@@ -92,9 +92,11 @@ export default class InstallationTable extends React.Component {
     } else if(status == "Installed") {
       //fetch the data and resume the Installation process to the DocuSignCompletionClient step
       console.log('Status - Installed');
+      this.props.actions.resumeDocuSignCustomerStep(this.state.selectedId);
     } else if(status == "Customer signed") {
       //fetch the data and resume the Installation process to the DocuSignCompletionInstaller step
       console.log('Status - Customer Signed');
+      this.props.actions.resumeDocuSignInstallerStep(this.state.selectedId);
     }
   }
 

@@ -108,6 +108,14 @@ export default class InstallationTableContainer extends React.Component {
     this.props.resumeInstallation(2, data);
   }
 
+  resumeDocuSignCustomerStep = (installationId) => {
+
+  }
+
+  resumeDocuSignInstallerStep = (installationId) => {
+
+  }
+
   render() {
     var actions = {
       cancelInstallation: this.cancelInstallation,
