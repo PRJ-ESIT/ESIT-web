@@ -92,6 +92,7 @@ export default class SaleTable extends React.Component {
       this.props.actions.resumeDocuSignStep(this.state.selectedId);
 
     } else if(status == "Signed") {
+      this.props.actions.resumePhotoUploadStep(this.state.selectedId);
       //fetch the data and resume to the picture upload step
       console.log('Status - Signed');
     }

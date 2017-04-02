@@ -113,6 +113,16 @@ export default class SaleTableContainer extends React.Component {
     httpRequest.send(null);
   }
 
+  resumePhotoUploadStep = (saleId) => {
+    let data = {
+      saleObj: {
+        salesNumber: saleId
+      },
+    }
+
+    this.props.resumeSale(2, data);
+  }
+
   clearSaleDetails = () => {
     this.setState({
       saleDetails: undefined,
@@ -150,6 +160,7 @@ export default class SaleTableContainer extends React.Component {
       getSaleDetails: this.getSaleDetails,
       clearSaleDetails: this.clearSaleDetails,
       resumeDocuSignStep: this.resumeDocuSignStep,
+      resumePhotoUploadStep: this.resumePhotoUploadStep,
     };
     return (
       <SaleTable
