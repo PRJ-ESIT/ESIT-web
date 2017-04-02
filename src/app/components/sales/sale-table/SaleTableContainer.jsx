@@ -70,6 +70,49 @@ export default class SaleTableContainer extends React.Component {
     httpRequest.send(null);
   }
 
+  resumeDocuSignStep = (saleId) => {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let sale = JSON.parse(httpRequest.responseText).sale;
+
+          let data = {
+            saleObj: {
+              salesNumber: sale.salesNumber,
+              firstName: sale.firstName,
+              lastName: sale.lastName,
+              address: sale.address,
+              unit: sale.unit,
+              city: sale.city,
+              province: sale.province,
+              postalCode: sale.postalCode.replace(/\s/g,''),
+              enbridgeNum: sale.enbridgeNum,
+              email: sale.email,
+              homePhone: sale.homePhone,
+              cellPhone: sale.cellPhone,
+              programId: sale.programId,
+              installationDateTime: sale.installationDateTime,
+              //not there yet
+              notes: sale.notes ? sale.notes : "",
+              salesRepId: sale.salesRepId,
+              salesRepName: sale.salesRepName
+            },
+          };
+
+          _this.props.resumeSale(1, data);
+
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/sales/getone?id=" + saleId, true);
+    httpRequest.send(null);
+  }
+
   clearSaleDetails = () => {
     this.setState({
       saleDetails: undefined,
@@ -106,6 +149,7 @@ export default class SaleTableContainer extends React.Component {
       cancelSale: this.cancelSale,
       getSaleDetails: this.getSaleDetails,
       clearSaleDetails: this.clearSaleDetails,
+      resumeDocuSignStep: this.resumeDocuSignStep,
     };
     return (
       <SaleTable

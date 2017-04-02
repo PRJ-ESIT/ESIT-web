@@ -149,6 +149,17 @@ export default class App extends React.Component {
     this.setState({installationStepIndex: installationStepIndex - 1});
   }
 
+  resumeSale = (stepIndex, dataObject) => {
+    if(stepIndex == 1) {
+      dataObject["currentContent"] = this.props["newSale"];
+      dataObject["saleStepIndex"] = 1;
+    } else if(stepIndex == 2) {
+
+    }
+
+    this.setState(dataObject);
+  }
+
   handleResetStepper = () => {
     this.setState({
       leftMenuOpen: false,
@@ -358,7 +369,7 @@ export default class App extends React.Component {
               getInstallationEmbeddedUrl={this.getInstallationEmbeddedUrl} envelopeId={this.state.envelopeId}
               getInstallationEmbeddedUrl2={this.getInstallationEmbeddedUrl2} saleObj={this.state.saleObj}
               folderId={this.state.folderId} userId={this.props.userId} userName={this.props.userName} role={this.props.role}
-              handleResetStepper={this.handleResetStepper} handleSnackbar={this.handleSnackbar}/>
+              handleResetStepper={this.handleResetStepper} handleSnackbar={this.handleSnackbar} resumeSale={this.resumeSale}/>
           </div>
         </div>
         <Snackbar
