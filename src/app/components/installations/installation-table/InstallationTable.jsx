@@ -93,7 +93,7 @@ export default class InstallationTable extends React.Component {
       //fetch the data and resume the Installation process to the DocuSignCompletionClient step
       console.log('Status - Installed');
       this.props.actions.resumeDocuSignCustomerStep(this.state.selectedId);
-    } else if(status == "Customer signed") {
+    } else if(status == "Customer Signed") {
       //fetch the data and resume the Installation process to the DocuSignCompletionInstaller step
       console.log('Status - Customer Signed');
       this.props.actions.resumeDocuSignInstallerStep(this.state.selectedId);
@@ -158,7 +158,7 @@ export default class InstallationTable extends React.Component {
     return (
       <ToolbarGroup>
         <ToolbarSeparator />
-        { status == "Documented" || status == "Installed" || status == "Customer signed" || status == "Installer signed" ?
+        { status == "Documented" || status == "Installed" || status == "Customer Signed" || status == "Installer Signed" ?
           <RaisedButton
             label="Resume"
             secondary={true}

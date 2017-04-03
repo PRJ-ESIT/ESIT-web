@@ -186,7 +186,45 @@ export default class InstallationTableContainer extends React.Component {
   }
 
   resumeDocuSignInstallerStep = (installationId) => {
+    var httpRequest = new XMLHttpRequest();
+    let _this = this;
+    httpRequest.onreadystatechange = function() {
+      if (this.readyState == 4) {
+        if (this.status == 200) {
+          let installation = JSON.parse(httpRequest.responseText).installation;
 
+          // Format and save installation date for details modal
+          var tempDateTime;
+          if (installation.installationDateTime) {
+            tempDateTime = new Date(installation.installationDateTime);
+            tempDateTime = tempDateTime.toLocaleString();
+          } else {
+            tempDateTime = null;
+          }
+
+          installation.installationDate = tempDateTime;
+
+          var docuSignObj = {
+            installationObj: {
+              installationId: installationId,
+              installedDate: new Date(installation.installationDateTime),
+              installerId: installation.installerId,
+              installerName: installation.installerName,
+              installerEmail: installation.installerEmail,
+              envelopeId: installation.envelopeId,
+            }
+          };
+
+          console.log(docuSignObj);
+          _this.props.resumeInstallation(4, docuSignObj);
+        } else {
+          _this.props.handleSnackbar('', true, this.status);
+        }
+      }
+    };
+
+    httpRequest.open('GET', "http://" + IP + "/installations/getone?id=" + installationId, true);
+    httpRequest.send(null);
   }
 
   render() {
@@ -196,6 +234,7 @@ export default class InstallationTableContainer extends React.Component {
       clearInstallationDetails: this.clearInstallationDetails,
       resumeInstallationFormStep: this.resumeInstallationFormStep,
       resumeDocuSignCustomerStep: this.resumeDocuSignCustomerStep,
+      resumeDocuSignInstallerStep: this.resumeDocuSignInstallerStep,
     };
     return (
       <InstallationTable

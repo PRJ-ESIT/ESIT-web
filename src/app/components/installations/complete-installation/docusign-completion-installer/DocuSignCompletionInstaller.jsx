@@ -11,8 +11,9 @@ export default class DocuSignCompletionInstaller extends React.Component {
       installerEmail: this.props.installation.installerEmail,
       installedDate: this.props.installation.installedDate,
       installationId: this.props.installation.installationId,
-      envelopeId: this.props.envelopeId,
+      envelopeId: this.props.envelopeId ? this.props.envelopeId : this.props.installation.envelopeId,
     };
+
     this.props.getInstallationEmbeddedUrl2(data);
   }
 

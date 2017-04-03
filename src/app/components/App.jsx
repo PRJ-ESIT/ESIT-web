@@ -172,7 +172,9 @@ export default class App extends React.Component {
       dataObject["installationStepIndex"] = 3;
       dataObject["status"] = "create";
     } else if(stepIndex == 4) {
-
+      dataObject["currentContent"] = this.props["completeInstallation"];
+      dataObject["installationStepIndex"] = 4;
+      dataObject["status"] = "create";
     }
 
     this.setState(dataObject);
