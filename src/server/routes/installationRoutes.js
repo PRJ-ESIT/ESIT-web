@@ -291,7 +291,7 @@ installationRouter.get('/closefirstiframe', function(req, res) {
   logger.info("InstallationRoutes: Handling GET /closefirstiframe request");
 
   if (req.query.event == 'signing_complete') {
-    setStatus(req.query.id, "Installation", "Customer Signed", function(obj, statusCode) {
+    setStatus(req.query.id, "Installation", "Customer signed", function(obj, statusCode) {
       res.sendFile(path.join(__dirname + '../../../client/closeinstallationoneiframe.html'));
     });
   }
@@ -304,7 +304,7 @@ installationRouter.get('/closesecondiframe', function(req, res) {
   logger.info("InstallationRoutes: Handling GET /closesecondiframe request");
 
   if (req.query.event == 'signing_complete') {
-    setStatus(req.query.id, "Installation", "Installer Signed", function(obj, statusCode) {
+    setStatus(req.query.id, "Installation", "Completed", function(obj, statusCode) {
       res.sendFile(path.join(__dirname + '../../../client/closeinstallationtwoiframe.html'));
     });
   }

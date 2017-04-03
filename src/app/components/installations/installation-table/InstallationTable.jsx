@@ -158,7 +158,7 @@ export default class InstallationTable extends React.Component {
     return (
       <ToolbarGroup>
         <ToolbarSeparator />
-        { status == "Documented" || status == "Installed" || status == "Customer signed" || status == "Installer signed" ?
+        { status == "Documented" || status == "Installed" || status == "Customer signed" ?
           <RaisedButton
             label="Resume"
             secondary={true}
